@@ -1,6 +1,6 @@
+import sys
 from django.core.management import BaseCommand
 from django.apps.registry import apps
-
 
 PRINT_IMPORTS = """
 import string
@@ -28,13 +28,14 @@ PRINT_CHARFIELD ="""    {} = LazyAttribute(lambda x: faker.text(max_nb_chars={})
 PRINT_CHARFIELD_NUM ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.digits).fuzz())"""
 PRINT_CHARFIELD_CHOICES ="""    {} = Iterator({}.{}, getter=lambda x: x[0])"""
 PRINT_DATETIMEFIELD ="""    {} = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
-                                                           tzinfo=timezone(settings.TIME_ZONE))){}"""
+                                                           tzinfo=timezone(settings.TIME_ZONE)))"""
 PRINT_FOREIGNKEY ="""    {} = SubFactory({}Factory){}"""
 PRINT_BOOLEANFIELD ="""    {} = Iterator([True, False])"""
 PRINT_INTEGERFIELD ="""    {} = LazyAttribute(lambda o: randint(1, 100))"""
 PRINT_IPADDRESSFIELD ="""    {} = LazyAttribute(lambda o: faker.ipv4(network=False))"""
 PRINT_TEXTFIELD ="""    {} = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))"""
-PRINT_DECIMAL ="""    {} = LazyAttribute(lambda x: faker.pydecimal(left_digits={}, right_digits={}, positive=True))"""
+PRINT_DECIMALFIELD ="""    {} = LazyAttribute(lambda x: faker.pydecimal(left_digits={}, right_digits={}, positive=True))"""
+PRINT_UNSUPPORTED_FIELD ="""    //{} = {} We do n ot support this field type"""
 
 
 
@@ -45,44 +46,68 @@ class ModelFactoryGenerator(object):
 
     def _generate(self):
         factory_class_content = list()
-        factory_class_content.append(PRINT_FACTORY_CLASS.format(self.model.__name__))
+        factory_class_content.append({'print': PRINT_FACTORY_CLASS, 'args':  [self.model.__name__]})
         for field in self.model._meta.fields:
             field_type = type(field).__name__
+            field_data = dict()
             if field_type in ['AutoField', 'AutoCreatedField', 'AutoLastModifiedField']:
                 pass
             elif field_type in ['DateTimeField', 'DateField']:
-                factory_class_content.append(PRINT_DATETIMEFIELD.format(field.name, ''))
+                field_data= {'print': PRINT_DATETIMEFIELD, 'args': [field.name]}
+                factory_class_content.append(field_data)
             elif field_type == 'CharField':
-                factory_class_content.append(self._get_charfield(field))
+                field_data = self._get_charfield(field)
+                factory_class_content.append(field_data)
             elif field_type == 'ForeignKey':
                 related_model = field.rel.to.__name__
-                factory_class_content.append(PRINT_FOREIGNKEY.format(field.name, related_model, ''))
+                field_data = {'print': PRINT_FOREIGNKEY,
+                                          'args': [field.name, related_model, '']}
+                factory_class_content.append(field_data)
             elif field_type == 'BooleanField':
-                factory_class_content.append(PRINT_BOOLEANFIELD.format(field.name))
+                field_data = {'print': PRINT_BOOLEANFIELD, 'args': [field.name]}
+                factory_class_content.append(field_data)
+
             elif field_type == 'TextField':
-                factory_class_content.append(PRINT_TEXTFIELD.format(field.name))
+                field_data = {'print': PRINT_TEXTFIELD, 'args': [field.name]}
+                factory_class_content.append(field_data)
+
             elif field_type == 'IntegerField':
-                factory_class_content.append(PRINT_INTEGERFIELD.format(field.name))
+                field_data = {'print': PRINT_INTEGERFIELD, 'args': [field.name]}
+                factory_class_content.append(field_data)
+
             elif field_type == 'DecimalField':
                 max_left = field.max_digits - field.decimal_places -1
                 max_right = field.decimal_places
-                factory_class_content.append(PRINT_DECIMAL.format(field.name, max_left, max_right))
+                field_data = {'print': PRINT_DECIMALFIELD,
+                                          'args': [field.name, max_left, max_right]}
+                factory_class_content.append(field_data)
+
             elif field_type == 'GenericIPAddressField':
-                factory_class_content.append(PRINT_IPADDRESSFIELD.format(field.name))
+                field_data = {'print': PRINT_IPADDRESSFIELD, 'args': [field.name]}
+                factory_class_content.append(field_data)
 
             else:
-                factory_class_content.append('     //{} = {} ******'.format(field.name, field_type))
+                field_data = {'print': PRINT_UNSUPPORTED_FIELD,
+                                          'args': [field.name, field_type]}
+                factory_class_content.append(field_data)
 
         return factory_class_content
 
     def _get_charfield(self, field):
+        field_data = dict()
         if len(field.choices) > 0:
-           return PRINT_CHARFIELD_CHOICES.format(field.name, self.model.__name__, 'CHOICES')
+            field_data = {'print': PRINT_CHARFIELD_CHOICES, 'args': [field.name, self.model.__name__, 'CHOICES']}
+            return field_data
         else:
             if self._is_number(field.name):
-                return PRINT_CHARFIELD_NUM.format(field.name, field.max_length)
+                field_data = {'print': PRINT_CHARFIELD_NUM,
+                                          'args': [field.name, field.max_length]}
+                return field_data
             else:
-                return PRINT_CHARFIELD.format(field.name, field.max_length, '')
+                field_data = {'print': PRINT_CHARFIELD,
+                                          'args': [field.name, field.max_length]}
+                return field_data
+
 
     def _is_number(self, field_name):
         num_vals = ['id', 'num']
@@ -92,7 +117,16 @@ class ModelFactoryGenerator(object):
         return False
 
     def __str__(self):
-        return '\n'.join(self._generate())
+        printable = list()
+        for print_data in self._generate():
+            try:
+                printable.append(print_data['print'].format(*print_data['args']))
+            except IndexError as e:
+                print('-'*74)
+                print('{print} {args}'.format(**print_data))
+                raise e
+
+        return '\n'.join(printable)
 
 
 class Command(BaseCommand):
@@ -140,12 +174,24 @@ class Command(BaseCommand):
         app = options.get('app_name')
         installed_apps = dict(self.get_apps())
         app = installed_apps.get(app)
+        if not app:
+            self.warning('This command requires an existing app name as '
+                         'argument')
+            self.warning('Available apps:')
+            for app in sorted(installed_apps):
+                self.warning('    %s' % app)
+            sys.exit(1)
         self.stdout.write(PRINT_IMPORTS)
         for model in app.get_models():
             model_fact = ModelFactoryGenerator(model)
             self.stdout.write(str(model_fact))
 
-
+    def warning(self, message):
+        # This replaces the regular warning method from the CustomBaseCommand
+        # since some Django installations capture all logging output
+        # unfortunately
+        sys.stderr.write(message)
+        sys.stderr.write('\n')
 
 
     def get_apps(self):
