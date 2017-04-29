@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         pass
-        #parser.add_argument('output_filename')
+        parser.add_argument('app_name')
         # parser.add_argument("-l", "--list",
         #                     action='store_true',
         #                     dest="list",
@@ -52,8 +52,9 @@ class Command(BaseCommand):
         #                 nargs='+',
         #                 )
     def handle(self, *args, **options):
+        app = options.get('app_name')
         installed_apps = dict(self.get_apps())
-        app = installed_apps.get('ms_portal.visits')
+        app = installed_apps.get(app)
         for model in app.get_models():
             self.stdout.write(PRINT_FACTORY_CLASS.format(model.__name__))
             for field in model._meta.fields:
