@@ -22,15 +22,17 @@ class {0}Factory(DjangoModelFactory):
         model = {0}
 """
 
-PRINT_CHARFIELD ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.digits).fuzz()){}"""
+PRINT_CHARFIELD ="""    {} = LazyAttribute(lambda x: faker.text(max_nb_chars={})"""
+PRINT_CHARFIELD_NUM ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.digits).fuzz()){}"""
 PRINT_CHARFIELD_CHOICES ="""    {} = Iterator({}.{}, getter=lambda x: x[0])"""
 PRINT_DATETIMEFIELD ="""    {} = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
                                                            tzinfo=timezone(settings.TIME_ZONE))){}"""
 PRINT_FOREIGNKEY ="""    {} = SubFactory({}Factory){}"""
 PRINT_BOOLEANFIELD ="""    {} = Iterator([True, False])"""
 PRINT_INTEGERFIELD ="""    {} = LazyAttribute(lambda o: randint(1, 100))"""
-PRINT_TEXTFIELD ="""    {} = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))"""
-PRINT_TEXTFIELD ="""    {} = LazyAttribute(lambda x: faker.sentence(nb_words=6, variable_nb_words=True))"""
+PRINT_IPADDRESSFIELD ="""    {} = LazyAttribute(lambda o: faker.ipv4(network=False))"""
+PRINT_TEXTFIELD ="""    {} = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))"""
+PRINT_DECIMAL ="""    {} = LazyAttribute(lambda x: faker.pydecimal(left_digits={}, right_digits={}, positive=True))"""
 
 
 
@@ -43,26 +45,34 @@ class ModelFactoryGenerator(object):
         factory_class_content = list()
         factory_class_content.append(PRINT_FACTORY_CLASS.format(self.model.__name__))
         for field in self.model._meta.fields:
-            if type(field).__name__ in ['AutoField', 'AutoCreatedField', 'AutoLastModifiedField']:
+            field_type = type(field).__name__
+            if field_type in ['AutoField', 'AutoCreatedField', 'AutoLastModifiedField']:
                 pass
-            elif type(field).__name__ in ['DateTimeField', 'DateField']:
+            elif field_type in ['DateTimeField', 'DateField']:
                 factory_class_content.append(PRINT_DATETIMEFIELD.format(field.name, ''))
-            elif type(field).__name__ == 'CharField':
+            elif field_type == 'CharField':
                 if len(field.choices) > 0:
                     factory_class_content.append(PRINT_CHARFIELD_CHOICES.format(field.name, self.model.__name__, 'CHOICES'))
                 else:
                     factory_class_content.append(PRINT_CHARFIELD.format(field.name, field.max_length,''))
-            elif type(field).__name__ == 'ForeignKey':
+            elif field_type == 'ForeignKey':
                 related_model = field.rel.to.__name__
                 factory_class_content.append(PRINT_FOREIGNKEY.format(field.name, related_model, ''))
-            elif type(field).__name__ == 'BooleanField':
+            elif field_type == 'BooleanField':
                 factory_class_content.append(PRINT_BOOLEANFIELD.format(field.name))
-            elif type(field).__name__ == 'TextField':
+            elif field_type == 'TextField':
                 factory_class_content.append(PRINT_TEXTFIELD.format(field.name))
-            elif type(field).__name__ == 'IntegerField':
+            elif field_type == 'IntegerField':
                 factory_class_content.append(PRINT_INTEGERFIELD.format(field.name))
+            elif field_type == 'DecimalField':
+                max_left = field.max_digits - field.decimal_places -1
+                max_right = field.decimal_places
+                factory_class_content.append(PRINT_DECIMAL.format(field.name, max_left, max_right))
+            elif field_type == 'GenericIPAddressField':
+                factory_class_content.append(PRINT_IPADDRESSFIELD.format(field.name))
+
             else:
-                factory_class_content.append('     **** {} = {} ******'.format(field.name, type(field).__name__))
+                factory_class_content.append('     **** {} = {} ******'.format(field.name, field_type))
 
         return factory_class_content
 
