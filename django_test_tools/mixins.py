@@ -5,6 +5,14 @@ from .excel import ExcelAdapter
 
 
 class TestCommandMixin(object):
+    """
+    class TestYourCommand(TestCommandMixin, TestCase):
+
+        def test_your_command_action(self):
+            call_command('your_command', 'your_argument', stdout=self.content)
+            results = self.get_results()
+            self.assertEqual(23, len(results))
+    """
 
     def setUp(self):
         self.content = StringIO()
