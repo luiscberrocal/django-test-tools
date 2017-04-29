@@ -8,6 +8,10 @@ class OperatingSystem(models.Model):
 
 
 class Server(models.Model):
+    PRODUCTION = 'PROD'
+    DEVELOPMENT = 'DEV'
+    USE_CHOICES = ((PRODUCTION, 'Prod'),
+                   (DEVELOPMENT, 'Dev'))
     name = models.CharField(max_length=20)
     notes = models.TextField()
     virtual = models.BooleanField()
@@ -15,5 +19,7 @@ class Server(models.Model):
     created = models.DateTimeField()
     online_date = models.DateField()
     operating_system = models.ForeignKey(OperatingSystem)
+    server_id = models.CharField(max_length=6)
+    use = models.CharField(max_length=4, choices=USE_CHOICES, default=DEVELOPMENT)
 
 

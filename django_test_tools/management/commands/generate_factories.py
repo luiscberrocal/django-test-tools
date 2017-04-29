@@ -23,7 +23,7 @@ class {0}Factory(DjangoModelFactory):
 """
 
 PRINT_CHARFIELD ="""    {} = LazyAttribute(lambda x: faker.text(max_nb_chars={})"""
-PRINT_CHARFIELD_NUM ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.digits).fuzz()){}"""
+PRINT_CHARFIELD_NUM ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.digits).fuzz())"""
 PRINT_CHARFIELD_CHOICES ="""    {} = Iterator({}.{}, getter=lambda x: x[0])"""
 PRINT_DATETIMEFIELD ="""    {} = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
                                                            tzinfo=timezone(settings.TIME_ZONE))){}"""
