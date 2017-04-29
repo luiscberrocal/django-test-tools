@@ -1,0 +1,76 @@
+=============================
+Django Test Tools
+=============================
+
+.. image:: https://badge.fury.io/py/django-test-tools.svg
+    :target: https://badge.fury.io/py/django-test-tools
+
+.. image:: https://travis-ci.org/luiscberrocal/django-test-tools.svg?branch=master
+    :target: https://travis-ci.org/luiscberrocal/django-test-tools
+
+.. image:: https://codecov.io/gh/luiscberrocal/django-test-tools/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/luiscberrocal/django-test-tools
+
+Simple tests tools to make testing faster and easier.
+
+Documentation
+-------------
+
+The full documentation is at https://django-test-tools.readthedocs.io.
+
+Quickstart
+----------
+
+Install Django Test Tools::
+
+    pip install django-test-tools
+
+Add it to your `INSTALLED_APPS`:
+
+.. code-block:: python
+
+    INSTALLED_APPS = (
+        ...
+        'django_test_tools.apps.DjangoTestToolsConfig',
+        ...
+    )
+
+Add Django Test Tools's URL patterns:
+
+.. code-block:: python
+
+    from django_test_tools import urls as django_test_tools_urls
+
+
+    urlpatterns = [
+        ...
+        url(r'^', include(django_test_tools_urls)),
+        ...
+    ]
+
+Features
+--------
+
+* TODO
+
+Running Tests
+-------------
+
+Does the code actually work?
+
+::
+
+    source <YOURVIRTUALENV>/bin/activate
+    (myenv) $ pip install tox
+    (myenv) $ tox
+
+Credits
+-------
+
+Tools used in rendering this package:
+
+*  Cookiecutter_
+*  `cookiecutter-djangopackage`_
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
