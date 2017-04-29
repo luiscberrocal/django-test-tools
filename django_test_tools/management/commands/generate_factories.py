@@ -51,10 +51,7 @@ class ModelFactoryGenerator(object):
             elif field_type in ['DateTimeField', 'DateField']:
                 factory_class_content.append(PRINT_DATETIMEFIELD.format(field.name, ''))
             elif field_type == 'CharField':
-                if len(field.choices) > 0:
-                    factory_class_content.append(PRINT_CHARFIELD_CHOICES.format(field.name, self.model.__name__, 'CHOICES'))
-                else:
-                    factory_class_content.append(PRINT_CHARFIELD.format(field.name, field.max_length,''))
+                factory_class_content.append(self._get_charfield(field))
             elif field_type == 'ForeignKey':
                 related_model = field.rel.to.__name__
                 factory_class_content.append(PRINT_FOREIGNKEY.format(field.name, related_model, ''))
@@ -72,9 +69,25 @@ class ModelFactoryGenerator(object):
                 factory_class_content.append(PRINT_IPADDRESSFIELD.format(field.name))
 
             else:
-                factory_class_content.append('     **** {} = {} ******'.format(field.name, field_type))
+                factory_class_content.append('     //{} = {} ******'.format(field.name, field_type))
 
         return factory_class_content
+
+    def _get_charfield(self, field):
+        if len(field.choices) > 0:
+           return PRINT_CHARFIELD_CHOICES.format(field.name, self.model.__name__, 'CHOICES')
+        else:
+            if self._is_number(field.name):
+                return PRINT_CHARFIELD_NUM.format(field.name, field.max_length)
+            else:
+                return PRINT_CHARFIELD.format(field.name, field.max_length, '')
+
+    def _is_number(self, field_name):
+        num_vals = ['id', 'num']
+        for nv in num_vals:
+            if nv in field_name.lower():
+                return True
+        return False
 
     def __str__(self):
         return '\n'.join(self._generate())
@@ -125,6 +138,7 @@ class Command(BaseCommand):
         app = options.get('app_name')
         installed_apps = dict(self.get_apps())
         app = installed_apps.get(app)
+        self.stdout.write(PRINT_IMPORTS)
         for model in app.get_models():
             model_fact = ModelFactoryGenerator(model)
             self.stdout.write(str(model_fact))

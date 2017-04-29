@@ -9,4 +9,4 @@ class TestGenerateFactories(TestCommandMixin, TestCase):
     def test_generate(self):
         call_command('generate_factories', 'example.my_app', stdout=self.content)
         results = self.get_results()
-        self.assertEqual(23, len(results))
+        self.assertEqual(36, len(results))
