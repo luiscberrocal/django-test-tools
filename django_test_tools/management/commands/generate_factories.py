@@ -27,6 +27,7 @@ class {0}Factory(DjangoModelFactory):
 
 PRINT_CHARFIELD ="""    {} = LazyAttribute(lambda x: faker.text(max_nb_chars={}))"""
 PRINT_CHARFIELD_NUM ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.digits).fuzz())"""
+PRINT_CHARFIELD_LETTERS ="""    {} = LazyAttribute(lambda x: FuzzyText(length={}, chars=string.letters).fuzz())"""
 PRINT_CHARFIELD_CHOICES ="""    {} = Iterator({}.{}, getter=lambda x: x[0])"""
 PRINT_DATETIMEFIELD ="""    {} = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
                                                            tzinfo=timezone(settings.TIME_ZONE)))"""
@@ -36,7 +37,7 @@ PRINT_INTEGERFIELD ="""    {} = LazyAttribute(lambda o: randint(1, 100))"""
 PRINT_IPADDRESSFIELD ="""    {} = LazyAttribute(lambda o: faker.ipv4(network=False))"""
 PRINT_TEXTFIELD ="""    {} = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))"""
 PRINT_DECIMALFIELD ="""    {} = LazyAttribute(lambda x: faker.pydecimal(left_digits={}, right_digits={}, positive=True))"""
-PRINT_UNSUPPORTED_FIELD ="""    //{} = {} We do not support this field type"""
+PRINT_UNSUPPORTED_FIELD ="""    #{} = {} We do not support this field type"""
 
 
 
@@ -105,8 +106,12 @@ class ModelFactoryGenerator(object):
                                           'args': [field.name, field.max_length]}
                 return field_data
             else:
-                field_data = {'print': PRINT_CHARFIELD,
-                                          'args': [field.name, field.max_length]}
+                if field.max_length >=5:
+                    field_data = {'print': PRINT_CHARFIELD,
+                                              'args': [field.name, field.max_length]}
+                else:
+                    field_data = {'print': PRINT_CHARFIELD_LETTERS,
+                                  'args': [field.name, field.max_length]}
                 return field_data
 
 
