@@ -235,30 +235,3 @@ spanish_date_util = SpanishDate()
 
 def parse_spanish_date(str_date):
     return spanish_date_util.parse(str_date)
-    # spanish_months = {'Ene': 'Jan', 'Feb': 'Feb', 'Mar': 'Mar', 'Abr': 'Apr', 'May': 'May',
-    #                   'Jun': 'Jun', 'Jul': 'Jul', 'Ago':'Aug', 'Sep': 'Sep', 'Oct': 'Oct',
-    #                   'Nov': 'Nov', 'Dic':'Dec'}
-    # month_reg = '|'.join(spanish_months.keys())
-    # regex = r'([0123][0-9])-(' + month_reg +')-([\d]{2})'
-    # reg_exp = re.compile(regex)
-    # match = reg_exp.match(str_date)
-    # date = None
-    # if match:
-    #     day = match.group(1)
-    #     month = spanish_months[match.group(2)]
-    #     year = match.group(3)
-    #     english_date = '{}-{}-{}'.format(day, month, year)
-    #     date = datetime_to_local_time(datetime.strptime(english_date, '%d-%b-%y')).date()
-    # else:
-    #     regex += r' ([012][0-9]:[0-5][0-9])'
-    #     reg_exp = re.compile(regex)
-    #     match = reg_exp.match(str_date)
-    #     if match:
-    #         day = match.group(1)
-    #         month = spanish_months[match.group(2)]
-    #         year = match.group(3)
-    #         time = match.group(4)
-    #         english_date = '{}-{}-{} {}'.format(day, month, year, time)
-    #         date = datetime_to_local_time(datetime.strptime(english_date, '%d-%b-%y %H:%M'))
-    # return date
-
