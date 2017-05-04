@@ -5,6 +5,7 @@ from django.apps.registry import apps
 PRINT_IMPORTS = """
 import string
 
+from random import randint
 from pytz import timezone
 
 from factory import Iterator
@@ -35,7 +36,7 @@ PRINT_INTEGERFIELD ="""    {} = LazyAttribute(lambda o: randint(1, 100))"""
 PRINT_IPADDRESSFIELD ="""    {} = LazyAttribute(lambda o: faker.ipv4(network=False))"""
 PRINT_TEXTFIELD ="""    {} = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))"""
 PRINT_DECIMALFIELD ="""    {} = LazyAttribute(lambda x: faker.pydecimal(left_digits={}, right_digits={}, positive=True))"""
-PRINT_UNSUPPORTED_FIELD ="""    //{} = {} We do n ot support this field type"""
+PRINT_UNSUPPORTED_FIELD ="""    //{} = {} We do not support this field type"""
 
 
 
