@@ -12,7 +12,7 @@ from factory import Iterator
 from factory import LazyAttribute
 from factory import SubFactory
 from factory import lazy_attribute
-from factory.django import DjangoModelFactory
+from factory.django import DjangoModelFactory, FileField
 from factory.fuzzy import FuzzyText, FuzzyInteger
 from faker import Factory as FakerFactory
 
@@ -32,6 +32,7 @@ PRINT_CHARFIELD_CHOICES ="""    {} = Iterator({}.{}, getter=lambda x: x[0])"""
 PRINT_DATETIMEFIELD ="""    {} = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
                                                            tzinfo=timezone(settings.TIME_ZONE)))"""
 PRINT_FOREIGNKEY ="""    {} = SubFactory({}Factory){}"""
+PRINT_FILEFIELD ="""    {} = FileField(filename='{}.{}')"""
 PRINT_BOOLEANFIELD ="""    {} = Iterator([True, False])"""
 PRINT_INTEGERFIELD ="""    {} = LazyAttribute(lambda o: randint(1, 100))"""
 PRINT_IPADDRESSFIELD ="""    {} = LazyAttribute(lambda o: faker.ipv4(network=False))"""
@@ -77,8 +78,12 @@ class ModelFactoryGenerator(object):
                 field_data = {'print': PRINT_INTEGERFIELD, 'args': [field.name]}
                 factory_class_content.append(field_data)
 
+            elif field_type == 'FileField':
+                field_data = {'print': PRINT_FILEFIELD, 'args': [field.name, field.name, 'xlsx']}
+                factory_class_content.append(field_data)
+
             elif field_type == 'DecimalField':
-                max_left = field.max_digits - field.decimal_places -1
+                max_left = field.max_digits - field.decimal_places
                 max_right = field.decimal_places
                 field_data = {'print': PRINT_DECIMALFIELD,
                                           'args': [field.name, max_left, max_right]}
