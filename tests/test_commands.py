@@ -17,24 +17,17 @@ class TestGenerateFactories(TestCommandMixin, TestCase):
         results = self.get_results()
         self.assertEqual(41, len(results))
 
-class MockType(object):
+class FileFieldMockType(object):
+    field_name = None
 
     def __init__(cls, what, bases=None, dict=None): # known special case of type.__init__
-        """
-        type(object_or_name, bases, dict)
-        type(object) -> the object's type
-        type(name, bases, dict) -> a new type
-        # (copied from class doc)
-        """
-        if dict:
-            field_name = dict.get('field_name')
         cls.__name__ = 'FileField'
 
 
 class TestModelFactoryGenerator(TestCase):
 
 
-    def test__generate(self):
+    def test__generate_file_field(self):
         field = Mock(spec=FileField)
         field.name = 'hola'
         #self.assertEqual('', type(field).__name__)
@@ -44,7 +37,7 @@ class TestModelFactoryGenerator(TestCase):
         mock_model._meta.fields = [field]
         factory_gen = ModelFactoryGenerator(mock_model)
 
-        with  patch('builtins.type', MockType) as m_type:
+        with patch('builtins.type', FileFieldMockType) as m_type:
             results = factory_gen._generate()
             self.assertEqual('    {} = FileField(filename=\'{}.{}\')', results[1]['print'])
             self.assertEqual(['hola', 'hola', 'xlsx'], results[1]['args'])
