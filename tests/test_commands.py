@@ -6,16 +6,29 @@ from django.db.models import Field
 from django.db.models import FileField
 from django.test import TestCase
 
+from django_test_tools.file_utils import hash_file
 from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
-from django_test_tools.mixins import TestCommandMixin
+from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
+from django_test_tools.utils import create_output_filename_with_date
 
 
-class TestGenerateFactories(TestCommandMixin, TestCase):
+class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
 
     def test_generate(self):
         call_command('generate_factories', 'example.my_app', stdout=self.content)
         results = self.get_results()
-        self.assertEqual(41, len(results))
+        self.assertEqual(43, len(results))
+        filename = create_output_filename_with_date('example_my_app_factory.py')
+        with open(filename, 'w', encoding='utf-8') as factory_file:
+            for line in results:
+                factory_file.write(line)
+                factory_file.write('\n')
+        hash_sha = hash_file(filename, algorithm='sha256')
+        self.assertEqual('d61072d27564837e3b968d763c05dd485e65fd1a40c2f5185f5140daacf1d088', hash_sha)
+        self.clean_output_folder(filename)
+
+
+
 
 class FileFieldMockType(object):
     field_name = None
@@ -39,5 +52,7 @@ class TestModelFactoryGenerator(TestCase):
 
         with patch('builtins.type', FileFieldMockType) as m_type:
             results = factory_gen._generate()
+            field_definition =  results[1]['print'].format(*results[1]['args'])
+            self.assertEqual('    hola = FileField(filename=\'hola.xlsx\')', field_definition)
             self.assertEqual('    {} = FileField(filename=\'{}.{}\')', results[1]['print'])
             self.assertEqual(['hola', 'hola', 'xlsx'], results[1]['args'])

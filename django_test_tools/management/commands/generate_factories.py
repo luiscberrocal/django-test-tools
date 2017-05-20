@@ -8,6 +8,8 @@ import string
 from random import randint
 from pytz import timezone
 
+from django.conf import settings
+
 from factory import Iterator
 from factory import LazyAttribute
 from factory import SubFactory
