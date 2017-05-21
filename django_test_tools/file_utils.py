@@ -5,9 +5,10 @@ from django_test_tools.utils import create_output_filename_with_date
 
 BLOCKSIZE = 65536
 
+
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     try:
-        hasher =  getattr(hashlib, algorithm)()
+        hasher = getattr(hashlib, algorithm)()
     except AttributeError:
         raise ValueError('{} is not a valid hashing algorithm'.format(algorithm))
 
@@ -32,6 +33,7 @@ def parametrized(dec):
             return dec(f, *args, **kwargs)
         return repl
     return layer
+
 
 @parametrized
 def temporary_file(func, extension, delete_on_exit=True):

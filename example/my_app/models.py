@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class OperatingSystem(models.Model):
     name = models.CharField(max_length=20)
     version = models.CharField(max_length=3)

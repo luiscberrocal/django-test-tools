@@ -197,19 +197,19 @@ class SpanishDate(object):
 
     def parse(self, str_date):
         match = self.date_reg_exp_es.match(str_date)
-        date = None
+        date_to_parse = None
         if match:
             day, month, year = self._get_date_parts(match)
             english_date = '{}-{}-{}'.format(day, month, year)
-            date = datetime_to_local_time(datetime.strptime(english_date,self.date_format )).date()
+            date_to_parse = datetime_to_local_time(datetime.strptime(english_date,self.date_format )).date()
         else:
             match = self.datetime_reg_exp_es.match(str_date)
             if match:
                 day, month, year = self._get_date_parts(match)
                 time = match.group(4)
                 english_date = '{}-{}-{} {}'.format(day, month, year, time)
-                date = datetime_to_local_time(datetime.strptime(english_date, self.datetime_format))
-        return date
+                date_to_parse = datetime_to_local_time(datetime.strptime(english_date, self.datetime_format))
+        return date_to_parse
 
     def to_string(self, m_date):
 

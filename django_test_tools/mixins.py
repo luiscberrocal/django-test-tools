@@ -14,10 +14,9 @@ class TestCommandMixin(object):
             self.assertEqual(23, len(results))
     """
 
+    # noinspection PyPep8Naming
     def setUp(self):
         self.content = StringIO()
-
-
 
     def get_results(self, content=None):
         if content is None:
@@ -29,12 +28,14 @@ class TestCommandMixin(object):
             results.append(line.strip('\n'))
         return results
 
+
 class TestOutputMixin(object):
     clean_output = True
 
     def clean_output_folder(self, dated_filename):
         if self.clean_output:
             os.remove(dated_filename)
+            # noinspection PyUnresolvedReferences
             self.assertFalse(os.path.exists(dated_filename))
 
     def get_excel_content(self, filename, sheet_name=None):

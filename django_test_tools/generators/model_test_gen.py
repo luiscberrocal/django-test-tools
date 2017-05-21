@@ -41,6 +41,8 @@ PRINT_TEST_ATTRIBUTE_CONTENT="""
         {1} = {0}Factory.create()
 """
 
+
+# noinspection PyProtectedMember,PyProtectedMember
 class ModelTestCaseGenerator(object):
 
     def __init__(self, model):

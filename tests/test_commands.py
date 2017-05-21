@@ -28,17 +28,15 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
         self.clean_output_folder(filename)
 
 
-
-
 class FileFieldMockType(object):
     field_name = None
 
-    def __init__(cls, what, bases=None, dict=None): # known special case of type.__init__
+    # noinspection PyShadowingBuiltins
+    def __init__(cls, what, bases=None, dict=None):
         cls.__name__ = 'FileField'
 
 
 class TestModelFactoryGenerator(TestCase):
-
 
     def test__generate_file_field(self):
         field = Mock(spec=FileField)
@@ -52,7 +50,7 @@ class TestModelFactoryGenerator(TestCase):
 
         with patch('builtins.type', FileFieldMockType) as m_type:
             results = factory_gen._generate()
-            field_definition =  results[1]['print'].format(*results[1]['args'])
+            field_definition = results[1]['print'].format(*results[1]['args'])
             self.assertEqual('    hola = FileField(filename=\'hola.xlsx\')', field_definition)
             self.assertEqual('    {} = FileField(filename=\'{}.{}\')', results[1]['print'])
             self.assertEqual(['hola', 'hola', 'xlsx'], results[1]['args'])
