@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-
+import os
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-ROOT_DIR = environ.Path(__file__) - 3  # (pmp_shield/config/settings/common.py - 3 = pmp_shield/)
+ROOT_DIR = environ.Path(__file__) - 2  # (pmp_shield/config/settings/common.py - 3 = pmp_shield/)
 APPS_DIR = ROOT_DIR.path('django_test_tools')
 
 TEST_OUTPUT_PATH = ROOT_DIR.path('output').root
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
+    'example.my_app',
 
     # if your app has other dependencies that need to be added to the site
     # they should be added here
@@ -84,7 +85,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        #'NAME': APPS_DIR.path('db.sqlite3') #os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(APPS_DIR.root, 'django-test-tool.sqlite3'),
     }
 }
 

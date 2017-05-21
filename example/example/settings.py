@@ -12,12 +12,17 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 import logging
-
+import environ
 logger = logging.getLogger(__name__)
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+ROOT_DIR = environ.Path(__file__) - 3  # (pmp_shield/config/settings/common.py - 3 = pmp_shield/)
+APPS_DIR = ROOT_DIR.path('example')
+
+TEST_OUTPUT_PATH = ROOT_DIR.path('output').root
+TEST_DATA_PATH = ROOT_DIR.path('test_data').root
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -40,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
+    'example.my_app',
 
     # if your app has other dependencies that need to be added to the site
     # they should be added here
@@ -61,7 +67,7 @@ ROOT_URLCONF = 'example.example.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates/django_test_tools'), ],
+        'DIRS': [APPS_DIR.path('templates/django_test_tools'), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +88,7 @@ WSGI_APPLICATION = 'example.example.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(APPS_DIR.root, 'db.sqlite3'),
     }
 }
 

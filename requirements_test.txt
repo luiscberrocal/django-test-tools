@@ -1,8 +1,10 @@
-coverage==4.3.4
+-r requirements.txt
+
+coverage==4.4.1
 mock>=1.0.1
 flake8>=2.1.0
 tox>=1.7.0
 codecov>=2.0.0
-Faker==0.7.11
+Faker==0.7.12
 django-environ==0.4.3
 # Additional test requirements go here

@@ -64,6 +64,39 @@ Does the code actually work?
     (myenv) $ pip install tox
     (myenv) $ tox
 
+Builds
+------
+
+We are using Travis for continuos integration SOON
+For coverage we are using coveralls SOON
+
+Run bumpversion
+
+.. code-block:: bash
+
+    $ bumpversion minor
+
+
+Instead of minor you could also use **major** o **patch** depending on the level of the release.
+
+.. code-block:: bash
+
+    python setup.py sdist bdist_wheel
+
+    python setup.py register -r pypitest
+
+    python setup.py sdist upload -r pypitest
+
+
+
+Check https://testpypi.python.org/pypi/acp-calendar/
+
+.. code-block:: bash
+
+    python setup.py register -r pypi
+
+    python setup.py sdist upload -r pypi
+
 Credits
 -------
 

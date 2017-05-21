@@ -56,7 +56,7 @@ setup(
         'django_test_tools',
     ],
     include_package_data=True,
-    install_requires=[],
+    install_requires=['openpyxl==2.4.7'],
     license="MIT",
     zip_safe=False,
     keywords='django-test-tools',
