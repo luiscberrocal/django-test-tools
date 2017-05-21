@@ -43,7 +43,7 @@ PRINT_DECIMALFIELD ="""    {} = LazyAttribute(lambda x: faker.pydecimal(left_dig
 PRINT_UNSUPPORTED_FIELD ="""    #{} = {} We do not support this field type"""
 
 
-
+# noinspection PyProtectedMember
 class ModelFactoryGenerator(object):
 
     def __init__(self, model):

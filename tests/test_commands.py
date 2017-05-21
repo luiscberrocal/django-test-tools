@@ -17,14 +17,14 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
     def test_generate(self):
         call_command('generate_factories', 'example.my_app', stdout=self.content)
         results = self.get_results()
-        self.assertEqual(43, len(results))
+        self.assertEqual(44, len(results))
         filename = create_output_filename_with_date('example_my_app_factory.py')
         with open(filename, 'w', encoding='utf-8') as factory_file:
             for line in results:
                 factory_file.write(line)
                 factory_file.write('\n')
         hash_sha = hash_file(filename, algorithm='sha256')
-        self.assertEqual('d61072d27564837e3b968d763c05dd485e65fd1a40c2f5185f5140daacf1d088', hash_sha)
+        self.assertEqual('2d3dcb11f945f9d93985c9ee142a0251474002cb19dc7ec92eb5e16e5885c2ac', hash_sha)
         self.clean_output_folder(filename)
 
 

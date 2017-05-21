@@ -21,5 +21,6 @@ class Server(models.Model):
     operating_system = models.ForeignKey(OperatingSystem)
     server_id = models.CharField(max_length=6)
     use = models.CharField(max_length=4, choices=USE_CHOICES, default=DEVELOPMENT)
+    comments = models.TextField(null=True, blank=True)
 
 

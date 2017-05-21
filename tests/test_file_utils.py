@@ -50,7 +50,7 @@ class TestHashFile(TestOutputMixin, TestCase):
             with open(my_function2.filename, 'w', encoding='utf-8') as mfile:
                 mfile.writelines(my_list)
             return my_function2.filename
-        
+
         filename = my_function2()
         self.assertTrue(os.path.exists(filename))
         os.remove(filename)
