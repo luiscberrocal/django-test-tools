@@ -2,22 +2,20 @@ PRINT_IMPORTS = """
 from django.forms.models import model_to_dict
 from django.conf import settings
 from django.test import TestCase
-
-
 """
 PRINT_FACTORY_CLASS= """
 class TestCase{0}(TestCase):
 
     def test_create(self):
         \"\"\"
-        Tesst the creation of a {0} model using a factory
+        Test the creation of a {0} model using a factory
         \"\"\"
         {1} = {0}Factory.create()
         self.assertEqual(1, {0}.objects.count())
 
     def test_create_batch(self):
         \"\"\"
-        Tesst the creation of 5 {0} models using a factory
+        Test the creation of 5 {0} models using a factory
         \"\"\"
         {1}s = {0}Factory.create_batch(5)
         self.assertEqual(5, {0}.objects.count())
@@ -34,6 +32,7 @@ PRINT_TEST_ATTRIBUTE_COUNT="""
         {1}_dict = model_to_dict({1})
         self.assertEqual({2}, len({1}_dict.keys()))
 """
+
 PRINT_TEST_ATTRIBUTE_CONTENT="""
     def test_attribute_content(self):
         \"\"\"
@@ -73,7 +72,7 @@ class ModelTestCaseGenerator(object):
 
     def __str__(self):
         printable = list()
-        printable.append(PRINT_IMPORTS)
+        #printable.append(PRINT_IMPORTS)
         for print_data in self._generate():
             try:
                 if print_data['args'] is not None:
@@ -88,3 +87,23 @@ class ModelTestCaseGenerator(object):
         return '\n'.join(printable)
 
 
+class AppModelsTestCaseGenerator(object):
+
+    def __init__(self, app):
+        self.app = app
+
+    def _generate(self):
+        app_content = list()
+        for model in self.app.get_models():
+            model_test_case = ModelTestCaseGenerator(model)
+            app_content.append(model_test_case)
+        return app_content
+
+
+    def __str__(self):
+        printable = list()
+        printable.append(PRINT_IMPORTS)
+        for model_test_cases in self._generate():
+            printable.append(str(model_test_cases))
+
+        return '\n'.join(printable)
