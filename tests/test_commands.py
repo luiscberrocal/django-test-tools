@@ -54,3 +54,11 @@ class TestModelFactoryGenerator(TestCase):
             self.assertEqual('    hola = FileField(filename=\'hola.xlsx\')', field_definition)
             self.assertEqual('    {} = FileField(filename=\'{}.{}\')', results[1]['print'])
             self.assertEqual(['hola', 'hola', 'xlsx'], results[1]['args'])
+
+
+class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestCase):
+
+    def test_generate(self):
+        call_command('generate_model_test_cases', 'example.my_app', stdout=self.content)
+        results = self.get_results()
+        self.assertEqual(90, len(results))

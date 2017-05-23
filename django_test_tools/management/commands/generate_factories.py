@@ -145,11 +145,10 @@ class ModelFactoryGenerator(object):
 class Command(BaseCommand):
     """
 
-        $ python manage.py
+        $ python manage.py generate_factories project.app
     """
 
     def add_arguments(self, parser):
-        pass
         parser.add_argument('app_name')
         # parser.add_argument("-l", "--list",
         #                     action='store_true',
