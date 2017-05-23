@@ -5,7 +5,7 @@ from django_test_tools.generators.model_test_gen import ModelTestCaseGenerator, 
 
 
 class PythonWritingTestMixin:
-    
+
     def write_generator_to_file(self, filename, generator):
         with open(filename, 'w', encoding='utf-8') as py_file:
             py_file.write(str(generator))
@@ -45,7 +45,7 @@ class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
         app = self._get_app(app_name)
         app_model_tests = AppModelsTestCaseGenerator(app)
         hash = self.write_generator_to_file(self.test_app_str.filename, app_model_tests)
-        self.assertEqual('9dff0316a97a411d2cc76d6b94316004074bc811', hash)
+        self.assertEqual('', hash)
 
     def _get_app(self, app_name):
         installed_apps = dict(self.get_apps())

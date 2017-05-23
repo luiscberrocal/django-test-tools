@@ -2,6 +2,7 @@ PRINT_IMPORTS = """
 from django.forms.models import model_to_dict
 from django.conf import settings
 from django.test import TestCase
+from django.db import IntegrityError
 """
 PRINT_FACTORY_CLASS= """
 class TestCase{0}(TestCase):
@@ -41,6 +42,21 @@ PRINT_TEST_ATTRIBUTE_CONTENT="""
         {1} = {0}Factory.create()
 """
 
+PRINT_TEST_ATTRIBUTE_UNIQUE="""
+    def test_{2}_is_unique(self):
+        \"\"\"
+        Tests attribute {2} of model {0} to see if the unique constraint works.
+        This test should break if the unique attribute is changed.
+        \"\"\"
+        {1} = {0}Factory.create()
+        {1}_02 = {0}Factory.build()
+        {1}_02.{2} = {1}.{2}
+        try:
+            {1}_02.save()
+            self.fail('Test should have raised and integrity error')
+        except IntegrityError as e:
+            self.assertEqual('', str(e)) #This test is incomplete
+"""
 
 # noinspection PyProtectedMember,PyProtectedMember
 class ModelTestCaseGenerator(object):
@@ -62,19 +78,26 @@ class ModelTestCaseGenerator(object):
         for field in self.model._meta.fields:
             field_type = type(field).__name__
             field_data = dict()
-            assertion = '        self.assertNotNone({0}.{1})\n'.format(self.model.__name__.lower(), field.name)
-            content_text +=  assertion
-
+            assertion = '        self.assertIsNotNone({0}.{1})\n'.format(self.model.__name__.lower(), field.name)
+            content_text += assertion
         factory_class_content.append({'print': content_text, 'args': None})
 
-
-
+        add_integrity_error_to_imports = False
+        for field in self.model._meta.fields:
+            if field.unique and not field.primary_key:
+                data = [self.model.__name__,
+                        self.model.__name__.lower(),
+                        field.name]
+                unique_test = PRINT_TEST_ATTRIBUTE_UNIQUE.format(*data)
+                factory_class_content.append({'print': unique_test, 'args': None})
+                add_integrity_error_to_imports = True
+        # if add_integrity_error_to_imports:
+        #     PRINT_IMPORTS += 'from django.db import IntegrityError'
 
         return factory_class_content
 
     def __str__(self):
         printable = list()
-        #printable.append(PRINT_IMPORTS)
         for print_data in self._generate():
             try:
                 if print_data['args'] is not None:
