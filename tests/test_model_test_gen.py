@@ -21,7 +21,7 @@ class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
         model = self._get_model(app_name, model_name)
         mtg = ModelTestCaseGenerator(model)
         hash = self.write_generator_to_file(self.test_str.filename, mtg)
-        self.assertEqual('572bce38d1166cf9297397bd4ae5f0111cda6b86', hash)
+        self.assertEqual('050f2cec39dd065ef004dd5ff057eba060d3cf80', hash)
 
     def _get_model(self, app_name, model_name):
         installed_apps = dict(self.get_apps())

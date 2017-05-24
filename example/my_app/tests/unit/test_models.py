@@ -1,12 +1,11 @@
-
+from example.my_app.models import Server
+from ..factories import ServerFactory
 from django.forms.models import model_to_dict
-from django.conf import settings
 from django.test import TestCase
+from django.conf import settings
+from example.my_app.models import OperatingSystem
+from ..factories import OperatingSystemFactory
 from django.db import IntegrityError
-
-from example.factories import OperatingSystemFactory, ServerFactory
-from example.my_app.models import OperatingSystem, Server
-
 
 class TestCaseOperatingSystem(TestCase):
 
@@ -25,7 +24,6 @@ class TestCaseOperatingSystem(TestCase):
         self.assertEqual(5, OperatingSystem.objects.count())
         self.assertEqual(5, len(operatingsystems))
 
-
     def test_attribute_count(self):
         """
         Test that all attributes of OperatingSystem server are counted. It will count the primary key and all editable attributes.
@@ -34,7 +32,6 @@ class TestCaseOperatingSystem(TestCase):
         operatingsystem = OperatingSystemFactory.create()
         operatingsystem_dict = model_to_dict(operatingsystem)
         self.assertEqual(5, len(operatingsystem_dict.keys()))
-
 
     def test_attribute_content(self):
         """
@@ -92,7 +89,6 @@ class TestCaseServer(TestCase):
         self.assertIsNotNone(server.server_id)
         self.assertIsNotNone(server.use)
         self.assertIsNotNone(server.comments)
-
 
     def test_name_is_unique(self):
         """
