@@ -24,7 +24,7 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
                 factory_file.write(line)
                 factory_file.write('\n')
         hash_sha = hash_file(filename, algorithm='sha256')
-        self.assertEqual('2d3dcb11f945f9d93985c9ee142a0251474002cb19dc7ec92eb5e16e5885c2ac', hash_sha)
+        self.assertEqual('c8c331856529fe10afe8460de8dbd04b5f208d2a4922c275c1f6309bf7a3ed95', hash_sha)
         self.clean_output_folder(filename)
 
 
@@ -54,3 +54,11 @@ class TestModelFactoryGenerator(TestCase):
             self.assertEqual('    hola = FileField(filename=\'hola.xlsx\')', field_definition)
             self.assertEqual('    {} = FileField(filename=\'{}.{}\')', results[1]['print'])
             self.assertEqual(['hola', 'hola', 'xlsx'], results[1]['args'])
+
+
+class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestCase):
+
+    def test_generate(self):
+        call_command('generate_model_test_cases', 'example.my_app', stdout=self.content)
+        results = self.get_results()
+        self.assertEqual(104, len(results))

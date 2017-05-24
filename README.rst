@@ -51,7 +51,19 @@ Add Django Test Tools's URL patterns:
 Features
 --------
 
-* TODO
+Factory Generator
+++++++++++++++++++
+
+.. code-block:: bash
+
+    $  $ python manage.py generate_factories project.app
+
+Model Test Case Generator
++++++++++++++++++++++++++
+
+.. code-block:: bash
+
+    $  $ python manage.py generate_model_test_cases project.app
 
 Running Tests
 -------------
