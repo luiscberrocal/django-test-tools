@@ -44,6 +44,26 @@ class TestCaseOperatingSystem(TestCase):
         self.assertIsNotNone(operatingsystem.licenses_available)
         self.assertIsNotNone(operatingsystem.cost)
 
+    def test_(self):
+        operatingsystem = OperatingSystemFactory.create()
+        servers = ServerFactory.create_batch(5, operating_system=operatingsystem)
+        from django.conf import settings
+        from django.db import connection, reset_queries
+
+        try:
+            settings.DEBUG = True
+            #servers = operatingsystem.servers.all()
+            for s in servers:
+                k = s.operating_system.name
+            self.assertEquals(len(connection.queries), 1000000)
+        finally:
+            settings.DEBUG = False
+            reset_queries()
+
+
+
+
+
 
 class TestCaseServer(TestCase):
 
@@ -102,4 +122,4 @@ class TestCaseServer(TestCase):
             server_02.save()
             self.fail('Test should have raised and integrity error')
         except IntegrityError as e:
-            self.assertEqual('', str(e)) #This test is incomplete
+            self.assertEqual('UNIQUE constraint failed: my_app_server.name', str(e))
