@@ -45,7 +45,7 @@ class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
         app = self._get_app(app_name)
         app_model_tests = AppModelsTestCaseGenerator(app)
         hash = self.write_generator_to_file(self.test_app_str.filename, app_model_tests)
-        self.assertEqual('', hash)
+        self.assertEqual('d4a0c7e3dd3b0154dab7560e0c450b0059940df5', hash)
 
     def _get_app(self, app_name):
         installed_apps = dict(self.get_apps())

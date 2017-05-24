@@ -128,6 +128,7 @@ class AppModelsTestCaseGenerator(object):
 
     def _get_imports(self):
         imports_to_print = list(set(PRINT_IMPORTS))
+        imports_to_print.sort(reverse=True)
         return '\n'.join(imports_to_print)
 
     def __str__(self):
