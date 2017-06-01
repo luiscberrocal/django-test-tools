@@ -6,12 +6,16 @@ from .excel import ExcelAdapter
 
 class TestCommandMixin(object):
     """
-    class TestYourCommand(TestCommandMixin, TestCase):
+    This mixin helps capture the output of a command written with the stdout.write() method
 
-        def test_your_command_action(self):
-            call_command('your_command', 'your_argument', stdout=self.content)
-            results = self.get_results()
-            self.assertEqual(23, len(results))
+    .. code-block:: python
+
+        class TestYourCommand(TestCommandMixin, TestCase):
+
+            def test_your_command_action(self):
+                call_command('your_command', 'your_argument', stdout=self.content)
+                results = self.get_results()
+                self.assertEqual(23, len(results))
     """
 
     # noinspection PyPep8Naming

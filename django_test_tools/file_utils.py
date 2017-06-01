@@ -1,7 +1,7 @@
 import hashlib
 import os
 
-from django_test_tools.utils import create_output_filename_with_date
+from .utils import create_output_filename_with_date
 
 BLOCKSIZE = 65536
 
@@ -37,7 +37,27 @@ def parametrized(dec):
 
 @parametrized
 def temporary_file(func, extension, delete_on_exit=True):
+    """
+    This method decorator creates a filename with date usin the provided extention and delete the file after the method
+    has been executed.
+
+    The settings.TEST_OUTPUT_PATH must be configured in your settings file.
+
+    .. code-block:: python
+
+        @temporary_file('json')
+        def test_temporary_file_decorator(self):
+            filename = self.test_temporary_file_decorator.filename
+            ... write to the file ...
+
+
+    :param func: function to decorate
+    :param extension: extention of the filename
+    :param delete_on_exit: If True the filename will be deleted.
+    :return: the function
+    """
     filename = create_output_filename_with_date('{}.{}'.format(func.__name__, extension))
+
     def function_t_return(*args):
         results = func(*args)
         if os.path.exists(filename) and delete_on_exit:
