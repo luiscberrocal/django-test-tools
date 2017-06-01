@@ -79,8 +79,6 @@ Does the code actually work?
 Builds
 ------
 
-We are using Travis for continuos integration SOON
-For coverage we are using coveralls SOON
 
 Run bumpversion
 
@@ -99,9 +97,6 @@ Instead of minor you could also use **major** o **patch** depending on the level
 
     python setup.py sdist upload -r pypitest
 
-
-
-Check https://testpypi.python.org/pypi/acp-calendar/
 
 .. code-block:: bash
 
