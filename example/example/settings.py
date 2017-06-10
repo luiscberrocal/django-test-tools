@@ -66,8 +66,9 @@ ROOT_URLCONF = 'example.example.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [str(APPS_DIR.path('templates')), ],
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [str(APPS_DIR.path('templates')),
+                 str(ROOT_DIR.path('django_test_tools', 'templates')), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
