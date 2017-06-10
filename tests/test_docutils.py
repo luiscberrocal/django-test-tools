@@ -1,15 +1,21 @@
 import os
 
 import shutil
+
+import django
 from django.test import TestCase
 
 from django_test_tools.doc_utils.folder_structure import create_folder_structure
 from django_test_tools.utils import create_output_filename_with_date
 
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TestFolderStructure(TestCase):
 
     def test_create_folder_structure(self):
+        #logger.debug('Version {}'.format(django.VERSION))
         folder = create_output_filename_with_date('docs')
         if not os.path.exists(folder):
             os.makedirs(folder)

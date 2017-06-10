@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 import os
+
+import django
 import environ
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -61,22 +63,31 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'django_test_tools.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
-        'DIRS': [str(APPS_DIR.path('templates')), ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+if django.VERSION > (1,11):
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.jinja2.Jinja2',
+            'DIRS': [str(APPS_DIR.path('templates')), ],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
         },
-    },
-]
-
+    ]
+else:
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.jinja2.Jinja2',
+            'DIRS': [str(APPS_DIR.path('templates')), ],
+            'APP_DIRS': True,
+            'OPTIONS': {},
+        },
+    ]
 #WSGI_APPLICATION = 'example.wsgi.application'
 
 # Database

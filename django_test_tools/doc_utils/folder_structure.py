@@ -28,6 +28,9 @@ def create_folder_structure(doc_base_folder, project_name):
         template = 'django_test_tools/app_module.rst.j2'
         write_template(data, folder, '{}.models.rst'.format(app_name), template)
 
+def get_module_files(folder):
+    pass
+
 
 def write_template(data, folder, output_file, template):
     rendered = render_to_string(template, data)
