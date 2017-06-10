@@ -1,5 +1,7 @@
 import os
 
+from django.template.loader import render_to_string
+
 from ..app_manager import DjangoAppManager
 
 
@@ -11,5 +13,10 @@ def create_folder_structure(doc_base_folder, project_name):
         folder = os.path.join(project_folder, app.label)
         if not os.path.exists(folder):
             os.makedirs(folder)
+        rendered = render_to_string('django_test_tools/app_index.rst.j2', {'app_name': app_name})
+        index_filename = os.path.join(folder, 'index.rst')
+        with open(index_filename, 'w', encoding='utf-8') as index_file:
+            index_file.write(rendered)
+
 
 

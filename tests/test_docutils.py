@@ -18,6 +18,6 @@ class TestFolderStructure(TestCase):
         for djanoo_app in django_apps:
             django_folder = os.path.join(folder, 'django', djanoo_app)
             self.assertTrue(os.path.exists(django_folder))
-        shutil.rmtree(folder)
+        #shutil.rmtree(folder)
 
 
