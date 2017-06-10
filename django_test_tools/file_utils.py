@@ -38,7 +38,7 @@ def parametrized(dec):
 @parametrized
 def temporary_file(func, extension, delete_on_exit=True):
     """
-    This method decorator creates a filename with date usin the provided extention and delete the file after the method
+    This method decorator creates a filename with date using the provided extension and delete the file after the method
     has been executed.
 
     The settings.TEST_OUTPUT_PATH must be configured in your settings file.

@@ -1,7 +1,8 @@
 from django.apps import apps
 from django.core.management import BaseCommand
 
-from django_test_tools.generators.model_test_gen import AppModelsTestCaseGenerator
+from ...app_manager import DjangoAppManager
+from ...generators.model_test_gen import AppModelsTestCaseGenerator
 
 
 class Command(BaseCommand):
@@ -45,16 +46,9 @@ class Command(BaseCommand):
         #                 )
     def handle(self, *args, **options):
         app_name = options.get('app_name', None)
-        if app_name:
-            app = self._get_app(app_name)
+        app_manager = DjangoAppManager()
+        app = app_manager.get_app(app_name)
+        if app:
             app_model_tests = AppModelsTestCaseGenerator(app)
             self.stdout.write(str(app_model_tests))
 
-    def _get_app(self, app_name):
-        installed_apps = dict(self.get_apps())
-        app = installed_apps.get(app_name)
-        return app
-
-    def get_apps(self):
-        for app_config in apps.get_app_configs():
-            yield app_config.name, app_config

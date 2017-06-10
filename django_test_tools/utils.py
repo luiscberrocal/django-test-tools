@@ -1,19 +1,28 @@
-import calendar
-
 import json
 import os
 import re
-
-from django.conf import settings
-import pytz
-from django.utils import timezone
-from datetime import datetime, date, timedelta
 import time
+from datetime import datetime, date, timedelta
+
+import pytz
+from django.conf import settings
+from django.utils import timezone
 
 __author__ = 'lberrocal'
 
 
 def create_output_filename_with_date(filename):
+    """
+    Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
+    The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
+
+    :param filename: base filename. my_excel_data.xlsx for example
+    :return: string, full path to file with date and time in the TEST_OUTPUT_PATH folder
+    """
+    if getattr(settings, 'TEST_OUTPUT_PATH', None) is None:
+        msg = 'You need a the variable TEST_OUTPUT_PATH in settings. It should point to a folder' \
+              'for temporary data to be written and reviewed.'
+        raise ValueError(msg)
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date_to_filename(os.path.join(settings.TEST_OUTPUT_PATH, filename))
@@ -21,10 +30,12 @@ def create_output_filename_with_date(filename):
 
 def add_date_to_filename(filename, **kwargs):
     """
-    Adds to a filename the date and time.
+    Adds to a filename the current date and time in '%Y%m%d_%H%M' format.
+    For a filename /my/path/myexcel.xlsx the function would return /my/path/myexcel_20170101_1305.xlsx.
+
     :param filename: string with fullpath to file or just the filename
     :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
-    :return: string with full path string
+    :return: string with full path string incluiding the date and time
     """
     new_filename = dict()
     #path_parts = filename.split(os.path.se)

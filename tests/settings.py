@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
-    'example.my_app',
+    'example.servers',
 
     # if your app has other dependencies that need to be added to the site
     # they should be added here
@@ -63,8 +63,8 @@ ROOT_URLCONF = 'django_test_tools.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [APPS_DIR.path('templates'), ],
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [str(APPS_DIR.path('templates')), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
