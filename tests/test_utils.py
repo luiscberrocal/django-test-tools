@@ -7,7 +7,10 @@ from django.test import TestCase
 
 import logging
 
-from django_test_tools.utils import Timer, add_date_to_filename, daterange, parse_spanish_date, spanish_date_util
+from django.test import override_settings
+
+from django_test_tools.utils import Timer, add_date_to_filename, daterange, parse_spanish_date, spanish_date_util, \
+    create_output_filename_with_date
 
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -90,6 +93,18 @@ class TestAddDateToFilename(TestCase):
         filename = r'namos.txt'
         new_filename = add_date_to_filename(filename)
         self.assertEqual('namos_20160707_1640.txt', new_filename)
+
+    @override_settings(TEST_OUTPUT_PATH=None)
+    def test_create_output_filename_with_date_error(self):
+        try:
+            create_output_filename_with_date('kilo.txt')
+            self.fail('Should have thrown value error')
+        except ValueError as e:
+            msg = 'You need a the variable TEST_OUTPUT_PATH in settings.' \
+                  ' It should point to a folderfor temporary data to be written and reviewed.'
+            self.assertEqual(msg, str(e))
+
+
 
     def test_daterange(self):
         start_date = datetime.date(2015, 9, 1)
