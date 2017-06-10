@@ -14,7 +14,7 @@ from factory.django import DjangoModelFactory, FileField
 from factory.fuzzy import FuzzyText, FuzzyInteger
 from faker import Factory as FakerFactory
 
-from example.my_app.models import OperatingSystem, Server
+from example.servers.models import OperatingSystem, Server
 
 faker = FakerFactory.create()
 

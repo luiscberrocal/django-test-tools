@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('online_date', models.DateField()),
                 ('server_id', models.CharField(max_length=6)),
                 ('use', models.CharField(choices=[('PROD', 'Prod'), ('DEV', 'Dev')], default='DEV', max_length=4)),
-                ('operating_system', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='my_app.OperatingSystem')),
+                ('operating_system', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='servers.OperatingSystem')),
             ],
         ),
     ]

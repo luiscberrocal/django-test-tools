@@ -105,7 +105,6 @@ class TestAddDateToFilename(TestCase):
             self.assertEqual(msg, str(e))
 
 
-
     def test_daterange(self):
         start_date = datetime.date(2015, 9, 1)
         end_date = datetime.date(2015, 9, 30)

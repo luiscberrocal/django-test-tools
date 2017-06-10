@@ -1,9 +1,9 @@
-from example.my_app.models import Server
+from example.servers.models import Server
 from ..factories import ServerFactory
 from django.forms.models import model_to_dict
 from django.test import TestCase
 from django.conf import settings
-from example.my_app.models import OperatingSystem
+from example.servers.models import OperatingSystem
 from ..factories import OperatingSystemFactory
 from django.db import IntegrityError
 
