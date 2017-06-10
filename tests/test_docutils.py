@@ -14,7 +14,7 @@ class TestFolderStructure(TestCase):
         if not os.path.exists(folder):
             os.makedirs(folder)
         create_folder_structure(folder, 'django')
-        django_apps = ['admin', 'auth', 'contenttypes']
+        django_apps = ['admin', 'auth', 'contenttypes', 'messages', 'sessions', 'staticfiles']
         for djanoo_app in django_apps:
             django_folder = os.path.join(folder, 'django', djanoo_app)
             self.assertTrue(os.path.exists(django_folder))
