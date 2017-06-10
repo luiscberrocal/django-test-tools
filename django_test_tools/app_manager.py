@@ -18,3 +18,12 @@ class DjangoAppManager(object):
             if model_name == model.__name__:
                 return model
         return None
+
+    def get_project_apps(self, project_name):
+        project_apps = dict()
+        for app_name, app_config in self.installed_apps.items():
+            app_project = app_name.split('.')[0]
+            if app_project == project_name:
+                project_apps[app_name] = app_config
+        return project_apps
+
