@@ -19,10 +19,22 @@ def create_folder_structure(doc_base_folder, project_name):
             'verbose_name': str(app.verbose_name),
             'app_package': app_name
         }
-        rendered = render_to_string('django_test_tools/app_index.rst.j2', data)
-        index_filename = os.path.join(folder, 'index.rst')
-        with open(index_filename, 'w', encoding='utf-8') as index_file:
-            index_file.write(rendered)
+        template = 'django_test_tools/app_index.rst.j2'
+        write_template(data, folder, 'index.rst',template)
+        data = {
+            'verbose_name': str(app.verbose_name),
+            'module_name': '{}.models'.format(app_name)
+        }
+        template = 'django_test_tools/app_module.rst.j2'
+        write_template(data, folder, '{}.models.rst'.format(app_name), template)
+
+
+def write_template(data, folder, output_file, template):
+    rendered = render_to_string(template, data)
+    index_filename = os.path.join(folder, output_file)
+    with open(index_filename, 'w', encoding='utf-8') as index_file:
+        index_file.write(rendered)
+
 
 
 
