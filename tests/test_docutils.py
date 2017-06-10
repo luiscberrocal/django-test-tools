@@ -20,6 +20,8 @@ class TestFolderStructure(TestCase):
             self.assertTrue(os.path.exists(django_folder))
             index_file = os.path.join(django_folder, 'index.rst')
             self.assertTrue(os.path.exists(index_file))
+            model_file = os.path.join(django_folder, 'django.contrib.{}.models.rst'.format(djanoo_app))
+            self.assertTrue(os.path.exists(model_file))
         shutil.rmtree(folder)
 
 
