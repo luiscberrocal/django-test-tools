@@ -33,9 +33,10 @@ class TestFolderStructure(TestCase):
 
     def test_get_module_files(self):
         folder = str(settings.ROOT_DIR.path('example', 'servers'))
+        #folder = str(settings.ROOT_DIR.path('example'))
         files = get_module_files(folder)
         for file in files:
-            logger.debug('File: {}'.format(file))
+            logger.debug('File: {filename} Package: {package_name}'.format(**file))
         self.assertEqual(1, len(files))
 
 

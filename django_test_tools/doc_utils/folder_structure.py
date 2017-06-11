@@ -34,13 +34,20 @@ def get_module_files(folder):
     file_black_list = ['__init__.py', 'urls.py']
     folder_black_list = ['tests', 'migrations']
     file_list = list()
+    package_name = ''
     for root, dirs, files in os.walk(folder):
         base_folder_name = os.path.split(root)[1]
         if base_folder_name not in folder_black_list:
+            if '__init__.py' in files:
+                package_name = package_name + '.' + base_folder_name
             for file in files:
                 if file.endswith('.py'):
-                    if not file in file_black_list:
-                        file_list.append(os.path.join(root,file))
+                    module_name = file.split('.')[0]
+                    if file not in file_black_list:
+                        module_dict = dict()
+                        module_dict['filename'] = os.path.join(root,file)
+                        module_dict['package_name'] = package_name + '.{}'.format(module_name)
+                        file_list.append(module_dict)
         else:
             del dirs[:]
     return file_list
