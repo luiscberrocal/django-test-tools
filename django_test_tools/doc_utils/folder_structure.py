@@ -7,7 +7,7 @@ from ..app_manager import DjangoAppManager
 
 
 def create_folder_structure(doc_base_folder, project_name):
-    print('**** APP_DIR {} ****'.format(settings.APPS_DIR))
+    #print('**** APP_DIR {} ****'.format(settings.APPS_DIR))
     app_manager = DjangoAppManager()
     project_apps = app_manager.get_project_apps(project_name)
     project_folder = os.path.join(doc_base_folder, project_name)
@@ -28,8 +28,24 @@ def create_folder_structure(doc_base_folder, project_name):
         template = 'django_test_tools/app_module.rst.j2'
         write_template(data, folder, '{}.models.rst'.format(app_name), template)
 
+
+
 def get_module_files(folder):
-    pass
+    file_black_list = ['__init__.py', 'urls.py']
+    folder_black_list = ['tests', 'migrations']
+    file_list = list()
+    for root, dirs, files in os.walk(folder):
+        base_folder_name = os.path.split(root)[1]
+        if base_folder_name not in folder_black_list:
+            for file in files:
+                if file.endswith('.py'):
+                    if not file in file_black_list:
+                        file_list.append(os.path.join(root,file))
+        else:
+            del dirs[:]
+    return file_list
+
+
 
 
 def write_template(data, folder, output_file, template):

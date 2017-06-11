@@ -111,7 +111,7 @@ class TestAddDateToFilename(TestCase):
         work_days = 0
         for dt in daterange(start_date, end_date):
             work_days += 1
-            logger.debug('Date: %s' % dt.strftime('%m-%d %a'))
+            #logger.debug('Date: %s' % dt.strftime('%m-%d %a'))
             # self.assertFalse(dt.weekday() not in set([5, 6]))
         self.assertEqual(22, work_days)
 
