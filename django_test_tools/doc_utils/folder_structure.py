@@ -46,7 +46,7 @@ def get_module_files(folder):
                     if file not in file_black_list:
                         module_dict = dict()
                         module_dict['filename'] = os.path.join(root,file)
-                        module_dict['package_name'] = package_name + '.{}'.format(module_name)
+                        module_dict['package_name'] = (package_name + '.{}'.format(module_name))[1:]
                         file_list.append(module_dict)
         else:
             del dirs[:]
