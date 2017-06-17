@@ -48,15 +48,16 @@ class SerializerGenerator(object):
 
 
 class AppSerializerGenerator(object):
-    def __init__(self, app):
+    def __init__(self, app, serializer_class='ModelSerializer'):
         self.app = app
+        self.serializer_class =serializer_class
 
     def _generate(self):
         app_content = list()
         for model in self.app.get_models():
             PRINT_IMPORTS.append('from {} import {}'.format(model.__module__, model.__name__))
             logger.debug('IMPORTS: {}'.format(PRINT_IMPORTS))
-            model_test_case = SerializerGenerator(model)
+            model_test_case = SerializerGenerator(model, self.serializer_class)
             app_content.append(model_test_case)
         return app_content
 
