@@ -46,3 +46,5 @@ output/*/index.html
 # Sphinx
 docs/_build
 db.sqlite3
+django-test-tools.log
+example.log
