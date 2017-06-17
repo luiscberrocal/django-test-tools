@@ -1,0 +1,8 @@
+{{ verbose_name }} App
+{% for n in range(1, verbose_name|length + 5) %}={% endfor %}
+
+
+.. toctree::
+   :maxdepth: 2
+
+   {{ app_package }}.models

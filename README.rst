@@ -13,6 +13,9 @@ Django Test Tools
 
 Simple tests tools to make testing faster and easier.
 
+Supports Python 3.4, 3.5, 3.5 with Django 1.10.7 and 1.11.2.
+
+
 Documentation
 -------------
 
@@ -64,6 +67,13 @@ Model Test Case Generator
 .. code-block:: bash
 
     $  $ python manage.py generate_model_test_cases project.app
+
+Serializer Generator
+++++++++++++++++++++
+
+.. code-block:: bash
+
+    $ python manage.py generate_serializers project.app -s ModelSerializer
 
 Running Tests
 -------------

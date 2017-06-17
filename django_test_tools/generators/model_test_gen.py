@@ -64,11 +64,11 @@ class ModelTestCaseGenerator(object):
         self.model = model
 
     def _generate(self):
-        factory_class_content = list()
-        factory_class_content.append({'print': PRINT_TEST_CLASS,
+        model_test_case_content = list()
+        model_test_case_content.append({'print': PRINT_TEST_CLASS,
                                       'args': [self.model.__name__,
                                                self.model.__name__.lower()]})
-        factory_class_content.append({'print': PRINT_TEST_ATTRIBUTE_COUNT,
+        model_test_case_content.append({'print': PRINT_TEST_ATTRIBUTE_COUNT,
                                       'args': [self.model.__name__,
                                                self.model.__name__.lower(),
                                                len(self.model._meta.fields)]})
@@ -83,7 +83,7 @@ class ModelTestCaseGenerator(object):
             field_data = dict()
             assertion = '        self.assertIsNotNone({0}.{1})\n'.format(self.model.__name__.lower(), field.name)
             content_text += assertion
-        factory_class_content.append({'print': content_text, 'args': None})
+        model_test_case_content.append({'print': content_text, 'args': None})
         # Build unique tests
         add_integrity_error_to_imports = False
         for field in self.model._meta.fields:
@@ -92,12 +92,12 @@ class ModelTestCaseGenerator(object):
                         self.model.__name__.lower(),
                         field.name]
                 unique_test = PRINT_TEST_ATTRIBUTE_UNIQUE.format(*data)
-                factory_class_content.append({'print': unique_test, 'args': None})
+                model_test_case_content.append({'print': unique_test, 'args': None})
                 add_integrity_error_to_imports = True
         if add_integrity_error_to_imports:
             PRINT_IMPORTS.append('from django.db import IntegrityError')
 
-        return factory_class_content
+        return model_test_case_content
 
     def __str__(self):
         printable = list()

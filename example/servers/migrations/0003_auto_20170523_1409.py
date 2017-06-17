@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('my_app', '0002_server_comments'),
+        ('servers', '0002_server_comments'),
     ]
 
     operations = [

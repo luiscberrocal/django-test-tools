@@ -13,11 +13,11 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 import logging
 import environ
+
 logger = logging.getLogger(__name__)
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = environ.Path(__file__) - 3  # (pmp_shield/config/settings/common.py - 3 = pmp_shield/)
 APPS_DIR = ROOT_DIR.path('example')
 
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
-    'example.my_app',
+    'example.servers',
 
     # if your app has other dependencies that need to be added to the site
     # they should be added here
@@ -66,8 +66,9 @@ ROOT_URLCONF = 'example.example.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [APPS_DIR.path('templates/django_test_tools'), ],
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [str(APPS_DIR.path('templates')),
+                 str(ROOT_DIR.path('django_test_tools', 'templates')), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -127,3 +128,50 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s:%(lineno)s '
+                      '%(process)d %(thread)d %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M',
+
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'example.log',
+        },
+    },
+    'loggers': {
+        'django.security.DisallowedHost': {
+            'level': 'ERROR',
+            'handlers': ['console', ],
+            'propagate': True
+        },
+        'django_test_tools': {
+            'level': 'DEBUG',
+            'handlers': ['console', ],
+            'propagate': True
+        },
+        'tests': {
+            'level': 'DEBUG',
+            'handlers': ['console', ],
+            'propagate': True
+        }
+    }
+}

@@ -9,13 +9,13 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('my_app', '0003_auto_20170523_1409'),
+        ('servers', '0003_auto_20170523_1409'),
     ]
 
     operations = [
         migrations.AlterField(
             model_name='server',
             name='operating_system',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='servers', to='my_app.OperatingSystem'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='servers', to='servers.OperatingSystem'),
         ),
     ]
