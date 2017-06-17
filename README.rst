@@ -65,6 +65,13 @@ Model Test Case Generator
 
     $  $ python manage.py generate_model_test_cases project.app
 
+Serializer Generator
+++++++++++++++++++++
+
+.. code-block:: bash
+
+    $ python manage.py generate_serializers project.app -s ModelSerializer
+
 Running Tests
 -------------
 
