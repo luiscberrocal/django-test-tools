@@ -108,6 +108,22 @@ def force_date_to_datetime(unconverted_date, tzinfo= pytz.UTC):
 
 
 class Timer:
+    """
+    Class to measure time elapsed
+
+    Example:
+
+    .. code:: python
+
+            def test_performance(self):
+                with Timer() as stopwatch:
+                    web_service = WebServiceUtil()
+                    web_service.consume_date(12)
+                elapsed_milliseconds = stopwatch.elapsed*1000
+                logger.debug('Elapsed: {} ms'.format(elapsed_milliseconds))
+                self.assertTrue(elapsed_milliseconds <= 500)
+
+    """
     def __init__(self):
         self.elapsed = 0.0
         self._start = None
