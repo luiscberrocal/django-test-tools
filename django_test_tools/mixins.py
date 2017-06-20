@@ -1,3 +1,4 @@
+import csv
 from io import StringIO
 import os
 
@@ -43,5 +44,20 @@ class TestOutputMixin(object):
             self.assertFalse(os.path.exists(dated_filename))
 
     def get_excel_content(self, filename, sheet_name=None):
+        """
+        Reads the content of an excel file and returns the content a as list of row lists.
+        :param filename: string full path to the filename
+        :param sheet_name: string. Name of the sheet to read if None will read the active sheet
+        :return: a list containing a list of values for every row.
+        """
         adapter = ExcelAdapter()
         return adapter.convert_to_list(filename, sheet_name)
+
+    def get_csv_content(self, filename, delimiter=',', encoding='utf-8'):
+        content = list()
+        with open(filename, 'r', encoding=encoding) as csv_file:
+            reader = csv.reader(csv_file, delimiter=delimiter)
+            for row in reader:
+                content.append(row)
+
+        return content
