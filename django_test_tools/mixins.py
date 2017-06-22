@@ -59,5 +59,4 @@ class TestOutputMixin(object):
             reader = csv.reader(csv_file, delimiter=delimiter)
             for row in reader:
                 content.append(row)
-
         return content
