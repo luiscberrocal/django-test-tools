@@ -84,6 +84,10 @@ def serialize_dict(dictionary, format='json', output_file=None, **kwargs):
     """
     Quick function to serialize a dictionary to file. The dictionary keys will be saved in an alphabetical order
     for consistency purposes.
+    If no output_file is supplied the function will created a dated file in the settings.TEST_OUTPUT_PATH folder.
+    if the output_file is a folder the dated file will be created on the supplied folder with the serialized date.
+    if the output_file is a file the data will be serialized to thar file
+    
     :param dictionary: Dictionary or list to serialize
     :param format: Format to serialize to. Currently json is the only one supported
     :param output_file: File to output the data to

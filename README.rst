@@ -110,8 +110,6 @@ Instead of minor you could also use **major** o **patch** depending on the level
 
 .. code-block:: bash
 
-    python setup.py register -r pypi
-
     python setup.py sdist upload -r pypi
 
 Credits
