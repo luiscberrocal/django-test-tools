@@ -1,10 +1,11 @@
 import os
 
+from datetime import date, datetime
 from django.conf import settings
 from django.test import TestCase
 from django.test import tag
 
-from django_test_tools.file_utils import hash_file, temporary_file
+from django_test_tools.file_utils import hash_file, temporary_file, serialize_dict
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
@@ -54,3 +55,32 @@ class TestHashFile(TestOutputMixin, TestCase):
         filename = my_function2()
         self.assertTrue(os.path.exists(filename))
         os.remove(filename)
+
+    def test_serialize_dict(self):
+        data = [
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
+             'last_login': datetime(2016,1,1,13,14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'groups': ['admin', 'users']},
+        ]
+        filename = serialize_dict(data)
+        hash_digest = hash_file(filename)
+        #self.clean_output=False
+        self.clean_output_folder(filename)
+        self.assertEqual('f1ef22b63e9708c37189c71c4d3ebc931d9ec220', hash_digest)
+
+    def test_serialize_dict_invalid_format(self):
+        data = [
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
+             'last_login': datetime(2016,1,1,13,14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'groups': ['admin', 'users']},
+        ]
+        try:
+            serialize_dict(data, format='POL')
+        except AssertionError as e:
+            self.assertEqual('Unsupported format POL', str(e))

@@ -1,5 +1,8 @@
 import hashlib
+import json
 import os
+
+from datetime import date, datetime
 
 from .utils import create_output_filename_with_date
 
@@ -65,4 +68,38 @@ def temporary_file(func, extension, delete_on_exit=True):
         return results
     function_t_return.filename = filename
     return function_t_return
+
+
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code
+    taken from: https://stackoverflow.com/questions/11875770/how-to-overcome-datetime-datetime-not-json-serializable
+    """
+
+    if isinstance(obj, (datetime, date)):
+        serial = obj.isoformat()
+        return serial
+    raise TypeError ("Type %s not serializable" % type(obj))
+
+def serialize_dict(dictionary, format='json', output_file=None, **kwargs):
+    """
+    Quick function to serialize a dictionary to file. The dictionary keys will be saved in an alphabetical order
+    for consistency purposes.
+    :param dictionary: Dictionary or list to serialize
+    :param format: Format to serialize to. Currently json is the only one supported
+    :param output_file: File to output the data to
+    :param kwargs:
+    """
+    assert format in ['json'], 'Unsupported format {}'.format(format)
+    if output_file is None:
+        filename = create_output_filename_with_date('{}.{}'.format('serialize_dict', format))
+    elif os.path.isfile(output_file):
+        filename = output_file
+    elif os.path.isdir(output_file):
+        filename = os.path.join(output_file,'{}.{}'.format('serialize_dict', format))
+    if format == 'json':
+        with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8')) as fp:
+            json.dump(dictionary, fp, indent=kwargs.get('indent', 4),
+                      default=json_serial,sort_keys=True)
+    return filename
+
 
