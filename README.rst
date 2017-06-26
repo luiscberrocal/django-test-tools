@@ -89,6 +89,7 @@ Does the code actually work?
 Builds
 ------
 
+Create a release using git-flow
 
 Run bumpversion
 
@@ -106,6 +107,9 @@ Instead of minor you could also use **major** o **patch** depending on the level
     python setup.py register -r pypitest
 
     python setup.py sdist upload -r pypitest
+
+
+To publish to pypi run:
 
 
 .. code-block:: bash

@@ -80,30 +80,30 @@ def json_serial(obj):
         return serial
     raise TypeError ("Type %s not serializable" % type(obj))
 
-def serialize_dict(dictionary, format='json', output_file=None, **kwargs):
+def serialize_data(data, format='json', output_file=None, **kwargs):
     """
-    Quick function to serialize a dictionary to file. The dictionary keys will be saved in an alphabetical order
+    Quick function to serialize a data to file. The data keys will be saved in an alphabetical order
     for consistency purposes.
     If no output_file is supplied the function will created a dated file in the settings.TEST_OUTPUT_PATH folder.
     if the output_file is a folder the dated file will be created on the supplied folder with the serialized date.
     if the output_file is a file the data will be serialized to thar file
 
-    :param dictionary: Dictionary or list to serialize
+    :param data: Dictionary or list to serialize
     :param format: Format to serialize to. Currently json is the only one supported
     :param output_file: File to output the data to
     :param kwargs:
     """
     assert format in ['json'], 'Unsupported format {}'.format(format)
     if output_file is None:
-        filename = create_output_filename_with_date('{}.{}'.format('serialize_dict', format))
+        filename = create_output_filename_with_date('{}.{}'.format('serialize_data', format))
     elif os.path.isfile(output_file):
         filename = output_file
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file,'{}.{}'.format('serialize_dict', format))
+        filename = os.path.join(output_file,'{}.{}'.format('serialize_data', format))
     if format == 'json':
         with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8')) as fp:
-            json.dump(dictionary, fp, indent=kwargs.get('indent', 4),
-                      default=json_serial,sort_keys=True)
+            json.dump(data, fp, indent=kwargs.get('indent', 4),
+                      default=json_serial, sort_keys=True)
     return filename
 
 
