@@ -89,6 +89,7 @@ Does the code actually work?
 Builds
 ------
 
+Create a release using git-flow
 
 Run bumpversion
 

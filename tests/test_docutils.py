@@ -48,3 +48,4 @@ class TestFolderStructure(TestCase):
         if not os.path.exists(folder):
             os.makedirs(folder)
         create_folder_structure(folder, 'django_test_tools')
+        shutil.rmtree(folder)
