@@ -1,7 +1,9 @@
+import functools
 import json
 import os
 import re
 import time
+import warnings
 from datetime import datetime, date, timedelta
 
 import pytz
@@ -37,8 +39,9 @@ def add_date_to_filename(filename, **kwargs):
     :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
     :return: string with full path string incluiding the date and time
     """
-    new_filename = dict()
-    #path_parts = filename.split(os.path.se)
+    new_filename_data = dict()
+    suffix_template = '{path}{separator}{filename_with_out_extension}_{datetime}.{extension}'
+    prefix_template = '{path}{separator}{datetime}_{filename_with_out_extension}.{extension}'
     if '/' in filename and '\\' in filename:
         raise ValueError('Filename %s contains both / and \\ separators' % filename)
     if '\\' in filename:
@@ -56,24 +59,67 @@ def add_date_to_filename(filename, **kwargs):
         path = ''
         separator = ''
 
-    new_filename['path'] = path
+    new_filename_data['path'] = path
     parts = file.split('.')
     if  kwargs.get('extension', None) is not None:
-        new_filename['extension'] = kwargs['extension']
+        new_filename_data['extension'] = kwargs['extension']
     else:
-        new_filename['extension'] = parts[-1]
+        new_filename_data['extension'] = parts[-1]
 
-    new_filename['separator'] = separator
-    new_filename['filename_with_out_extension'] = '.'.join(parts[:-1])
-    new_filename['datetime'] = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M')
+    new_filename_data['separator'] = separator
+    new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
+    new_filename_data['datetime'] = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M')
     date_position = kwargs.get('date_position', 'suffix')
     if date_position=='suffix':
-        return '{path}{separator}{filename_with_out_extension}_{datetime}.{extension}'.format(**new_filename)
+        new_filename = suffix_template.format(**new_filename_data)
     else:
-        return '{path}{separator}{datetime}_{filename_with_out_extension}.{extension}'.format(**new_filename)
+        new_filename = prefix_template.format(**new_filename_data)
+
+    return new_filename
 
 
+def deprecated(func):
+    '''This is a decorator which can be used to mark functions
+        as deprecated. It will result in a warning being emitted
+        when the function is used.
+       from: https://wiki.python.org/moin/PythonDecoratorLibrary#CA-92953dfd597a5cffc650d5a379452bb3b022cdd0_7
+    '''
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        warnings.warn_explicit("Call to deprecated function {}.".format(func.__name__),
+                               category=DeprecationWarning,
+                               filename=func.__code__.co_filename,
+                               lineno=func.__code__.co_firstlineno + 1
+                               )
+        return func(*args, **kwargs)
+    return new_func
+
+
+@deprecated
 def daterange(start_date, end_date):
+    """
+    DEPRECATED use utils.weekdays() function instead
+    :param start_date:
+    :param end_date:
+    :return:
+    """
+    return weekdays(start_date, end_date)
+
+
+def weekdays(start_date, end_date):
+    """
+    Returns a generator with the dates of the week days between the start and end date
+
+    .. code-block:: python
+
+        start_date = datetime.date(2016, 10, 3)  # Monday
+        end_date = datetime.date(2016, 10, 7)  # Friday
+        days = list(weekdays(start_date, end_date))
+        self.assertEqual(5, len(days))
+
+    :param start_date: date. Start date
+    :param end_date: date. End date
+    """
     weekend = set([5, 6])
     for n in range(int((end_date - start_date).days)+1):
         dt = start_date + timedelta(n)

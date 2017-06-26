@@ -5,7 +5,7 @@ from django.conf import settings
 from django.test import TestCase
 from django.test import tag
 
-from django_test_tools.file_utils import hash_file, temporary_file, serialize_dict
+from django_test_tools.file_utils import hash_file, temporary_file, serialize_data
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
@@ -65,7 +65,7 @@ class TestHashFile(TestOutputMixin, TestCase):
             {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
              'last_login': None, 'groups': ['admin', 'users']},
         ]
-        filename = serialize_dict(data)
+        filename = serialize_data(data)
         hash_digest = hash_file(filename)
         #self.clean_output=False
         self.clean_output_folder(filename)
@@ -81,6 +81,6 @@ class TestHashFile(TestOutputMixin, TestCase):
              'last_login': None, 'groups': ['admin', 'users']},
         ]
         try:
-            serialize_dict(data, format='POL')
+            serialize_data(data, format='POL')
         except AssertionError as e:
             self.assertEqual('Unsupported format POL', str(e))

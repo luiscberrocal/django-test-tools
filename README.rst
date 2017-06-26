@@ -108,6 +108,9 @@ Instead of minor you could also use **major** o **patch** depending on the level
     python setup.py sdist upload -r pypitest
 
 
+To publish to pypi run:
+
+
 .. code-block:: bash
 
     python setup.py sdist upload -r pypi
