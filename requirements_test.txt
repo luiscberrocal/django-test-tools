@@ -8,4 +8,4 @@ codecov>=2.0.0
 Faker==0.7.16
 django-environ==0.4.3
 # Additional test requirements go here
-django==1.11.2
+django==1.11.3

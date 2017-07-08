@@ -1,4 +1,7 @@
 import collections
+from datetime import datetime, date
+
+from decimal import Decimal
 
 from django_test_tools.utils import create_output_filename_with_date
 
@@ -9,32 +12,37 @@ def generate_assert_equals_list(data_list, variable_name):
     assert_list.append('self.assertEqual({}, {})'.format(len(data_list), 'len({})'.format(variable_name)))
     for data in data_list:
         list_variable = '{}[{}]'.format(variable_name, index)
-        if isinstance(data, str):
-            assert_list.append('self.assertEqual(\'{}\', {})'.format(data, list_variable))
-        elif isinstance(data, list):
-            assert_list += generate_assert_equals_list(data, list_variable)
-        elif isinstance(data, dict):
-            assert_list += generate_assert_equals_dictionaries(data, list_variable)
-        else:
-            assert_list.append('self.assertEqual({}, {})'.format(data, list_variable))
+        build_assertion(list_variable, data, assert_list)
         index += 1
-    return  assert_list
+    return assert_list
 
 def generate_assert_equals_dictionaries(dictionary, variable_name):
     assert_list = list()
     ordered_dictionary = collections.OrderedDict(sorted(dictionary.items()))
     for key, value in ordered_dictionary.items():
         dict_variable = '{}[\'{}\']'.format(variable_name, key)
-        if isinstance(value, str):
-            assert_list.append('self.assertEqual(\'{}\', {})'.format(value, dict_variable))
-        elif isinstance(value, list):
-            assert_list += generate_assert_equals_list(value, dict_variable)
-        elif isinstance(value, dict ):
-            assert_list += generate_assert_equals_dictionaries(value, dict_variable)
-        else:
-            assert_list.append('self.assertEqual({}, {})'.format(value, dict_variable))
+        build_assertion(dict_variable, value, assert_list)
     return assert_list
 
+def build_assertion(variable_name, data, assert_list):
+    if isinstance(data, str):
+        assert_list.append('self.assertEqual(\'{}\', {})'.format(data, variable_name))
+    elif isinstance(data, datetime):
+        date_time_format = '%Y-%m-%d %H:%M:%S%z'
+        str_datetime = data.strftime(date_time_format)
+        assert_list.append('self.assertEqual(\'{}\', {}.strftime(\'{}\'))'.format(str_datetime, variable_name, date_time_format))
+    elif isinstance(data, date):
+        date_format = '%Y-%m-%d'
+        str_date = data.strftime(date_format)
+        assert_list.append('self.assertEqual(\'{}\', {}.strftime(\'{}\'))'.format(str_date, variable_name, date_format))
+    elif isinstance(data, Decimal):
+        assert_list.append('self.assertEqual(Decimal({}), {})'.format(data, variable_name))
+    elif isinstance(data, list):
+        assert_list += generate_assert_equals_list(data, variable_name)
+    elif isinstance(data, dict):
+        assert_list += generate_assert_equals_dictionaries(data, variable_name)
+    else:
+        assert_list.append('self.assertEqual({}, {})'.format(data, variable_name))
 
 def write_assert_list(filename, dictionary_list, variable_name):
     """

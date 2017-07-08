@@ -7,7 +7,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from django_test_tools.doc_utils.folder_structure import create_folder_structure, get_module_files
-from django_test_tools.file_utils import serialize_data
+from django_test_tools.file_utils import serialize_data, temporary_file
 from django_test_tools.utils import create_output_filename_with_date
 
 import logging
@@ -32,11 +32,12 @@ class TestFolderStructure(TestCase):
             self.assertTrue(os.path.exists(model_file))
         shutil.rmtree(folder)
 
+    @temporary_file('json')
     def test_get_module_files(self):
         folder = str(settings.ROOT_DIR.path('example', 'servers'))
         #folder = str(settings.ROOT_DIR.path('django_test_tools'))
         files = get_module_files(folder)
-        serialize_data(files)
+        serialize_data(files, self.test_get_module_files.filename)
         # for file in files:
         #     logger.debug('File: {filename} Package: {package_name}'.format(**file))
         self.assertEqual(1, len(files))
