@@ -83,7 +83,15 @@ class AddDateTest(TestCase):
         new_filename = add_date(filename)
         self.assertEqual('namos_20160707_1640.txt', new_filename)
 
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_path(self, mock_now):
+        mock_now.return_value = self.mock_datetime
+        filename = r'/user/kilo/folder'
+        new_filename = add_date(filename)
+        self.assertEqual('/user/kilo/folder_20160707_1640', new_filename)
+
 class CreateDatedTest(TestCase):
+
     @override_settings(TEST_OUTPUT_PATH=None)
     def test_create_output_filename_with_date_error(self):
         try:

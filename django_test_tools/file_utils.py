@@ -165,10 +165,16 @@ def add_date(filename, **kwargs):
     if kwargs.get('extension', None) is not None:
         new_filename_data['extension'] = kwargs['extension']
     else:
-        new_filename_data['extension'] = parts[-1]
+        if len(parts) > 1:
+            new_filename_data['extension'] = parts[-1]
+        else:
+            new_filename_data['extension'] = ''
 
     new_filename_data['separator'] = separator
-    new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
+    if new_filename_data['extension'] == '':
+        new_filename_data['filename_with_out_extension'] = parts[0]
+    else:
+        new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
     new_filename_data['datetime'] = current_datetime[:-2] #Seconds are stripped
 
     date_position = kwargs.get('date_position', 'suffix')
@@ -177,10 +183,14 @@ def add_date(filename, **kwargs):
         if os.path.exists(new_filename):
             new_filename_data['datetime'] = current_datetime
             new_filename = suffix_template.format(**new_filename_data)
+        if new_filename_data['extension'] == '':
+            new_filename = new_filename[:-1]
     else:
         new_filename = prefix_template.format(**new_filename_data)
         if os.path.exists(new_filename):
             new_filename_data['datetime'] = current_datetime
             new_filename = prefix_template.format(**new_filename_data)
+        if new_filename_data['extension'] == '':
+            new_filename = new_filename[:-1]
 
     return new_filename
