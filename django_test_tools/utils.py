@@ -9,6 +9,7 @@ from datetime import datetime, date, timedelta
 import pytz
 from django.conf import settings
 from django.utils import timezone
+from openpyxl.compat import deprecated
 
 __author__ = 'lberrocal'
 
@@ -29,7 +30,7 @@ def create_output_filename_with_date(filename):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date_to_filename(os.path.join(settings.TEST_OUTPUT_PATH, filename))
 
-
+@deprecated('Should use django_test_tools.file_utils.add_date() function')
 def add_date_to_filename(filename, **kwargs):
     """
     Adds to a filename the current date and time in '%Y%m%d_%H%M' format.
@@ -63,7 +64,7 @@ def add_date_to_filename(filename, **kwargs):
 
     new_filename_data['path'] = path
     parts = file.split('.')
-    if  kwargs.get('extension', None) is not None:
+    if kwargs.get('extension', None) is not None:
         new_filename_data['extension'] = kwargs['extension']
     else:
         new_filename_data['extension'] = parts[-1]

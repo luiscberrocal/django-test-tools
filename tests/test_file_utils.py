@@ -2,15 +2,86 @@ import os
 import shutil
 
 from datetime import date, datetime
+from unittest import mock
+
+import pytz
 from django.conf import settings
 from django.test import TestCase
 from django.test import tag
 
-from django_test_tools.file_utils import hash_file, temporary_file, serialize_data
+from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
 
+class TestAddDate(TestCase):
+
+    def setUp(self):
+        self.mock_datetime = pytz.timezone('America/Panama').localize(
+            datetime.strptime('2016-07-07 16:40:39', '%Y-%m-%d %H:%M:%S'))
+
+
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_suffix_path(self, mock_now):
+        mock_now.return_value = self.mock_datetime
+        filename = r'c:\kilo\poli\namos.txt'
+        new_filename = add_date(filename)
+
+        self.assertEquals(r'c:\kilo\poli\namos_20160707_1640.txt', new_filename)
+
+        filename = r'c:\kilo\poli\namos.nemo.txt'
+        new_filename = add_date(filename)
+
+        self.assertEquals(r'c:\kilo\poli\namos.nemo_20160707_1640.txt', new_filename)
+
+        filename = r'/my/linux/path/namos.nemo.txt'
+        new_filename = add_date(filename)
+
+        self.assertEquals(r'/my/linux/path/namos.nemo_20160707_1640.txt', new_filename)
+
+    @mock.patch('os.path.exists')
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_suffix_path_existing_file(self, mock_now, mock_exists):
+        mock_now.return_value = self.mock_datetime
+        mock_exists.return_value = True
+
+        filename = r'c:\kilo\poli\namos.txt'
+        new_filename = add_date(filename)
+
+        self.assertEquals(r'c:\kilo\poli\namos_20160707_164039.txt', new_filename)
+
+        filename = r'c:\kilo\poli\namos.nemo.txt'
+        new_filename = add_date(filename)
+        self.assertEquals(r'c:\kilo\poli\namos.nemo_20160707_164039.txt', new_filename)
+
+
+        filename = r'c:\kilo\poli\namos.txt'
+        new_filename = add_date(filename, date_position='prefix')
+        self.assertEquals(r'c:\kilo\poli\20160707_164039_namos.txt', new_filename)
+
+        filename = r'/my/linux/path/namos.nemo.txt'
+        new_filename = add_date(filename)
+
+        self.assertEquals(r'/my/linux/path/namos.nemo_20160707_164039.txt', new_filename)
+
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_preffix_path(self, mock_now):
+        mock_now.return_value = self.mock_datetime
+        filename = r'c:\kilo\poli\namos.txt'
+        new_filename = add_date(filename, date_position='prefix')
+        self.assertEquals(r'c:\kilo\poli\20160707_1640_namos.txt', new_filename)
+
+        filename = r'/my/linux/path/namos.txt'
+        new_filename = add_date(filename, date_position='prefix')
+        self.assertEquals(r'/my/linux/path/20160707_1640_namos.txt', new_filename)
+
+
+    @mock.patch('django.utils.timezone.now')
+    def test_add_date_suffix_filename(self, mock_now):
+        mock_now.return_value = self.mock_datetime
+        filename = r'namos.txt'
+        new_filename = add_date(filename)
+        self.assertEqual('namos_20160707_1640.txt', new_filename)
 
 
 
