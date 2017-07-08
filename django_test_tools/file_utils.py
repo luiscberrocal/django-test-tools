@@ -4,10 +4,26 @@ import os
 
 from datetime import date, datetime
 
-from .utils import create_output_filename_with_date
+from django.conf import settings
+from django.utils import timezone
 
 BLOCKSIZE = 65536
 
+def create_dated(filename):
+    """
+    Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
+    The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
+
+    :param filename: base filename. my_excel_data.xlsx for example
+    :return: string, full path to file with date and time in the TEST_OUTPUT_PATH folder
+    """
+    if getattr(settings, 'TEST_OUTPUT_PATH', None) is None:
+        msg = 'You need a the variable TEST_OUTPUT_PATH in settings. It should point to a folder' \
+              'for temporary data to be written and reviewed.'
+        raise ValueError(msg)
+    if not os.path.exists(settings.TEST_OUTPUT_PATH):
+        os.makedirs(settings.TEST_OUTPUT_PATH)
+    return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     try:
@@ -59,7 +75,7 @@ def temporary_file(func, extension, delete_on_exit=True):
     :param delete_on_exit: If True the filename will be deleted.
     :return: the function
     """
-    filename = create_output_filename_with_date('{}.{}'.format(func.__name__, extension))
+    filename = create_dated('{}.{}'.format(func.__name__, extension))
 
     def function_t_return(*args):
         results = func(*args)
@@ -80,7 +96,7 @@ def json_serial(obj):
         return serial
     raise TypeError ("Type %s not serializable" % type(obj))
 
-def serialize_data(data, format='json', output_file=None, **kwargs):
+def serialize_data(data, output_file=None, format='json',**kwargs):
     """
     Quick function to serialize a data to file. The data keys will be saved in an alphabetical order
     for consistency purposes.
@@ -95,11 +111,11 @@ def serialize_data(data, format='json', output_file=None, **kwargs):
     """
     assert format in ['json'], 'Unsupported format {}'.format(format)
     if output_file is None:
-        filename = create_output_filename_with_date('{}.{}'.format('serialize_data', format))
-    elif os.path.isfile(output_file):
-        filename = output_file
+        filename = create_dated('{}.{}'.format('serialize_data_q', format))
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file,'{}.{}'.format('serialize_data', format))
+        filename = os.path.join(output_file,'{}.{}'.format('serialize_data_f', format))
+    else:
+        filename = output_file
     if format == 'json':
         with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8')) as fp:
             json.dump(data, fp, indent=kwargs.get('indent', 4),
@@ -107,3 +123,74 @@ def serialize_data(data, format='json', output_file=None, **kwargs):
     return filename
 
 
+def add_date(filename, **kwargs):
+    """
+    Adds to a filename the current date and time in '%Y%m%d_%H%M' format.
+    For a filename /my/path/myexcel.xlsx the function would return /my/path/myexcel_20170101_1305.xlsx.
+    If the file already exists the function will add seconds to the date to attempt to get a unique name.
+
+    The function will detect if another file exists with the same name if it exist it will append seconds to the
+    filename. For example if file /my/path/myexcel_20170101_1305.xlsx alread exist thte function will return
+    /my/path/myexcel_20170101_130521.xlsx.
+
+
+
+    :param filename: string with fullpath to file or just the filename
+    :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
+    :return: string with full path string incluiding the date and time
+    """
+    current_datetime = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M%S')
+    new_filename_data = dict()
+    suffix_template = '{path}{separator}{filename_with_out_extension}_{datetime}.{extension}'
+    prefix_template = '{path}{separator}{datetime}_{filename_with_out_extension}.{extension}'
+    if '/' in filename and '\\' in filename:
+        raise ValueError('Filename %s contains both / and \\ separators' % filename)
+    if '\\' in filename:
+        path_parts = filename.split('\\')
+        file = path_parts[-1]
+        path = '\\'.join(path_parts[:-1])
+        separator = '\\'
+    elif '/' in filename:
+        path_parts = filename.split('/')
+        file = path_parts[-1]
+        path = '/'.join(path_parts[:-1])
+        separator = '/'
+    else:
+        file=filename
+        path = ''
+        separator = ''
+
+    new_filename_data['path'] = path
+    parts = file.split('.')
+    if kwargs.get('extension', None) is not None:
+        new_filename_data['extension'] = kwargs['extension']
+    else:
+        if len(parts) > 1:
+            new_filename_data['extension'] = parts[-1]
+        else:
+            new_filename_data['extension'] = ''
+
+    new_filename_data['separator'] = separator
+    if new_filename_data['extension'] == '':
+        new_filename_data['filename_with_out_extension'] = parts[0]
+    else:
+        new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
+    new_filename_data['datetime'] = current_datetime[:-2] #Seconds are stripped
+
+    date_position = kwargs.get('date_position', 'suffix')
+    if date_position=='suffix':
+        new_filename = suffix_template.format(**new_filename_data)
+        if os.path.exists(new_filename):
+            new_filename_data['datetime'] = current_datetime
+            new_filename = suffix_template.format(**new_filename_data)
+        if new_filename_data['extension'] == '':
+            new_filename = new_filename[:-1]
+    else:
+        new_filename = prefix_template.format(**new_filename_data)
+        if os.path.exists(new_filename):
+            new_filename_data['datetime'] = current_datetime
+            new_filename = prefix_template.format(**new_filename_data)
+        if new_filename_data['extension'] == '':
+            new_filename = new_filename[:-1]
+
+    return new_filename
