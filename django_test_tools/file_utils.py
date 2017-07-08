@@ -80,7 +80,7 @@ def json_serial(obj):
         return serial
     raise TypeError ("Type %s not serializable" % type(obj))
 
-def serialize_data(data, format='json', output_file=None, **kwargs):
+def serialize_data(data, output_file=None, format='json',**kwargs):
     """
     Quick function to serialize a data to file. The data keys will be saved in an alphabetical order
     for consistency purposes.
@@ -96,10 +96,10 @@ def serialize_data(data, format='json', output_file=None, **kwargs):
     assert format in ['json'], 'Unsupported format {}'.format(format)
     if output_file is None:
         filename = create_output_filename_with_date('{}.{}'.format('serialize_data', format))
-    elif os.path.isfile(output_file):
-        filename = output_file
     elif os.path.isdir(output_file):
         filename = os.path.join(output_file,'{}.{}'.format('serialize_data', format))
+    else:
+        filename = output_file
     if format == 'json':
         with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8')) as fp:
             json.dump(data, fp, indent=kwargs.get('indent', 4),

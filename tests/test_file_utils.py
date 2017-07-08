@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from datetime import date, datetime
 from django.conf import settings
@@ -70,6 +71,51 @@ class TestHashFile(TestOutputMixin, TestCase):
         #self.clean_output=False
         self.clean_output_folder(filename)
         self.assertEqual('f1ef22b63e9708c37189c71c4d3ebc931d9ec220', hash_digest)
+        self.assertFalse(os.path.exists(filename))
+
+    @temporary_file('json')
+    def test_serialize_dict_with_filename(self):
+        data = [
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
+             'last_login': datetime(2016,1,1,13,14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'groups': ['admin', 'users']},
+        ]
+        filename = serialize_data(data, self.test_serialize_dict_with_filename.filename)
+        hash_digest = hash_file(filename)
+        self.assertEqual('f1ef22b63e9708c37189c71c4d3ebc931d9ec220', hash_digest)
+        #self.assertFalse(os.path.exists(filename))
+
+    def test_serialize_dict_with_folder(self):
+        data = [
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
+             'last_login': datetime(2016,1,1,13,14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'groups': ['admin', 'users']},
+        ]
+        folder = os.path.join(settings.TEST_OUTPUT_PATH, 'test_serialize_dict_with_folder')
+        if os.path.exists(folder):
+            if os.path.isfile(folder):
+                os.remove(folder)
+                os.mkdir(folder)
+            else:
+                shutil.rmtree(folder)
+                os.mkdir(folder)
+        else:
+            os.mkdir(folder)
+        filename = serialize_data(data, folder)
+        filename_path = os.path.split(filename)[0]
+        hash_digest = hash_file(filename)
+        self.assertEqual(folder, filename_path)
+        self.assertEqual('f1ef22b63e9708c37189c71c4d3ebc931d9ec220', hash_digest)
+        if self.clean_output:
+            shutil.rmtree(folder)
+        self.assertFalse(os.path.exists(filename))
+
 
     def test_serialize_dict_invalid_format(self):
         data = [
