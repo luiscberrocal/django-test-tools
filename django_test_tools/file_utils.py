@@ -95,9 +95,9 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
     """
     assert format in ['json'], 'Unsupported format {}'.format(format)
     if output_file is None:
-        filename = create_output_filename_with_date('{}.{}'.format('serialize_data', format))
+        filename = create_output_filename_with_date('{}.{}'.format('serialize_data_q', format))
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file,'{}.{}'.format('serialize_data', format))
+        filename = os.path.join(output_file,'{}.{}'.format('serialize_data_f', format))
     else:
         filename = output_file
     if format == 'json':

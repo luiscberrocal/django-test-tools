@@ -116,7 +116,7 @@ class TestHashFile(TestOutputMixin, TestCase):
             shutil.rmtree(folder)
         self.assertFalse(os.path.exists(filename))
 
-
+    @temporary_file('json')
     def test_serialize_dict_invalid_format(self):
         data = [
             {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
@@ -127,6 +127,7 @@ class TestHashFile(TestOutputMixin, TestCase):
              'last_login': None, 'groups': ['admin', 'users']},
         ]
         try:
-            serialize_data(data, format='POL')
+            serialize_data(data, self.test_serialize_dict_invalid_format.filename, format='POL')
+            self.fail('Did not throw error for unsupported format')
         except AssertionError as e:
             self.assertEqual('Unsupported format POL', str(e))
