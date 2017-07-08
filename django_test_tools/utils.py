@@ -11,9 +11,11 @@ from django.conf import settings
 from django.utils import timezone
 from openpyxl.compat import deprecated
 
+from .file_utils import add_date
+
 __author__ = 'lberrocal'
 
-
+@deprecated('Should use django_test_tools.file_utils.create_dated() function')
 def create_output_filename_with_date(filename):
     """
     Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
@@ -28,7 +30,7 @@ def create_output_filename_with_date(filename):
         raise ValueError(msg)
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
-    return add_date_to_filename(os.path.join(settings.TEST_OUTPUT_PATH, filename))
+    return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
 
 @deprecated('Should use django_test_tools.file_utils.add_date() function')
 def add_date_to_filename(filename, **kwargs):

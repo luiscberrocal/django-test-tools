@@ -3,11 +3,27 @@ import json
 import os
 
 from datetime import date, datetime
+
+from django.conf import settings
 from django.utils import timezone
-from .utils import create_output_filename_with_date
 
 BLOCKSIZE = 65536
 
+def create_dated(filename):
+    """
+    Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
+    The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
+
+    :param filename: base filename. my_excel_data.xlsx for example
+    :return: string, full path to file with date and time in the TEST_OUTPUT_PATH folder
+    """
+    if getattr(settings, 'TEST_OUTPUT_PATH', None) is None:
+        msg = 'You need a the variable TEST_OUTPUT_PATH in settings. It should point to a folder' \
+              'for temporary data to be written and reviewed.'
+        raise ValueError(msg)
+    if not os.path.exists(settings.TEST_OUTPUT_PATH):
+        os.makedirs(settings.TEST_OUTPUT_PATH)
+    return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     try:
@@ -59,7 +75,7 @@ def temporary_file(func, extension, delete_on_exit=True):
     :param delete_on_exit: If True the filename will be deleted.
     :return: the function
     """
-    filename = create_output_filename_with_date('{}.{}'.format(func.__name__, extension))
+    filename = create_dated('{}.{}'.format(func.__name__, extension))
 
     def function_t_return(*args):
         results = func(*args)
@@ -95,7 +111,7 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
     """
     assert format in ['json'], 'Unsupported format {}'.format(format)
     if output_file is None:
-        filename = create_output_filename_with_date('{}.{}'.format('serialize_data_q', format))
+        filename = create_dated('{}.{}'.format('serialize_data_q', format))
     elif os.path.isdir(output_file):
         filename = os.path.join(output_file,'{}.{}'.format('serialize_data_f', format))
     else:
@@ -112,6 +128,12 @@ def add_date(filename, **kwargs):
     Adds to a filename the current date and time in '%Y%m%d_%H%M' format.
     For a filename /my/path/myexcel.xlsx the function would return /my/path/myexcel_20170101_1305.xlsx.
     If the file already exists the function will add seconds to the date to attempt to get a unique name.
+
+    The function will detect if another file exists with the same name if it exist it will append seconds to the
+    filename. For example if file /my/path/myexcel_20170101_1305.xlsx alread exist thte function will return
+    /my/path/myexcel_20170101_130521.xlsx.
+
+
 
     :param filename: string with fullpath to file or just the filename
     :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
@@ -147,7 +169,8 @@ def add_date(filename, **kwargs):
 
     new_filename_data['separator'] = separator
     new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
-    new_filename_data['datetime'] = current_datetime[:-2]
+    new_filename_data['datetime'] = current_datetime[:-2] #Seconds are stripped
+
     date_position = kwargs.get('date_position', 'suffix')
     if date_position=='suffix':
         new_filename = suffix_template.format(**new_filename_data)

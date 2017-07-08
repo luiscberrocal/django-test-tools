@@ -6,15 +6,15 @@ from unittest import mock
 
 import pytz
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.test import tag
 
-from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date
+from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
 
-class TestAddDate(TestCase):
+class AddDateTest(TestCase):
 
     def setUp(self):
         self.mock_datetime = pytz.timezone('America/Panama').localize(
@@ -83,7 +83,16 @@ class TestAddDate(TestCase):
         new_filename = add_date(filename)
         self.assertEqual('namos_20160707_1640.txt', new_filename)
 
-
+class CreateDatedTest(TestCase):
+    @override_settings(TEST_OUTPUT_PATH=None)
+    def test_create_output_filename_with_date_error(self):
+        try:
+            create_dated('kilo.txt')
+            self.fail('Should have thrown value error')
+        except ValueError as e:
+            msg = 'You need a the variable TEST_OUTPUT_PATH in settings.' \
+                  ' It should point to a folderfor temporary data to be written and reviewed.'
+            self.assertEqual(msg, str(e))
 
 @tag('UNIT')
 class TestHashFile(TestOutputMixin, TestCase):
