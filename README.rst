@@ -11,9 +11,13 @@ Django Test Tools
 .. image:: https://codecov.io/gh/luiscberrocal/django-test-tools/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/luiscberrocal/django-test-tools
 
+.. image:: https://landscape.io/github/luiscberrocal/django-test-tools/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/luiscberrocal/django-test-tools/master
+   :alt: Code Health
+
 Simple tests tools to make testing faster and easier.
 
-Supports Python 3.4, 3.5, 3.5 with Django 1.10.7 and 1.11.2.
+Supports Python 3.4, 3.5, 3.5 with Django 1.10.7 and 1.11.x.
 
 
 Documentation

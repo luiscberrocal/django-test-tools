@@ -5,7 +5,7 @@ language: python
 
 env:
   - DJANGO_VERSION=1.10.7
-  - DJANGO_VERSION=1.11.2
+  - DJANGO_VERSION=1.11.3
 
 python:
   - "3.6"
