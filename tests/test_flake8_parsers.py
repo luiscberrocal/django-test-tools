@@ -1,7 +1,8 @@
 from django.test import TestCase
 
+from django_test_tools.assert_utils import write_assert_list
 from django_test_tools.file_utils import temporary_file, create_dated, hash_file
-from django_test_tools.flake8.parsers import Flake8Parser
+from django_test_tools.flake8.parsers import Flake8Parser, RadonParser
 from django_test_tools.mixins import TestOutputMixin
 
 
@@ -55,3 +56,58 @@ class Flake8ParserTest(TestOutputMixin, TestCase):
         self.assertEqual('20f5184854bd10ed0998c8e9029175ed08b097e0', digest)
         self.clean_output_folder(out_filename)
 
+class RadonParserTest(TestOutputMixin, TestCase):
+
+    def setUp(self):
+        content = """
+            config/settings/test.py
+                LOC: 61
+                LLOC: 12
+                SLOC: 23
+                Comments: 23
+                Single comments: 22
+                Multi: 4
+                Blank: 12
+                - Comment Stats
+                    (C % L): 38%
+                    (C % S): 100%
+                    (C + M % L): 44%
+            ** Total **
+                LOC: 2149
+                LLOC: 894
+                SLOC: 1311
+                Comments: 335
+                Single comments: 310
+                Multi: 128
+                Blank: 400
+                - Comment Stats
+                    (C % L): 16%
+                    (C % S): 26%
+                    (C + M % L): 22%
+            """
+        self.filename = create_dated('radon.txt')
+        with open(self.filename, 'w', encoding='utf-8') as radon_file:
+            radon_file.write(content)
+
+
+    def test_parse_totals(self):
+        parser = RadonParser()
+        results = parser.parse_totals(self.filename)
+        #write_assert_list(None, results, 'results')
+
+        self.assertEqual(400, results['blank'])
+        self.assertEqual(335, results['comments'])
+        self.assertEqual(894, results['lloc'])
+        self.assertEqual(2149, results['loc'])
+        self.assertEqual(128, results['multi'])
+        self.assertEqual(310, results['single_comments'])
+        self.assertEqual(1311, results['sloc'])
+        self.clean_output_folder(self.filename)
+
+    @temporary_file('csv', delete_on_exit=True)
+    def test_write_totals(self):
+        parser = RadonParser()
+        parser.write_totals(self.filename, self.test_write_totals.filename)
+        digest = hash_file(self.test_write_totals.filename)
+        self.assertEqual('cc1ff3f88b894cf807e8fc755dfb26c3806bb41c', digest)
+        self.clean_output_folder(self.filename)

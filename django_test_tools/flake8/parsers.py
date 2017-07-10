@@ -1,5 +1,10 @@
+import argparse
 import csv
 import re
+
+import sys
+
+from django_test_tools.file_utils import add_date
 
 
 class Flake8Parser(object):
@@ -58,8 +63,10 @@ class Flake8Parser(object):
 
 
 
-class RadonPaser(object):
+class RadonParser(object):
     """
+
+
     config/settings/test.py
         LOC: 61
         LLOC: 12
@@ -86,22 +93,30 @@ class RadonPaser(object):
             (C + M % L): 22%
     """
     def __init__(self):
-        self.totals_match = re.compile(r'^\*\*\sTotal\s\*\*')
-        self.fieldnames = ['count', 'rule', 'description']
+        self.totals_match_regexp = re.compile(r'\s*\*\*\sTotal\s\*\*')
+        self.results_regexp = re.compile(r'^\s+(LOC|LLOC|SLOC|Comments|Single\scomments|Multi|Blank)\:\s(\d+)')
+        self.fieldnames = ['loc', 'lloc', 'sloc', 'comments', 'single_comments', 'multi', 'blank']
 
     def parse_totals(self, filename):
-        pep8_findings = list()
+        data = dict()
         totals_found = False
         with open(filename, 'r', encoding='utf-8') as flake_file:
             for line in flake_file.readlines():
-                match = self.totals_match.match(line.rstrip('\n'))
+                match = self.totals_match_regexp.match(line.rstrip('\n'))
                 if match:
                     totals_found = True
                 if totals_found:
-                    data = dict()
-                    data['count'] = match.group(1)
-                    data['rule'] = match.group(2)
-                    data['description'] = match.group(3)
-                    pep8_findings.append(data)
-        return pep8_findings
+                    data_match = self.results_regexp.match(line.rstrip('\n'))
+                    if data_match:
+                        key = data_match.group(1).lower().replace(' ', '_')
+                        data[key] = int(data_match.group(2))
+        return data
+
+    def write_totals(self, source_filename, target_filename):
+        radon_findings = self.parse_totals(source_filename)
+        with open(target_filename, 'w', encoding='utf-8') as csv_file:
+            csv_writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
+            csv_writer.writeheader()
+            csv_writer.writerow(radon_findings)
+
 
