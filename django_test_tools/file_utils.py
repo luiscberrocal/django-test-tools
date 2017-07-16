@@ -4,6 +4,7 @@ import os
 
 from datetime import date, datetime
 
+import shutil
 from django.conf import settings
 from django.utils import timezone
 
@@ -194,3 +195,33 @@ def add_date(filename, **kwargs):
             new_filename = new_filename[:-1]
 
     return new_filename
+
+
+class TemporaryFolder:
+    def __init__(self, base_name, delete_on_exit=True):
+        self.new_path = create_dated(base_name)
+        self.delete_on_exit = delete_on_exit
+
+    def __enter__(self):
+        os.mkdir(self.new_path)
+        self.saved_path = os.getcwd()
+        os.chdir(self.new_path)
+
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        os.chdir(self.saved_path)
+        if self.delete_on_exit:
+            shutil.rmtree(self.new_path)
+
+    def write(self, filename, content):
+        with open(filename, 'w', encoding='utf-8') as file:
+            if isinstance(content, str):
+                file.writelines(content)
+            elif isinstance(content, list):
+                for line in content:
+                    file.write(line)
+                    file.write('\n')
+            else:
+                file.writelines(str(content))
+        return os.path.join(self.new_path, filename)
