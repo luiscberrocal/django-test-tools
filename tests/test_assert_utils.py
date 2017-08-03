@@ -33,7 +33,9 @@ class TestAssertionWriter(TestCase):
              'config':{'server': 'all', 'bulding': 116}},
             {'name': 'pasto', 'password': 'nogo',
              'groups': ['users'],
-             'config': {'server': 'database', 'bulding': 116}}
+             'config': {'server': 'database', 'bulding': 116},
+             'created': '2016-10-01',
+             'modified': '2016-10-01'}
         ]
         filename = write_assert_list(self.test_write_assert_list.filename, data, 'data')
         self.assertEqual(filename, self.test_write_assert_list.filename)
