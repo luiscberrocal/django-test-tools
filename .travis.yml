@@ -5,7 +5,7 @@ language: python
 
 env:
   - DJANGO_VERSION=1.10.7
-  - DJANGO_VERSION=1.11.2
+  - DJANGO_VERSION=1.11.3
 
 python:
   - "3.6"
@@ -20,6 +20,10 @@ before_install:
 install:
   - pip install -r requirements_test.txt
   - pip install -q Django==$DJANGO_VERSION
+  - git config --global user.email "bumpversion-test-git@travis.ci"
+  - git config --global user.name "Testing Git on Travis CI"
+  - git --version
+  - git config --list
 
 # command to run tests using coverage, e.g. python setup.py test
 script: coverage run --source django_test_tools runtests.py

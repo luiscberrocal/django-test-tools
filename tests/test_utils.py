@@ -9,6 +9,7 @@ import logging
 
 from django.test import override_settings
 
+from django_test_tools.file_utils import TemporaryFolder, hash_file
 from django_test_tools.utils import Timer, add_date_to_filename, daterange, parse_spanish_date, spanish_date_util, \
     create_output_filename_with_date
 
@@ -192,3 +193,30 @@ class TestSpanishDate(TestCase):
         start_date = datetime.date(2016, 12, 3)
         o_date = spanish_date_util.parse('03-Dic-16')
         self.assertEqual(o_date, start_date)
+
+
+class TemporyFolderTest(TestCase):
+
+    def test_temporary_folder_write_list(self):
+        with TemporaryFolder('my_temp_list', delete_on_exit=True) as folder:
+            self.assertTrue(os.path.exists(folder.new_path))
+            filename = folder.write('m.txt', ['kilo', 'boma'])
+            digest = hash_file(filename)
+            self.assertEqual('5585c5895705bb5fe8906a2fd93453af5ee643b5', digest)
+        self.assertFalse(os.path.exists(folder.new_path))
+
+    def test_temporary_folder_write_str(self):
+        with TemporaryFolder('my_temp_str') as folder:
+            self.assertTrue(os.path.exists(folder.new_path))
+            filename = folder.write('m.txt', 'Hola')
+            digest = hash_file(filename)
+            self.assertEqual('4e46dc0969e6621f2d61d2228e3cd91b75cd9edc', digest)
+        self.assertFalse(os.path.exists(folder.new_path))
+
+    def test_temporary_folder_write_other(self):
+        with TemporaryFolder('my_temp_date') as folder:
+            self.assertTrue(os.path.exists(folder.new_path))
+            filename = folder.write('m.txt', datetime.date(2016, 12, 3))
+            digest = hash_file(filename)
+            self.assertEqual('2b7db434f52eb470e1a6dcdc39063536c075a4f0', digest)
+        self.assertFalse(os.path.exists(folder.new_path))
