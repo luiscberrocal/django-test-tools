@@ -11,7 +11,7 @@ from django.test import override_settings
 
 from django_test_tools.file_utils import TemporaryFolder, hash_file
 from django_test_tools.utils import Timer, add_date_to_filename, daterange, parse_spanish_date, spanish_date_util, \
-    create_output_filename_with_date
+    create_output_filename_with_date, dict_compare
 
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -28,6 +28,38 @@ class MockPerfCounter(object):
     def perf_counter(self):
         return self.t
 
+class Testdict_compare(TestCase):
+
+    def test_dict_compare(self):
+        dict1 = {'name': 'Luis', 'colors': ['red', 'blue', 'black']}
+        dict2 = {'name': 'Luis', 'colors': ['red', 'blue', 'black']}
+        added, removed, modified, same = dict_compare(dict1, dict2)
+        self.assertEqual(0, len(added))
+        self.assertEqual(0, len(removed))
+        self.assertEqual(0, len(modified))
+        self.assertEqual(2, len(same))
+
+    def test_dict_compare_removed(self):
+        dict1 = {'name': 'Luis', 'colors': ['red', 'blue', 'black']}
+        dict2 = {'name': 'Luis', 'colors': ['red', 'blue', 'black'], 'type': 'human'}
+        added, removed, modified, same = dict_compare(dict1, dict2)
+        self.assertEqual(0, len(added))
+        self.assertEqual({'type'}, removed)
+        self.assertEqual(0, len(modified))
+        self.assertEqual({'colors', 'name'}, same)
+
+        added, removed, modified, same = dict_compare(dict2, dict1)
+        self.assertEqual({'type'}, added)
+        self.assertEqual(0, len(removed))
+        self.assertEqual(0, len(modified))
+        self.assertEqual({'colors', 'name'}, same)
+
+        dict1 = {'name': 'Luis', 'colors': ['red', 'blue']}
+        added, removed, modified, same = dict_compare(dict2, dict1)
+        self.assertEqual({'type'}, added)
+        self.assertEqual(0, len(removed))
+        self.assertEqual({'colors': (['red', 'blue', 'black'], ['red', 'blue'])}, modified)
+        self.assertEqual({'name'}, same)
 
 class TestTimer(TestCase):
 
