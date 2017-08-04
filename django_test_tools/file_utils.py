@@ -118,7 +118,7 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
     else:
         filename = output_file
     if format == 'json':
-        with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8')) as fp:
+        with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8'), newline='\n') as fp:
             json.dump(data, fp, indent=kwargs.get('indent', 4),
                       default=json_serial, sort_keys=True)
     return filename
