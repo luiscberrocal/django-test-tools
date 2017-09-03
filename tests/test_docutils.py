@@ -1,8 +1,7 @@
+import logging
 import os
-
 import shutil
 
-import django
 from django.conf import settings
 from django.test import TestCase
 
@@ -10,14 +9,12 @@ from django_test_tools.doc_utils.folder_structure import create_folder_structure
 from django_test_tools.file_utils import serialize_data, temporary_file
 from django_test_tools.utils import create_output_filename_with_date
 
-import logging
-
 logger = logging.getLogger(__name__)
 
-class TestFolderStructure(TestCase):
 
+class TestFolderStructure(TestCase):
     def test_create_folder_structure(self):
-        #logger.debug('Version {}'.format(django.VERSION))
+        # logger.debug('Version {}'.format(django.VERSION))
         folder = create_output_filename_with_date('docs')
         if not os.path.exists(folder):
             os.makedirs(folder)
@@ -35,16 +32,15 @@ class TestFolderStructure(TestCase):
     @temporary_file('json')
     def test_get_module_files(self):
         folder = str(settings.ROOT_DIR.path('example', 'servers'))
-        #folder = str(settings.ROOT_DIR.path('django_test_tools'))
+        # folder = str(settings.ROOT_DIR.path('django_test_tools'))
         files = get_module_files(folder)
         serialize_data(files, self.test_get_module_files.filename)
         # for file in files:
         #     logger.debug('File: {filename} Package: {package_name}'.format(**file))
         self.assertEqual(1, len(files))
 
-
     def test_create_folder_structure2(self):
-        #logger.debug('Version {}'.format(django.VERSION))
+        # logger.debug('Version {}'.format(django.VERSION))
         folder = create_output_filename_with_date('docs')
         if not os.path.exists(folder):
             os.makedirs(folder)

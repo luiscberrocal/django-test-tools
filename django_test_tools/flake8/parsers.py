@@ -1,10 +1,5 @@
-import argparse
 import csv
 import re
-
-import sys
-
-from django_test_tools.file_utils import add_date
 
 
 class Flake8Parser(object):
@@ -60,9 +55,6 @@ class Flake8Parser(object):
                 csv_writer.writerow(data)
 
 
-
-
-
 class RadonParser(object):
     """
 
@@ -92,6 +84,7 @@ class RadonParser(object):
             (C % S): 26%
             (C + M % L): 22%
     """
+
     def __init__(self):
         self.totals_match_regexp = re.compile(r'\s*\*\*\sTotal\s\*\*')
         self.results_regexp = re.compile(r'^\s+(LOC|LLOC|SLOC|Comments|Single\scomments|Multi|Blank)\:\s(\d+)')
@@ -118,5 +111,3 @@ class RadonParser(object):
             csv_writer = csv.DictWriter(csv_file, fieldnames=self.fieldnames)
             csv_writer.writeheader()
             csv_writer.writerow(radon_findings)
-
-

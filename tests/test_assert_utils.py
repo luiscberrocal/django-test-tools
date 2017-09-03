@@ -1,18 +1,17 @@
+import logging
 from datetime import datetime, date
+from decimal import Decimal
 
 import pytz
-from decimal import Decimal
 from django.test import TestCase
 
 from django_test_tools.assert_utils import write_assert_list, AssertionWriter
-import logging
-
 from django_test_tools.file_utils import temporary_file, hash_file
 
 logger = logging.getLogger(__name__)
 
-class TestAssertionWriter(TestCase):
 
+class TestAssertionWriter(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.writer = AssertionWriter()
@@ -30,7 +29,7 @@ class TestAssertionWriter(TestCase):
         data = [
             {'name': 'kilo', 'password': 9999,
              'groups': ['admin', 'users'],
-             'config':{'server': 'all', 'bulding': 116}},
+             'config': {'server': 'all', 'bulding': 116}},
             {'name': 'pasto', 'password': 'nogo',
              'groups': ['users'],
              'config': {'server': 'database', 'bulding': 116},
@@ -65,4 +64,3 @@ class TestAssertionWriter(TestCase):
         expected_result = "self.assertEqual(Decimal(34.5), decimal_value)"
         self.assertEqual(expected_result, assertion_list[0])
         eval(assertion_list[0])
-

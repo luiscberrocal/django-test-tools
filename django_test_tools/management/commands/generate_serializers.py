@@ -1,9 +1,7 @@
-from django.apps import apps
 from django.core.management import BaseCommand
 
 from django_test_tools.generators.serializer_gen import AppSerializerGenerator
 from ...app_manager import DjangoAppManager
-from ...generators.model_test_gen import AppModelsTestCaseGenerator
 
 
 class Command(BaseCommand):
@@ -45,6 +43,7 @@ class Command(BaseCommand):
         #                 help="LDAP usernames for employees",
         #                 nargs='+',
         #                 )
+
     def handle(self, *args, **options):
         app_name = options.get('app_name', None)
         serializer_class = options.get('serializer_class')

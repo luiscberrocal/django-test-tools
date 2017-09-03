@@ -7,14 +7,14 @@ import warnings
 from datetime import datetime, date, timedelta
 
 import pytz
-import shutil
 from django.conf import settings
 from django.utils import timezone
 from openpyxl.compat import deprecated
 
-from .file_utils import add_date, create_dated
+from .file_utils import add_date
 
 __author__ = 'lberrocal'
+
 
 def dict_compare(d1, d2):
     d1_keys = set(d1.keys())
@@ -22,9 +22,10 @@ def dict_compare(d1, d2):
     intersect_keys = d1_keys.intersection(d2_keys)
     added = d1_keys - d2_keys
     removed = d2_keys - d1_keys
-    modified = {o : (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
+    modified = {o: (d1[o], d2[o]) for o in intersect_keys if d1[o] != d2[o]}
     same = set(o for o in intersect_keys if d1[o] == d2[o])
     return added, removed, modified, same
+
 
 @deprecated('Should use django_test_tools.file_utils.create_dated() function')
 def create_output_filename_with_date(filename):
@@ -42,6 +43,7 @@ def create_output_filename_with_date(filename):
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
+
 
 @deprecated('Should use django_test_tools.file_utils.add_date() function')
 def add_date_to_filename(filename, **kwargs):
@@ -71,7 +73,7 @@ def add_date_to_filename(filename, **kwargs):
         path = '/'.join(path_parts[:-1])
         separator = '/'
     else:
-        file=filename
+        file = filename
         path = ''
         separator = ''
 
@@ -86,7 +88,7 @@ def add_date_to_filename(filename, **kwargs):
     new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
     new_filename_data['datetime'] = current_datetime[:-2]
     date_position = kwargs.get('date_position', 'suffix')
-    if date_position=='suffix':
+    if date_position == 'suffix':
         new_filename = suffix_template.format(**new_filename_data)
         if os.path.exists(new_filename):
             new_filename_data['datetime'] = current_datetime
@@ -106,6 +108,7 @@ def deprecated(func):
         when the function is used.
        from: https://wiki.python.org/moin/PythonDecoratorLibrary#CA-92953dfd597a5cffc650d5a379452bb3b022cdd0_7
     '''
+
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         warnings.warn_explicit("Call to deprecated function {}.".format(func.__name__),
@@ -114,6 +117,7 @@ def deprecated(func):
                                lineno=func.__code__.co_firstlineno + 1
                                )
         return func(*args, **kwargs)
+
     return new_func
 
 
@@ -143,7 +147,7 @@ def weekdays(start_date, end_date):
     :param end_date: date. End date
     """
     weekend = set([5, 6])
-    for n in range(int((end_date - start_date).days)+1):
+    for n in range(int((end_date - start_date).days) + 1):
         dt = start_date + timedelta(n)
         if dt.weekday() not in weekend:
             yield dt
@@ -153,6 +157,7 @@ def weekdays(start_date, end_date):
 
 class cd:
     """Context manager for changing the current working directory"""
+
     def __init__(self, newPath):
         self.newPath = os.path.expanduser(newPath)
 
@@ -164,9 +169,7 @@ class cd:
         os.chdir(self.savedPath)
 
 
-
-
-def force_date_to_datetime(unconverted_date, tzinfo= pytz.UTC):
+def force_date_to_datetime(unconverted_date, tzinfo=pytz.UTC):
     converted_datetime = date(year=unconverted_date.year,
                               month=unconverted_date.month,
                               day=unconverted_date.day,
@@ -194,6 +197,7 @@ class Timer:
                 self.assertTrue(elapsed_milliseconds <= 500)
 
     """
+
     def __init__(self):
         self.elapsed = 0.0
         self._start = None
@@ -256,12 +260,12 @@ def datetime_to_local_time(date_time):
     else:
         return date_time.astimezone(time_zone)
 
-class SpanishDate(object):
 
+class SpanishDate(object):
     def __init__(self):
         self.spanish_months = {'Ene': 'Jan', 'Feb': 'Feb', 'Mar': 'Mar', 'Abr': 'Apr', 'May': 'May',
-                          'Jun': 'Jun', 'Jul': 'Jul', 'Ago': 'Aug', 'Sep': 'Sep', 'Oct': 'Oct',
-                          'Nov': 'Nov', 'Dic': 'Dec'}
+                               'Jun': 'Jun', 'Jul': 'Jul', 'Ago': 'Aug', 'Sep': 'Sep', 'Oct': 'Oct',
+                               'Nov': 'Nov', 'Dic': 'Dec'}
         self.english_months = dict()
         for k, v in self.spanish_months.items():
             self.english_months[v] = k
@@ -285,7 +289,7 @@ class SpanishDate(object):
 
     def _get_date_parts(self, match, input_lang='es'):
         day = match.group(1)
-        if input_lang=='es':
+        if input_lang == 'es':
             month = self.spanish_months[match.group(2)]
         else:
             month = self.english_months[match.group(2)]
@@ -298,7 +302,7 @@ class SpanishDate(object):
         if match:
             day, month, year = self._get_date_parts(match)
             english_date = '{}-{}-{}'.format(day, month, year)
-            date_to_parse = datetime_to_local_time(datetime.strptime(english_date,self.date_format )).date()
+            date_to_parse = datetime_to_local_time(datetime.strptime(english_date, self.date_format)).date()
         else:
             match = self.datetime_reg_exp_es.match(str_date)
             if match:

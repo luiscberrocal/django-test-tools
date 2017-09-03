@@ -4,7 +4,6 @@ from django_test_tools.app_manager import DjangoAppManager
 
 
 class TestDjangoAppManager(TestCase):
-
     def test_installed_apps(self):
         app_manager = DjangoAppManager()
         self.assertEqual(8, len(app_manager.installed_apps))
@@ -20,4 +19,3 @@ class TestDjangoAppManager(TestCase):
         self.assertEqual(1, len(apps))
         apps = app_manager.get_project_apps('django')
         self.assertEqual(6, len(apps))
-

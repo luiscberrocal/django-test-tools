@@ -1,13 +1,11 @@
 from django.test import TestCase
 
-from django_test_tools.assert_utils import write_assert_list
 from django_test_tools.file_utils import temporary_file, create_dated, hash_file
 from django_test_tools.flake8.parsers import Flake8Parser, RadonParser
 from django_test_tools.mixins import TestOutputMixin
 
 
 class Flake8ParserTest(TestOutputMixin, TestCase):
-
     def setUp(self):
         self.content = """
 3     E124 closing bracket does not match visual indentation
@@ -56,8 +54,8 @@ class Flake8ParserTest(TestOutputMixin, TestCase):
         self.assertEqual('20f5184854bd10ed0998c8e9029175ed08b097e0', digest)
         self.clean_output_folder(out_filename)
 
-class RadonParserTest(TestOutputMixin, TestCase):
 
+class RadonParserTest(TestOutputMixin, TestCase):
     def setUp(self):
         content = """
             config/settings/test.py
@@ -89,11 +87,10 @@ class RadonParserTest(TestOutputMixin, TestCase):
         with open(self.filename, 'w', encoding='utf-8') as radon_file:
             radon_file.write(content)
 
-
     def test_parse_totals(self):
         parser = RadonParser()
         results = parser.parse_totals(self.filename)
-        #write_assert_list(None, results, 'results')
+        # write_assert_list(None, results, 'results')
 
         self.assertEqual(400, results['blank'])
         self.assertEqual(335, results['comments'])

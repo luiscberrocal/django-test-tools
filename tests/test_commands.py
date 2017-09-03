@@ -1,8 +1,6 @@
-
 from unittest.mock import Mock, patch
 
 from django.core.management import call_command
-from django.db.models import Field
 from django.db.models import FileField
 from django.test import TestCase
 
@@ -13,7 +11,6 @@ from django_test_tools.utils import create_output_filename_with_date
 
 
 class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
-
     def test_generate(self):
         call_command('generate_factories', 'example.servers', stdout=self.content)
         results = self.get_results()
@@ -37,11 +34,10 @@ class FileFieldMockType(object):
 
 
 class TestModelFactoryGenerator(TestCase):
-
     def test__generate_file_field(self):
         field = Mock(spec=FileField)
         field.name = 'hola'
-        #self.assertEqual('', type(field).__name__)
+        # self.assertEqual('', type(field).__name__)
         mock_model = Mock()
         mock_model.__name__ = 'SuperModel'
         mock_model._meta = Mock()
@@ -57,7 +53,6 @@ class TestModelFactoryGenerator(TestCase):
 
 
 class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestCase):
-
     def test_generate(self):
         call_command('generate_model_test_cases', 'example.servers', stdout=self.content)
         results = self.get_results()
@@ -65,7 +60,6 @@ class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestC
 
 
 class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase):
-
     def test_generate(self):
         call_command('generate_serializers', 'example.servers', stdout=self.content)
         results = self.get_results()

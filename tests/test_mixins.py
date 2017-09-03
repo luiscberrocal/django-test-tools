@@ -7,7 +7,6 @@ from django_test_tools.mixins import TestOutputMixin
 
 
 class TestTestOutputMixin(TestCase):
-
     @temporary_file('csv', delete_on_exit=True)
     def test_get_csv_content(self):
         outputfile = self.test_get_csv_content.filename

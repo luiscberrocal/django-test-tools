@@ -1,4 +1,3 @@
-from django.apps import apps
 from django.core.management import BaseCommand
 
 from ...app_manager import DjangoAppManager
@@ -44,6 +43,7 @@ class Command(BaseCommand):
         #                 help="LDAP usernames for employees",
         #                 nargs='+',
         #                 )
+
     def handle(self, *args, **options):
         app_name = options.get('app_name', None)
         app_manager = DjangoAppManager()
@@ -51,4 +51,3 @@ class Command(BaseCommand):
         if app:
             app_model_tests = AppModelsTestCaseGenerator(app)
             self.stdout.write(str(app_model_tests))
-
