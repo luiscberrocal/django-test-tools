@@ -30,7 +30,7 @@ class Flake8Parser(object):
     """
 
     def __init__(self):
-        self.summary_regexp = re.compile(r'(\d+)\s+((?:W|E|F)\d+)\s([\w\s\'\.#,\(\)\>\:]*)')
+        self.summary_regexp = re.compile(r'(\d+)\s+((?:W|E|F)\d+)\s([\w\s\'.#,()>:]*)')
         self.fieldnames = ['count', 'rule', 'description']
 
     def parse_summary(self, filename):
@@ -87,7 +87,7 @@ class RadonParser(object):
 
     def __init__(self):
         self.totals_match_regexp = re.compile(r'\s*\*\*\sTotal\s\*\*')
-        self.results_regexp = re.compile(r'^\s+(LOC|LLOC|SLOC|Comments|Single\scomments|Multi|Blank)\:\s(\d+)')
+        self.results_regexp = re.compile(r'^\s+(LOC|LLOC|SLOC|Comments|Single\scomments|Multi|Blank):\s(\d+)')
         self.fieldnames = ['loc', 'lloc', 'sloc', 'comments', 'single_comments', 'multi', 'blank']
 
     def parse_totals(self, filename):
