@@ -69,13 +69,18 @@ class AssertionWriter(object):
     def _build_assertion(self, variable_name, data, assert_list):
         if variable_name not in self.excluded_variable_names:
             if isinstance(data, str):
+                data = data.translate(str.maketrans({"'":'\\\''}))
                 assert_list.append('self.assertEqual(\'{}\', {})'.format(data, variable_name))
             elif isinstance(data, datetime):
                 date_time_format = '%Y-%m-%d %H:%M:%S%z'
                 str_datetime = data.strftime(date_time_format)
                 assert_list.append(
-                    'self.assertEqual(\'{}\', {}.strftime(\'{}\'))'.format(str_datetime, variable_name,
-                                                                           date_time_format))
+                    'self.assertEqual(\'{}\', {}.strftime(\'{}\'))'.format(
+                        str_datetime,
+                        variable_name,
+                        date_time_format
+                    )
+                )
             elif isinstance(data, date):
                 date_format = '%Y-%m-%d'
                 str_date = data.strftime(date_format)
