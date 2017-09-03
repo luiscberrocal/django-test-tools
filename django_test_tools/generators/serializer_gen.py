@@ -1,7 +1,7 @@
 import logging
 
 logger = logging.getLogger(__name__)
-PRINT_IMPORTS = ['from rest_framework import serializers',]
+PRINT_IMPORTS = ['from rest_framework import serializers', ]
 PRINT_SERIALIZER_CLASS = """
 class {0}Serializers(serializers.{1}):
     \"\"\"
@@ -12,6 +12,7 @@ class {0}Serializers(serializers.{1}):
         model = {0}
         fields = ({2})
 """
+
 
 class SerializerGenerator(object):
     def __init__(self, model, serializer_class='ModelSerializer'):
@@ -50,7 +51,7 @@ class SerializerGenerator(object):
 class AppSerializerGenerator(object):
     def __init__(self, app, serializer_class='ModelSerializer'):
         self.app = app
-        self.serializer_class =serializer_class
+        self.serializer_class = serializer_class
 
     def _generate(self):
         app_content = list()

@@ -1,6 +1,5 @@
 import os
 import shutil
-
 from datetime import date, datetime
 from unittest import mock
 
@@ -15,11 +14,9 @@ from django_test_tools.utils import create_output_filename_with_date
 
 
 class AddDateTest(TestCase):
-
     def setUp(self):
         self.mock_datetime = pytz.timezone('America/Panama').localize(
             datetime.strptime('2016-07-07 16:40:39', '%Y-%m-%d %H:%M:%S'))
-
 
     @mock.patch('django.utils.timezone.now')
     def test_add_date_suffix_path(self, mock_now):
@@ -54,7 +51,6 @@ class AddDateTest(TestCase):
         new_filename = add_date(filename)
         self.assertEquals(r'c:\kilo\poli\namos.nemo_20160707_164039.txt', new_filename)
 
-
         filename = r'c:\kilo\poli\namos.txt'
         new_filename = add_date(filename, date_position='prefix')
         self.assertEquals(r'c:\kilo\poli\20160707_164039_namos.txt', new_filename)
@@ -75,7 +71,6 @@ class AddDateTest(TestCase):
         new_filename = add_date(filename, date_position='prefix')
         self.assertEquals(r'/my/linux/path/20160707_1640_namos.txt', new_filename)
 
-
     @mock.patch('django.utils.timezone.now')
     def test_add_date_suffix_filename(self, mock_now):
         mock_now.return_value = self.mock_datetime
@@ -90,8 +85,8 @@ class AddDateTest(TestCase):
         new_filename = add_date(filename)
         self.assertEqual('/user/kilo/folder_20160707_1640', new_filename)
 
-class CreateDatedTest(TestCase):
 
+class CreateDatedTest(TestCase):
     @override_settings(TEST_OUTPUT_PATH=None)
     def test_create_output_filename_with_date_error(self):
         try:
@@ -102,9 +97,9 @@ class CreateDatedTest(TestCase):
                   ' It should point to a folderfor temporary data to be written and reviewed.'
             self.assertEqual(msg, str(e))
 
+
 @tag('UNIT')
 class TestHashFile(TestOutputMixin, TestCase):
-
     def test_hash(self):
         filename = create_output_filename_with_date('test_hash.txt')
         my_list = ['1', 'hola', 'poli', 'kilo']
@@ -147,16 +142,16 @@ class TestHashFile(TestOutputMixin, TestCase):
 
     def test_serialize_dict(self):
         data = [
-            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
-             'last_login': datetime(2016,1,1,13,14)},
-            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
-             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017, 7, 31), 'age': 25,
+             'last_login': datetime(2016, 1, 1, 13, 14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip': 143443}},
             {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
              'last_login': None, 'groups': ['admin', 'users']},
         ]
         filename = serialize_data(data)
         hash_digest = hash_file(filename)
-        #self.clean_output=False
+        # self.clean_output=False
         self.clean_output_folder(filename)
         self.assertEqual('f1ef22b63e9708c37189c71c4d3ebc931d9ec220', hash_digest)
         self.assertFalse(os.path.exists(filename))
@@ -164,24 +159,24 @@ class TestHashFile(TestOutputMixin, TestCase):
     @temporary_file('json')
     def test_serialize_dict_with_filename(self):
         data = [
-            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
-             'last_login': datetime(2016,1,1,13,14)},
-            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
-             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017, 7, 31), 'age': 25,
+             'last_login': datetime(2016, 1, 1, 13, 14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip': 143443}},
             {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
              'last_login': None, 'groups': ['admin', 'users']},
         ]
         filename = serialize_data(data, self.test_serialize_dict_with_filename.filename)
         hash_digest = hash_file(filename)
         self.assertEqual('f1ef22b63e9708c37189c71c4d3ebc931d9ec220', hash_digest)
-        #self.assertFalse(os.path.exists(filename))
+        # self.assertFalse(os.path.exists(filename))
 
     def test_serialize_dict_with_folder(self):
         data = [
-            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
-             'last_login': datetime(2016,1,1,13,14)},
-            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
-             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017, 7, 31), 'age': 25,
+             'last_login': datetime(2016, 1, 1, 13, 14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip': 143443}},
             {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
              'last_login': None, 'groups': ['admin', 'users']},
         ]
@@ -207,10 +202,10 @@ class TestHashFile(TestOutputMixin, TestCase):
     @temporary_file('json')
     def test_serialize_dict_invalid_format(self):
         data = [
-            {'name': 'Luis', 'username': 'batman', 'date': date(2017,7,31), 'age': 25,
-             'last_login': datetime(2016,1,1,13,14)},
-            {'name': 'John', 'username': 'superman', 'date': date(2017,8,30), 'age': 45,
-             'last_login': None, 'config': {'server': 'nostro', 'ip':143443}},
+            {'name': 'Luis', 'username': 'batman', 'date': date(2017, 7, 31), 'age': 25,
+             'last_login': datetime(2016, 1, 1, 13, 14)},
+            {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
+             'last_login': None, 'config': {'server': 'nostro', 'ip': 143443}},
             {'name': 'John', 'username': 'superman', 'date': date(2017, 8, 30), 'age': 45,
              'last_login': None, 'groups': ['admin', 'users']},
         ]

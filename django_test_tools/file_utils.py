@@ -1,14 +1,14 @@
 import hashlib
 import json
 import os
-
+import shutil
 from datetime import date, datetime
 
-import shutil
 from django.conf import settings
 from django.utils import timezone
 
 BLOCKSIZE = 65536
+
 
 def create_dated(filename):
     """
@@ -25,6 +25,7 @@ def create_dated(filename):
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
+
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     try:
@@ -51,7 +52,9 @@ def parametrized(dec):
     def layer(*args, **kwargs):
         def repl(f):
             return dec(f, *args, **kwargs)
+
         return repl
+
     return layer
 
 
@@ -83,6 +86,7 @@ def temporary_file(func, extension, delete_on_exit=True):
         if os.path.exists(filename) and delete_on_exit:
             os.remove(filename)
         return results
+
     function_t_return.filename = filename
     return function_t_return
 
@@ -95,9 +99,10 @@ def json_serial(obj):
     if isinstance(obj, (datetime, date)):
         serial = obj.isoformat()
         return serial
-    raise TypeError ("Type %s not serializable" % type(obj))
+    raise TypeError("Type %s not serializable" % type(obj))
 
-def serialize_data(data, output_file=None, format='json',**kwargs):
+
+def serialize_data(data, output_file=None, format='json', **kwargs):
     """
     Quick function to serialize a data to file. The data keys will be saved in an alphabetical order
     for consistency purposes.
@@ -114,7 +119,7 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
     if output_file is None:
         filename = create_dated('{}.{}'.format('serialize_data_q', format))
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file,'{}.{}'.format('serialize_data_f', format))
+        filename = os.path.join(output_file, '{}.{}'.format('serialize_data_f', format))
     else:
         filename = output_file
     if format == 'json':
@@ -157,7 +162,7 @@ def add_date(filename, **kwargs):
         path = '/'.join(path_parts[:-1])
         separator = '/'
     else:
-        file=filename
+        file = filename
         path = ''
         separator = ''
 
@@ -176,10 +181,10 @@ def add_date(filename, **kwargs):
         new_filename_data['filename_with_out_extension'] = parts[0]
     else:
         new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
-    new_filename_data['datetime'] = current_datetime[:-2] #Seconds are stripped
+    new_filename_data['datetime'] = current_datetime[:-2]  # Seconds are stripped
 
     date_position = kwargs.get('date_position', 'suffix')
-    if date_position=='suffix':
+    if date_position == 'suffix':
         new_filename = suffix_template.format(**new_filename_data)
         if os.path.exists(new_filename):
             new_filename_data['datetime'] = current_datetime

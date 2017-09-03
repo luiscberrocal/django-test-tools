@@ -1,12 +1,10 @@
 import datetime
-from unittest import mock
+import logging
 import os
+from unittest import mock
 
 import pytz
 from django.test import TestCase
-
-import logging
-
 from django.test import override_settings
 
 from django_test_tools.file_utils import TemporaryFolder, hash_file
@@ -18,7 +16,6 @@ __author__ = 'lberrocal'
 
 
 class MockPerfCounter(object):
-
     def __init__(self):
         self.t = 0
 
@@ -28,8 +25,8 @@ class MockPerfCounter(object):
     def perf_counter(self):
         return self.t
 
-class Testdict_compare(TestCase):
 
+class Testdict_compare(TestCase):
     def test_dict_compare(self):
         dict1 = {'name': 'Luis', 'colors': ['red', 'blue', 'black']}
         dict2 = {'name': 'Luis', 'colors': ['red', 'blue', 'black']}
@@ -61,13 +58,12 @@ class Testdict_compare(TestCase):
         self.assertEqual({'colors': (['red', 'blue', 'black'], ['red', 'blue'])}, modified)
         self.assertEqual({'name'}, same)
 
+
 class TestTimer(TestCase):
-
-
     def test_get_elapsed_time_str(self):
         clock = MockPerfCounter()
         with mock.patch('time.perf_counter', clock.perf_counter):
-            #clock.increment(3600.0)
+            # clock.increment(3600.0)
             stopwatch = Timer()
             stopwatch.start()
             clock.increment(120.5)
@@ -77,18 +73,16 @@ class TestTimer(TestCase):
     def test_get_elapsed_time_str_with(self):
         clock = MockPerfCounter()
         with mock.patch('time.perf_counter', clock.perf_counter):
-            #clock.increment(3600.0)
+            # clock.increment(3600.0)
             with Timer() as stopwatch:
                 clock.increment(360.25)
             self.assertEqual('0 h 6 m 0.25 s', stopwatch.get_elapsed_time_str())
 
 
 class TestAddDateToFilename(TestCase):
-
     def setUp(self):
         self.mock_datetime = pytz.timezone('America/Panama').localize(
             datetime.datetime.strptime('2016-07-07 16:40:39', '%Y-%m-%d %H:%M:%S'))
-
 
     @mock.patch('django.utils.timezone.now')
     def test_add_date_to_filename_suffix_path(self, mock_now):
@@ -123,7 +117,6 @@ class TestAddDateToFilename(TestCase):
         new_filename = add_date_to_filename(filename)
         self.assertEquals(r'c:\kilo\poli\namos.nemo_20160707_164039.txt', new_filename)
 
-
         filename = r'c:\kilo\poli\namos.txt'
         new_filename = add_date_to_filename(filename, date_position='prefix')
         self.assertEquals(r'c:\kilo\poli\20160707_164039_namos.txt', new_filename)
@@ -144,7 +137,6 @@ class TestAddDateToFilename(TestCase):
         new_filename = add_date_to_filename(filename, date_position='prefix')
         self.assertEquals(r'/my/linux/path/20160707_1640_namos.txt', new_filename)
 
-
     @mock.patch('django.utils.timezone.now')
     def test_add_date_to_filename_suffix_filename(self, mock_now):
         mock_now.return_value = self.mock_datetime
@@ -162,20 +154,19 @@ class TestAddDateToFilename(TestCase):
                   ' It should point to a folderfor temporary data to be written and reviewed.'
             self.assertEqual(msg, str(e))
 
-
     def test_daterange(self):
         start_date = datetime.date(2015, 9, 1)
         end_date = datetime.date(2015, 9, 30)
         work_days = 0
         for dt in daterange(start_date, end_date):
             work_days += 1
-            #logger.debug('Date: %s' % dt.strftime('%m-%d %a'))
+            # logger.debug('Date: %s' % dt.strftime('%m-%d %a'))
             # self.assertFalse(dt.weekday() not in set([5, 6]))
         self.assertEqual(22, work_days)
 
     def test_daterange_week(self):
-        start_date = datetime.date(2016, 10, 3) # Monday
-        end_date = datetime.date(2016, 10, 7) # Friday
+        start_date = datetime.date(2016, 10, 3)  # Monday
+        end_date = datetime.date(2016, 10, 7)  # Friday
         work_days = 0
         for dt in daterange(start_date, end_date):
             work_days += 1
@@ -205,14 +196,13 @@ class TestAddDateToFilename(TestCase):
 
 
 class TestSpanishDate(TestCase):
-
     def test_to_string(self):
         start_date = datetime.date(2016, 12, 3)
         str_date = spanish_date_util.to_string(start_date)
         self.assertEqual('03-Dic-16', str_date)
 
     def test_to_string_datetime(self):
-        start_date = datetime.datetime(2016, 12, 3, 16,15)
+        start_date = datetime.datetime(2016, 12, 3, 16, 15)
         str_date = spanish_date_util.to_string(start_date)
         self.assertEqual('03-Dic-16 16:15', str_date)
 
@@ -228,7 +218,6 @@ class TestSpanishDate(TestCase):
 
 
 class TemporyFolderTest(TestCase):
-
     def test_temporary_folder_write_list(self):
         with TemporaryFolder('my_temp_list', delete_on_exit=True) as folder:
             self.assertTrue(os.path.exists(folder.new_path))

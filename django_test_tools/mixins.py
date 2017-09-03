@@ -1,6 +1,6 @@
 import csv
-from io import StringIO
 import os
+from io import StringIO
 
 from .excel import ExcelAdapter
 

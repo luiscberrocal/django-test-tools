@@ -1,6 +1,6 @@
+import subprocess
 from functools import partial
 from os import environ
-import subprocess
 
 from django.test import TestCase
 
@@ -13,13 +13,10 @@ SUBPROCESS_ENV = dict(
 
 call = partial(subprocess.call, env=SUBPROCESS_ENV)
 check_call = partial(subprocess.check_call, env=SUBPROCESS_ENV)
-check_output = partial(subprocess.check_output,  env=SUBPROCESS_ENV)
-
+check_output = partial(subprocess.check_output, env=SUBPROCESS_ENV)
 
 
 class GitTest(TestCase):
-
-
     def test_report(self):
         vcs = 'git'
         with TemporaryFolder('test_report') as temp_folder:

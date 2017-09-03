@@ -1,4 +1,5 @@
 import sys
+
 from django.core.management import BaseCommand
 
 from ...app_manager import DjangoAppManager
@@ -204,4 +205,3 @@ class Command(BaseCommand):
         # unfortunately
         sys.stderr.write(message)
         sys.stderr.write('\n')
-

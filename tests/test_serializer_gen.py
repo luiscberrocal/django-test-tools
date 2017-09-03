@@ -7,7 +7,6 @@ from tests.test_model_test_gen import PythonWritingTestMixin
 
 
 class TestSerializerGenerator(PythonWritingTestMixin, TestCase):
-
     @temporary_file('py', delete_on_exit=True)
     def test_app_str(self):
         app_name = 'example.servers'
@@ -19,7 +18,6 @@ class TestSerializerGenerator(PythonWritingTestMixin, TestCase):
 
 
 class TestAppSerializerGenerator(PythonWritingTestMixin, TestCase):
-
     @temporary_file('py', delete_on_exit=True)
     def test_app_str(self):
         app_name = 'example.servers'
