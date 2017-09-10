@@ -24,7 +24,7 @@ class AssertionWriter(object):
     def write_assert_list(self, dictionary_list, variable_name, **kwargs):
         """
         Function to generate assertions for a dictionary or list content.
-        :param filename:
+        :param kwargs:
         :param dictionary_list:
         :param variable_name:
         :return:
@@ -94,3 +94,6 @@ class AssertionWriter(object):
                 assert_list += self._generate_assert_equals_dictionaries(data, variable_name)
             else:
                 assert_list.append('self.assertEqual({}, {})'.format(data, variable_name))
+
+
+
