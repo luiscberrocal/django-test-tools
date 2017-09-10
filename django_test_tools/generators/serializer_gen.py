@@ -23,6 +23,7 @@ class SerializerGenerator(object):
         model_test_case_content = list()
 
         field_names = list()
+        # noinspection PyProtectedMember
         for field in self.model._meta.fields:
             field_names.append('\'{}\''.format(field.name))
 

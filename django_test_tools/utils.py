@@ -146,7 +146,7 @@ def weekdays(start_date, end_date):
     :param start_date: date. Start date
     :param end_date: date. End date
     """
-    weekend = set([5, 6])
+    weekend = {5, 6}
     for n in range(int((end_date - start_date).days) + 1):
         dt = start_date + timedelta(n)
         if dt.weekday() not in weekend:

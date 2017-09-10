@@ -24,7 +24,7 @@ class AssertionWriter(object):
     def write_assert_list(self, dictionary_list, variable_name, **kwargs):
         """
         Function to generate assertions for a dictionary or list content.
-        :param filename:
+        :param kwargs:
         :param dictionary_list:
         :param variable_name:
         :return:

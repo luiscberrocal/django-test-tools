@@ -13,7 +13,7 @@ BLOCKSIZE = 65536
 
 def create_dated(filename):
     """
-    Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
+    Based on the filename will create a full path filename including the date and time in '%Y%m%d_%H%M' format.
     The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
 
     :param filename: base filename. my_excel_data.xlsx for example
@@ -76,7 +76,7 @@ def temporary_file(func, extension, delete_on_exit=True):
 
 
     :param func: function to decorate
-    :param extension: extention of the filename
+    :param extension: extension of the filename
     :param delete_on_exit: If True the filename will be deleted.
     :return: the function
     """
@@ -148,7 +148,7 @@ def add_date(filename, **kwargs):
 
     :param filename: string with fullpath to file or just the filename
     :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
-    :return: string with full path string incluiding the date and time
+    :return: string with full path string including the date and time
     """
     current_datetime = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M%S')
     new_filename_data = dict()
