@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import pickle
 
 from datetime import date, datetime
 
@@ -110,7 +111,7 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
     :param output_file: File to output the data to
     :param kwargs:
     """
-    assert format in ['json'], 'Unsupported format {}'.format(format)
+    assert format in ['json', 'pickle'], 'Unsupported format {}'.format(format)
     if output_file is None:
         filename = create_dated('{}.{}'.format('serialize_data_q', format))
     elif os.path.isdir(output_file):
@@ -121,6 +122,10 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
         with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8'), newline='\n') as fp:
             json.dump(data, fp, indent=kwargs.get('indent', 4),
                       default=json_serial, sort_keys=True)
+    elif format == 'pickle':
+        with open(filename, 'wb') as output:
+            pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+
     return filename
 
 

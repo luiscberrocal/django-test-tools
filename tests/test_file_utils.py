@@ -1,4 +1,5 @@
 import os
+import pickle
 import shutil
 
 from datetime import date, datetime
@@ -13,6 +14,14 @@ from django_test_tools.file_utils import hash_file, temporary_file, serialize_da
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
+
+class PersonObject(object):
+    attributes = dict()
+
+    def __init__(self, id, name, **kwargs):
+        self.id = id,
+        self.name = name
+        self.attributes = kwargs
 
 class AddDateTest(TestCase):
 
@@ -219,3 +228,20 @@ class TestHashFile(TestOutputMixin, TestCase):
             self.fail('Did not throw error for unsupported format')
         except AssertionError as e:
             self.assertEqual('Unsupported format POL', str(e))
+
+    @temporary_file('pkl')
+    def test_serialize_pickle(self):
+
+        data = PersonObject(2, 'Batman', age=45, sex='M')
+
+        serialize_data(data, self.test_serialize_pickle.filename, format='pickle')
+
+        with open(self.test_serialize_pickle.filename, 'rb') as input:
+            pickled_person = pickle.load(input)
+        self.assertEqual(data.id, pickled_person.id)
+        self.assertEqual(data.name, pickled_person.name)
+        self.assertEqual(data.attributes['age'], pickled_person.attributes['age'])
+        self.assertEqual(data.attributes['sex'], pickled_person.attributes['sex'])
+
+
+
