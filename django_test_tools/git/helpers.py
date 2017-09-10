@@ -1,7 +1,6 @@
 import os
-from tempfile import NamedTemporaryFile
-
 import subprocess
+from tempfile import NamedTemporaryFile
 
 
 class GenericCVS(object):
@@ -71,7 +70,7 @@ class Git(GenericCVS):
                     b"\n".join(lines)))
 
     def report(self):
-        #git log --pretty=format:"%h - %an, %ad : %s" --date=iso
+        # git log --pretty=format:"%h - %an, %ad : %s" --date=iso
         #
         # git log --pretty="%h - %s" --author=gitster --since="2008-10-01"
         # --before="2008-11-01" --no-merges -- t/

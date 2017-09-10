@@ -1,18 +1,19 @@
 import hashlib
 import json
 import os
-
+import pickle
+import shutil
 from datetime import date, datetime
 
-import shutil
 from django.conf import settings
 from django.utils import timezone
 
 BLOCKSIZE = 65536
 
+
 def create_dated(filename):
     """
-    Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
+    Based on the filename will create a full path filename including the date and time in '%Y%m%d_%H%M' format.
     The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
 
     :param filename: base filename. my_excel_data.xlsx for example
@@ -25,6 +26,7 @@ def create_dated(filename):
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
+
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     try:
@@ -51,7 +53,9 @@ def parametrized(dec):
     def layer(*args, **kwargs):
         def repl(f):
             return dec(f, *args, **kwargs)
+
         return repl
+
     return layer
 
 
@@ -72,7 +76,7 @@ def temporary_file(func, extension, delete_on_exit=True):
 
 
     :param func: function to decorate
-    :param extension: extention of the filename
+    :param extension: extension of the filename
     :param delete_on_exit: If True the filename will be deleted.
     :return: the function
     """
@@ -83,6 +87,7 @@ def temporary_file(func, extension, delete_on_exit=True):
         if os.path.exists(filename) and delete_on_exit:
             os.remove(filename)
         return results
+
     function_t_return.filename = filename
     return function_t_return
 
@@ -95,9 +100,10 @@ def json_serial(obj):
     if isinstance(obj, (datetime, date)):
         serial = obj.isoformat()
         return serial
-    raise TypeError ("Type %s not serializable" % type(obj))
+    raise TypeError("Type %s not serializable" % type(obj))
 
-def serialize_data(data, output_file=None, format='json',**kwargs):
+
+def serialize_data(data, output_file=None, format='json', **kwargs):
     """
     Quick function to serialize a data to file. The data keys will be saved in an alphabetical order
     for consistency purposes.
@@ -110,17 +116,21 @@ def serialize_data(data, output_file=None, format='json',**kwargs):
     :param output_file: File to output the data to
     :param kwargs:
     """
-    assert format in ['json'], 'Unsupported format {}'.format(format)
+    assert format in ['json', 'pickle'], 'Unsupported format {}'.format(format)
     if output_file is None:
         filename = create_dated('{}.{}'.format('serialize_data_q', format))
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file,'{}.{}'.format('serialize_data_f', format))
+        filename = os.path.join(output_file, '{}.{}'.format('serialize_data_f', format))
     else:
         filename = output_file
     if format == 'json':
         with open(filename, 'w', encoding=kwargs.get('encoding', 'utf-8'), newline='\n') as fp:
             json.dump(data, fp, indent=kwargs.get('indent', 4),
                       default=json_serial, sort_keys=True)
+    elif format == 'pickle':
+        with open(filename, 'wb') as output:
+            pickle.dump(data, output, pickle.HIGHEST_PROTOCOL)
+
     return filename
 
 
@@ -138,7 +148,7 @@ def add_date(filename, **kwargs):
 
     :param filename: string with fullpath to file or just the filename
     :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
-    :return: string with full path string incluiding the date and time
+    :return: string with full path string including the date and time
     """
     current_datetime = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M%S')
     new_filename_data = dict()
@@ -157,7 +167,7 @@ def add_date(filename, **kwargs):
         path = '/'.join(path_parts[:-1])
         separator = '/'
     else:
-        file=filename
+        file = filename
         path = ''
         separator = ''
 
@@ -176,10 +186,10 @@ def add_date(filename, **kwargs):
         new_filename_data['filename_with_out_extension'] = parts[0]
     else:
         new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
-    new_filename_data['datetime'] = current_datetime[:-2] #Seconds are stripped
+    new_filename_data['datetime'] = current_datetime[:-2]  # Seconds are stripped
 
     date_position = kwargs.get('date_position', 'suffix')
-    if date_position=='suffix':
+    if date_position == 'suffix':
         new_filename = suffix_template.format(**new_filename_data)
         if os.path.exists(new_filename):
             new_filename_data['datetime'] = current_datetime

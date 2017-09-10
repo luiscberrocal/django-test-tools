@@ -17,7 +17,7 @@ class Command(BaseCommand):
         parser.add_argument("-i", "--input", dest="input_file", help="Input file")
         parser.add_argument("-o", "--output", dest="output_file", help="Output file")
 
-        #parser.add_argument('output_filename')
+        # parser.add_argument('output_filename')
         # parser.add_argument("-l", "--list",
         #                     action='store_true',
         #                     dest="list",
@@ -49,6 +49,7 @@ class Command(BaseCommand):
         #                 help="LDAP usernames for employees",
         #                 nargs='+',
         #                 )
+
     def handle(self, *args, **options):
         if not options.get('output_file'):
             output_filename = add_date(options.get('input_file'))

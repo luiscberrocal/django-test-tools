@@ -2,7 +2,6 @@ from openpyxl import load_workbook
 
 
 class ExcelAdapter(object):
-
     @classmethod
     def convert_to_list(cls, filename, sheet_name=None, has_header=True):
         data = list()
@@ -22,5 +21,3 @@ class ExcelAdapter(object):
             data.append(row_data)
             row_num += 1
         return data
-
-
