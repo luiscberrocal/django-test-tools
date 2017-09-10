@@ -66,12 +66,12 @@ class ModelTestCaseGenerator(object):
     def _generate(self):
         model_test_case_content = list()
         model_test_case_content.append({'print': PRINT_TEST_CLASS,
-                                      'args': [self.model.__name__,
-                                               self.model.__name__.lower()]})
+                                        'args': [self.model.__name__,
+                                                 self.model.__name__.lower()]})
         model_test_case_content.append({'print': PRINT_TEST_ATTRIBUTE_COUNT,
-                                      'args': [self.model.__name__,
-                                               self.model.__name__.lower(),
-                                               len(self.model._meta.fields)]})
+                                        'args': [self.model.__name__,
+                                                 self.model.__name__.lower(),
+                                                 len(self.model._meta.fields)]})
 
         content_text = PRINT_TEST_ATTRIBUTE_CONTENT.format(self.model.__name__,
                                                            self.model.__name__.lower())

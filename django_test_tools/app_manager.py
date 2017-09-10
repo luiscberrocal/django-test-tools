@@ -1,7 +1,7 @@
 from django.apps.registry import apps
 
-class DjangoAppManager(object):
 
+class DjangoAppManager(object):
     def __init__(self):
         self.installed_apps = dict(self.get_installed_apps())
 
@@ -26,4 +26,3 @@ class DjangoAppManager(object):
             if app_project == project_name:
                 project_apps[app_name] = app_config
         return project_apps
-
