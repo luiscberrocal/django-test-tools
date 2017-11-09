@@ -27,6 +27,13 @@ def dict_compare(d1, d2):
     return added, removed, modified, same
 
 
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+def convert_to_snake_case(camel_case):
+    s1 = first_cap_re.sub(r'\1_\2', camel_case)
+    return all_cap_re.sub(r'\1_\2', s1).lower()
+
+
 @deprecated('Should use django_test_tools.file_utils.create_dated() function')
 def create_output_filename_with_date(filename):
     """
@@ -146,7 +153,7 @@ def weekdays(start_date, end_date):
     :param start_date: date. Start date
     :param end_date: date. End date
     """
-    weekend = {5, 6}
+    weekend = set([5, 6])
     for n in range(int((end_date - start_date).days) + 1):
         dt = start_date + timedelta(n)
         if dt.weekday() not in weekend:

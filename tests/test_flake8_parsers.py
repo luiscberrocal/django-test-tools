@@ -7,7 +7,6 @@ from django_test_tools.mixins import TestOutputMixin
 
 
 class Flake8ParserTest(TestOutputMixin, TestCase):
-
     def setUp(self):
         self.content = """
 3     E124 closing bracket does not match visual indentation
@@ -41,7 +40,79 @@ class Flake8ParserTest(TestOutputMixin, TestCase):
         with open(filename, 'w', encoding='utf-8') as pep8_file:
             pep8_file.write(self.content)
         summary = parser.parse_summary(filename)
+        #self.assertEqual(23, len(summary))
+        #write_assert_list(None, summary, 'summary')
         self.assertEqual(23, len(summary))
+        self.assertEqual('3', summary[0]['count'])
+        self.assertEqual('closing bracket does not match visual indentation', summary[0]['description'])
+        self.assertEqual('E124', summary[0]['rule'])
+        self.assertEqual('6', summary[1]['count'])
+        self.assertEqual('continuation line over', summary[1]['description'])
+        self.assertEqual('E127', summary[1]['rule'])
+        self.assertEqual('11', summary[2]['count'])
+        self.assertEqual('continuation line under', summary[2]['description'])
+        self.assertEqual('E128', summary[2]['rule'])
+        self.assertEqual('2', summary[3]['count'])
+        self.assertEqual('multiple spaces before operator', summary[3]['description'])
+        self.assertEqual('E221', summary[3]['rule'])
+        self.assertEqual('1', summary[4]['count'])
+        self.assertEqual('multiple spaces after operator', summary[4]['description'])
+        self.assertEqual('E222', summary[4]['rule'])
+        self.assertEqual('10', summary[5]['count'])
+        self.assertEqual('missing whitespace around operator', summary[5]['description'])
+        self.assertEqual('E225', summary[5]['rule'])
+        self.assertEqual('6', summary[6]['count'])
+        self.assertEqual('missing whitespace after \',\'', summary[6]['description'])
+        self.assertEqual('E231', summary[6]['rule'])
+        self.assertEqual('2', summary[7]['count'])
+        self.assertEqual('unexpected spaces around keyword ', summary[7]['description'])
+        self.assertEqual('E251', summary[7]['rule'])
+        self.assertEqual('4', summary[8]['count'])
+        self.assertEqual('at least two spaces before inline comment', summary[8]['description'])
+        self.assertEqual('E261', summary[8]['rule'])
+        self.assertEqual('4', summary[9]['count'])
+        self.assertEqual('inline comment should start with \'# \'', summary[9]['description'])
+        self.assertEqual('E262', summary[9]['rule'])
+        self.assertEqual('8', summary[10]['count'])
+        self.assertEqual('block comment should start with \'# \'', summary[10]['description'])
+        self.assertEqual('E265', summary[10]['rule'])
+        self.assertEqual('4', summary[11]['count'])
+        self.assertEqual('too many leading \'#\' for block comment', summary[11]['description'])
+        self.assertEqual('E266', summary[11]['rule'])
+        self.assertEqual('2', summary[12]['count'])
+        self.assertEqual('multiple spaces after keyword', summary[12]['description'])
+        self.assertEqual('E271', summary[12]['rule'])
+        self.assertEqual('5', summary[13]['count'])
+        self.assertEqual('expected 2 blank lines, found 1', summary[13]['description'])
+        self.assertEqual('E302', summary[13]['rule'])
+        self.assertEqual('7', summary[14]['count'])
+        self.assertEqual('too many blank lines (3)', summary[14]['description'])
+        self.assertEqual('E303', summary[14]['rule'])
+        self.assertEqual('2', summary[15]['count'])
+        self.assertEqual('module level import not at top of file', summary[15]['description'])
+        self.assertEqual('E402', summary[15]['rule'])
+        self.assertEqual('8', summary[16]['count'])
+        self.assertEqual('line too long (123 > 120 characters)', summary[16]['description'])
+        self.assertEqual('E501', summary[16]['rule'])
+        self.assertEqual('17', summary[17]['count'])
+        self.assertEqual('\'django.contrib.admin\' imported but unused', summary[17]['description'])
+        self.assertEqual('F401', summary[17]['rule'])
+        self.assertEqual('25', summary[18]['count'])
+        self.assertEqual('\'env\' may be undefined, or defined from star imports: .base', summary[18]['description'])
+        self.assertEqual('F405', summary[18]['rule'])
+        self.assertEqual('1', summary[19]['count'])
+        self.assertEqual('redefinition of unused \'RemarksManager\' from line 3', summary[19]['description'])
+        self.assertEqual('F811', summary[19]['rule'])
+        self.assertEqual('7', summary[20]['count'])
+        self.assertEqual('local variable \'response\' is assigned to but never used', summary[20]['description'])
+        self.assertEqual('F841', summary[20]['rule'])
+        self.assertEqual('2', summary[21]['count'])
+        self.assertEqual('blank line contains whitespace', summary[21]['description'])
+        self.assertEqual('W293', summary[21]['rule'])
+        self.assertEqual('6', summary[22]['count'])
+        self.assertEqual('blank line at end of file', summary[22]['description'])
+        self.assertEqual('W391', summary[22]['rule'])
+
 
     @temporary_file('txt')
     def test_write_summary(self):
@@ -56,8 +127,8 @@ class Flake8ParserTest(TestOutputMixin, TestCase):
         self.assertEqual('20f5184854bd10ed0998c8e9029175ed08b097e0', digest)
         self.clean_output_folder(out_filename)
 
-class RadonParserTest(TestOutputMixin, TestCase):
 
+class RadonParserTest(TestOutputMixin, TestCase):
     def setUp(self):
         content = """
             config/settings/test.py
@@ -89,11 +160,10 @@ class RadonParserTest(TestOutputMixin, TestCase):
         with open(self.filename, 'w', encoding='utf-8') as radon_file:
             radon_file.write(content)
 
-
     def test_parse_totals(self):
         parser = RadonParser()
         results = parser.parse_totals(self.filename)
-        #write_assert_list(None, results, 'results')
+        # write_assert_list(None, results, 'results')
 
         self.assertEqual(400, results['blank'])
         self.assertEqual(335, results['comments'])

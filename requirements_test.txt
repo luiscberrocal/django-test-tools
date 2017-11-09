@@ -6,6 +6,6 @@ flake8>=2.1.0
 tox>=1.7.0
 codecov>=2.0.0
 Faker==0.7.17
-django-environ==0.4.3
+django-environ==0.4.4
 # Additional test requirements go here
-django==1.11.5
+django==1.11.7

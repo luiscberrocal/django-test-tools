@@ -2,14 +2,14 @@ import hashlib
 import json
 import os
 import pickle
-import shutil
+
 from datetime import date, datetime
 
+import shutil
 from django.conf import settings
 from django.utils import timezone
 
 BLOCKSIZE = 65536
-
 
 def create_dated(filename):
     """
@@ -26,7 +26,6 @@ def create_dated(filename):
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
-
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     try:
@@ -53,9 +52,7 @@ def parametrized(dec):
     def layer(*args, **kwargs):
         def repl(f):
             return dec(f, *args, **kwargs)
-
         return repl
-
     return layer
 
 
@@ -76,7 +73,7 @@ def temporary_file(func, extension, delete_on_exit=True):
 
 
     :param func: function to decorate
-    :param extension: extension of the filename
+    :param extension: extension of the filename without the dot
     :param delete_on_exit: If True the filename will be deleted.
     :return: the function
     """

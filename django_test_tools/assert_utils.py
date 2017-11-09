@@ -2,9 +2,27 @@ import collections
 from datetime import datetime, date
 from decimal import Decimal
 
+from openpyxl.compat import deprecated
+
 from django_test_tools.utils import create_output_filename_with_date
 
 
+def write_assertions(dictionary_list, variable_name, **kwargs):
+    """
+    Writes assertions using Django practice of putting actual value first and then expected value to a file.
+    If no filename is supplied it will generate a file in the settings.TEST_OUTPUT_PATH folder with the
+    **variable_name** and the current date.
+
+    :param dictionary_list: dictionary or list of values
+    :param variable_name: name of the variable
+    :param kwargs: A valide kwarg if filename.
+    :return:
+    """
+    writer = AssertionWriter()
+    return writer.write_assert_list(dictionary_list, variable_name, filename=kwargs.get('filename'))
+
+
+@deprecated('Use assert_utils.write_assertions instead')
 def write_assert_list(filename, dictionary_list, variable_name):
     """
     Function to generate assertions for a dictionary or list content.
@@ -18,6 +36,9 @@ def write_assert_list(filename, dictionary_list, variable_name):
 
 
 class AssertionWriter(object):
+    """
+    This class generates assertions using Django practice of putting actual value first and then expected value.
+    """
     def __init__(self, **kwargs):
         self.excluded_variable_names = ['created', 'modified']
 
@@ -49,7 +70,7 @@ class AssertionWriter(object):
         if variable_name not in self.excluded_variable_names:
             index = 0
             # assert_list.append('# ********** variable {} ***********'.format(variable_name))
-            assert_list.append('self.assertEqual({}, {})'.format(len(data_list), 'len({})'.format(variable_name)))
+            assert_list.append('self.assertEqual({}, {})'.format('len({})'.format(variable_name), len(data_list)))
             for data in data_list:
                 list_variable = '{}[{}]'.format(variable_name, index)
                 self._build_assertion(list_variable, data, assert_list)
@@ -69,23 +90,31 @@ class AssertionWriter(object):
     def _build_assertion(self, variable_name, data, assert_list):
         if variable_name not in self.excluded_variable_names:
             if isinstance(data, str):
-                assert_list.append('self.assertEqual(\'{}\', {})'.format(data, variable_name))
+                data = data.translate(str.maketrans({"'":'\\\''}))
+                assert_list.append('self.assertEqual({}, \'{}\')'.format(variable_name, data))
             elif isinstance(data, datetime):
                 date_time_format = '%Y-%m-%d %H:%M:%S%z'
                 str_datetime = data.strftime(date_time_format)
                 assert_list.append(
-                    'self.assertEqual(\'{}\', {}.strftime(\'{}\'))'.format(str_datetime, variable_name,
-                                                                           date_time_format))
+                    'self.assertEqual({}.strftime(\'{}\'), \'{}\')'.format(
+                        variable_name,
+                        date_time_format,
+                        str_datetime,
+                    )
+                )
             elif isinstance(data, date):
                 date_format = '%Y-%m-%d'
                 str_date = data.strftime(date_format)
                 assert_list.append(
-                    'self.assertEqual(\'{}\', {}.strftime(\'{}\'))'.format(str_date, variable_name, date_format))
+                    'self.assertEqual({}.strftime(\'{}\'), \'{}\')'.format(variable_name, date_format, str_date))
             elif isinstance(data, Decimal):
-                assert_list.append('self.assertEqual(Decimal({}), {})'.format(data, variable_name))
+                assert_list.append('self.assertEqual({}, Decimal({}))'.format(variable_name, data))
             elif isinstance(data, list):
                 assert_list += self._generate_assert_equals_list(data, variable_name)
             elif isinstance(data, dict):
                 assert_list += self._generate_assert_equals_dictionaries(data, variable_name)
             else:
-                assert_list.append('self.assertEqual({}, {})'.format(data, variable_name))
+                assert_list.append('self.assertEqual({}, {})'.format(variable_name, data))
+
+
+
