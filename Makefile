@@ -15,7 +15,10 @@ BROWSER := python -c "$$BROWSER_PYSCRIPT"
 help:
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-25s\033[0m %s\n", $$1, $$2}'
 
-clean: clean-build clean-pyc
+clean: clean-build clean-pyc clean-output
+
+clean-output:
+	rm -f output/*
 
 clean-build: ## remove build artifacts
 	rm -fr build/
@@ -30,7 +33,7 @@ clean-pyc: ## remove Python file artifacts
 lint: ## check style with flake8
 	flake8 django_test_tools tests
 
-test: ## run tests quickly with the default Python
+test: clean-output ## run tests quickly with the default Python
 	python runtests.py tests
 
 test-all: ## run tests on every Python version with tox

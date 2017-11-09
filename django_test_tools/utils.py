@@ -27,6 +27,13 @@ def dict_compare(d1, d2):
     return added, removed, modified, same
 
 
+first_cap_re = re.compile('(.)([A-Z][a-z]+)')
+all_cap_re = re.compile('([a-z0-9])([A-Z])')
+def convert_to_snake_case(camel_case):
+    s1 = first_cap_re.sub(r'\1_\2', camel_case)
+    return all_cap_re.sub(r'\1_\2', s1).lower()
+
+
 @deprecated('Should use django_test_tools.file_utils.create_dated() function')
 def create_output_filename_with_date(filename):
     """

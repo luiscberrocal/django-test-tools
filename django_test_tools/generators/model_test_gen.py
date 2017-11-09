@@ -1,3 +1,5 @@
+from django_test_tools.utils import convert_to_snake_case
+
 PRINT_IMPORTS = ['from django.forms.models import model_to_dict',
                  'from django.conf import settings',
                  'from django.test import TestCase',
@@ -11,15 +13,15 @@ class TestCase{0}(TestCase):
         Test the creation of a {0} model using a factory
         \"\"\"
         {1} = {0}Factory.create()
-        self.assertEqual(1, {0}.objects.count())
+        self.assertEqual({0}.objects.count(), 1)
 
     def test_create_batch(self):
         \"\"\"
         Test the creation of 5 {0} models using a factory
         \"\"\"
         {1}s = {0}Factory.create_batch(5)
-        self.assertEqual(5, {0}.objects.count())
-        self.assertEqual(5, len({1}s))
+        self.assertEqual({0}.objects.count(), 5)
+        self.assertEqual(len({1}s), 5)
 """
 
 PRINT_TEST_ATTRIBUTE_COUNT = """
@@ -30,7 +32,7 @@ PRINT_TEST_ATTRIBUTE_COUNT = """
         \"\"\"
         {1} = {0}Factory.create()
         {1}_dict = model_to_dict({1})
-        self.assertEqual({2}, len({1}_dict.keys()))
+        self.assertEqual(len({1}_dict.keys(), {2}))
 """
 
 PRINT_TEST_ATTRIBUTE_CONTENT = """
@@ -54,7 +56,7 @@ PRINT_TEST_ATTRIBUTE_UNIQUE = """
             {1}_02.save()
             self.fail('Test should have raised and integrity error')
         except IntegrityError as e:
-            self.assertEqual('', str(e)) #This test is incomplete
+            self.assertEqual(str(e), '') #FIXME This test is incomplete
 """
 
 
@@ -67,21 +69,22 @@ class ModelTestCaseGenerator(object):
         model_test_case_content = list()
         model_test_case_content.append({'print': PRINT_TEST_CLASS,
                                         'args': [self.model.__name__,
-                                                 self.model.__name__.lower()]})
+                                                 convert_to_snake_case(self.model.__name__)]})
         model_test_case_content.append({'print': PRINT_TEST_ATTRIBUTE_COUNT,
                                         'args': [self.model.__name__,
-                                                 self.model.__name__.lower(),
+                                                 convert_to_snake_case(self.model.__name__),
                                                  len(self.model._meta.fields)]})
 
         content_text = PRINT_TEST_ATTRIBUTE_CONTENT.format(self.model.__name__,
-                                                           self.model.__name__.lower())
+                                                           convert_to_snake_case(self.model.__name__))
         PRINT_IMPORTS.append('from {} import {}'.format(self.model.__module__, self.model.__name__))
         PRINT_IMPORTS.append('from ..factories import {}Factory'.format(self.model.__name__))
 
         for field in self.model._meta.fields:
             field_type = type(field).__name__
             field_data = dict()
-            assertion = '        self.assertIsNotNone({0}.{1})\n'.format(self.model.__name__.lower(), field.name)
+            assertion = '        self.assertIsNotNone({0}.{1})\n'.format(convert_to_snake_case(self.model.__name__),
+                                                                         field.name)
             content_text += assertion
         model_test_case_content.append({'print': content_text, 'args': None})
         # Build unique tests
@@ -89,7 +92,7 @@ class ModelTestCaseGenerator(object):
         for field in self.model._meta.fields:
             if field.unique and not field.primary_key:
                 data = [self.model.__name__,
-                        self.model.__name__.lower(),
+                        convert_to_snake_case(self.model.__name__),
                         field.name]
                 unique_test = PRINT_TEST_ATTRIBUTE_UNIQUE.format(*data)
                 model_test_case_content.append({'print': unique_test, 'args': None})

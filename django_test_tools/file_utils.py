@@ -73,7 +73,7 @@ def temporary_file(func, extension, delete_on_exit=True):
 
 
     :param func: function to decorate
-    :param extension: extension of the filename
+    :param extension: extension of the filename without the dot
     :param delete_on_exit: If True the filename will be deleted.
     :return: the function
     """
