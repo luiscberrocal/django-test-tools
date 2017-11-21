@@ -64,3 +64,12 @@ class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase
         call_command('generate_serializers', 'example.servers', stdout=self.content)
         results = self.get_results()
         self.assertEqual(22, len(results))
+
+
+class TestCheckRequirementsCommand(TestOutputMixin, TestCommandMixin, TestCase):
+    def test_check_requirements(self):
+        call_command('check_requirements', stdout=self.content)
+        results = self.get_results()
+        for r in results:
+            print(r)
+        self.assertEqual(len(results), -1)
