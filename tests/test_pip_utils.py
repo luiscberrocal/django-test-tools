@@ -19,13 +19,13 @@ class TestParseSpecifier(SimpleTestCase):
 
         self.assertEqual(str(context.exception), 'Invalid speficier "2.1.1"')
 
-    def test_list_outdated_libraries(self):
-        outdated = list_outdated_libraries()
-        #write_assertions(outdated, 'outdated')
-        self.assertTrue(len(outdated)>0)
-        self.assertIsNotNone(outdated[0]['current_version'])
-        self.assertIsNotNone(outdated[0]['name'])
-        self.assertIsNotNone(outdated[0]['new_version'])
+    # def test_list_outdated_libraries(self):
+    #     outdated = list_outdated_libraries()
+    #     #write_assertions(outdated, 'outdated')
+    #     self.assertTrue(len(outdated)>0)
+    #     self.assertIsNotNone(outdated[0]['current_version'])
+    #     self.assertIsNotNone(outdated[0]['name'])
+    #     self.assertIsNotNone(outdated[0]['new_version'])
 
 
 class TestReadRequirementFile(SimpleTestCase):
@@ -37,5 +37,5 @@ class TestReadRequirementFile(SimpleTestCase):
     def test_read_requirement_file(self):
         filename = settings.ROOT_DIR.path('tests', 'fixtures', 'local.txt').root
         requirements = read_requirement_file(filename)
-        write_assertions(requirements, 'requirements')
+        #write_assertions(requirements, 'requirements')
 

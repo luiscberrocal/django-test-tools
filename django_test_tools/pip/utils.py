@@ -84,6 +84,7 @@ def list_outdated_libraries():
 def update_outdated_libraries(requirement_file, **kwargs):
     requirements = read_requirement_file(requirement_file)
     outdated_libraries = list_outdated_libraries()
+    changes = list()
     for outdated_library in outdated_libraries:
         library_name = outdated_library['name']
         if requirements.get(library_name):
@@ -92,8 +93,10 @@ def update_outdated_libraries(requirement_file, **kwargs):
             operator = requirements[library_name]['operator']
             with open(filename, 'r') as file:
                 data = file.readlines()
-            data[line_no] = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'] )
+            new_value = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'])
+            changes.append('Changed {} => {}'.format(data[line_no], new_value))
+            data[line_no] = new_value
             with open(filename, 'w') as file:
                 file.writelines(data)
-
+    return changes
 
