@@ -57,7 +57,7 @@ class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestC
     def test_generate(self):
         call_command('generate_model_test_cases', 'example.servers', stdout=self.content)
         results = self.get_results()
-        self.assertEqual(104, len(results))
+        self.assertEqual(106, len(results))
 
 
 class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase):

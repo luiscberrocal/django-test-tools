@@ -32,7 +32,8 @@ PRINT_TEST_ATTRIBUTE_COUNT = """
         \"\"\"
         {1} = {0}Factory.create()
         {1}_dict = model_to_dict({1})
-        self.assertEqual(len({1}_dict.keys(), {2}))
+        self.assertEqual(len({1}_dict.keys()), {2})
+
 """
 
 PRINT_TEST_ATTRIBUTE_CONTENT = """
