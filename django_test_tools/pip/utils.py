@@ -34,7 +34,7 @@ def parse_comes_from(comes_from):
     regexp = re.compile(r'(\-r)\s([/\w\.\-]*)\s\(line\s(\d*)\)')
     match = regexp.match(comes_from)
     if match:
-        return match.group(1), match.group(2), match.group(3)
+        return match.group(1), match.group(2), int(match.group(3))
     else:
         raise ValueError('Invalid comes from "{}"'.format(comes_from))
 
@@ -49,7 +49,7 @@ def parse_specifier(specifier):
 
 
 def read_requirement_file(req_file):
-    requirements = list()
+    requirements = dict()
     for item in pip.req.parse_requirements(req_file, session="somesession"):
         if isinstance(item, pip.req.InstallRequirement):
             requirement = dict()
@@ -65,7 +65,7 @@ def read_requirement_file(req_file):
             requirement['comes_from']['filename'] = filename
             requirement['comes_from']['line_no'] = line_no
 
-            requirements.append(requirement)
+            requirements[item.name] = requirement
     return requirements
 
 
@@ -79,3 +79,21 @@ def list_outdated_libraries():
         if library is not None:
             outdated_libraries.append(library)
     return outdated_libraries
+
+
+def update_outdated_libraries(requirement_file, **kwargs):
+    requirements = read_requirement_file(requirement_file)
+    outdated_libraries = list_outdated_libraries()
+    for outdated_library in outdated_libraries:
+        library_name = outdated_library['name']
+        if requirements.get(library_name):
+            filename = requirements[library_name]['comes_from']['filename']
+            line_no = requirements[library_name]['comes_from']['line_no'] - 1
+            operator = requirements[library_name]['operator']
+            with open(filename, 'r') as file:
+                data = file.readlines()
+            data[line_no] = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'] )
+            with open(filename, 'w') as file:
+                file.writelines(data)
+
+
