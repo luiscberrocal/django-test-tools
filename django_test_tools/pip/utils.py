@@ -17,6 +17,19 @@ def capture():
         out[0] = out[0].getvalue()
         out[1] = out[1].getvalue()
 
+
+def parse_pip_list(line):
+    regexp = re.compile(r'([\w\-]*)\s\(([\w\-_\.]*)\)\s\-\sLatest:\s([\w\-_\.]*)\s\[([a-z]*)\]')
+    match = regexp.match(line)
+    if match:
+        library = dict()
+        library['name'] = match.group(1)
+        library['current_version'] = match.group(2)
+        library['new_version'] = match.group(3)
+        return library
+    return None
+
+
 def parse_comes_from(comes_from):
     regexp = re.compile(r'(\-r)\s([/\w\.\-]*)\s\(line\s(\d*)\)')
     match = regexp.match(comes_from)
@@ -24,6 +37,7 @@ def parse_comes_from(comes_from):
         return match.group(1), match.group(2), match.group(3)
     else:
         raise ValueError('Invalid comes from "{}"'.format(comes_from))
+
 
 def parse_specifier(specifier):
     regexp = re.compile(r'((?:[=>])=)([\w\-_\.]*)')
@@ -53,3 +67,15 @@ def read_requirement_file(req_file):
 
             requirements.append(requirement)
     return requirements
+
+
+def list_outdated_libraries():
+    with capture() as out:
+        pip.main(['list', '--outdated'])
+    library_lines = out[0].split('\n')
+    outdated_libraries = list()
+    for line in library_lines:
+        library = parse_pip_list(line)
+        if library is not None:
+            outdated_libraries.append(library)
+    return outdated_libraries

@@ -2,7 +2,7 @@ from django.conf import settings
 from django.test import SimpleTestCase
 
 from django_test_tools.assert_utils import write_assertions
-from django_test_tools.pip.utils import parse_specifier, read_requirement_file
+from django_test_tools.pip.utils import parse_specifier, read_requirement_file, list_outdated_libraries
 
 
 class TestParseSpecifier(SimpleTestCase):
@@ -17,6 +17,14 @@ class TestParseSpecifier(SimpleTestCase):
             parse_specifier('2.1.1')
 
         self.assertEqual(str(context.exception), 'Invalid speficier "2.1.1"')
+
+    def test_list_outdated_libraries(self):
+        outdated = list_outdated_libraries()
+        #write_assertions(outdated, 'outdated')
+        self.assertTrue(len(outdated)>0)
+        self.assertIsNotNone(outdated[0]['current_version'])
+        self.assertIsNotNone(outdated[0]['name'])
+        self.assertIsNotNone(outdated[0]['new_version'])
 
 
 class TestReadRequirementFile(SimpleTestCase):
