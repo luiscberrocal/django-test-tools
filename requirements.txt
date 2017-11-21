@@ -1,4 +1,4 @@
 
 # Additional requirements go here
 openpyxl==2.4.9
-Jinja2==2.9.6
+Jinja2==2.10
