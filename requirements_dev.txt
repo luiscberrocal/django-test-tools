@@ -3,4 +3,4 @@ django==1.11.7
 bumpversion==0.5.3
 wheel==0.30.0
 django-environ==0.4.4
-radon==2.0.2
+radon==2.1.1
