@@ -1,0 +1,18 @@
+version: '2'
+
+services:
+  environment:
+    build:
+      context: .
+      dockerfile: ./compose/environment/Dockerfile-dev
+    volumes:
+      - .:/app
+
+
+  test:
+    build:
+      context: .
+      dockerfile: ./compose/test/Dockerfile-test
+    command: python runtests.py
+    volumes:
+      - .:/app
