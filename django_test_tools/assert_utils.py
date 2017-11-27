@@ -12,13 +12,15 @@ def write_assertions(dictionary_list, variable_name, **kwargs):
     Writes assertions using Django practice of putting actual value first and then expected value to a file.
     If no filename is supplied it will generate a file in the settings.TEST_OUTPUT_PATH folder with the
     **variable_name** and the current date.
+    By default key named created and modified will be excluded.
 
     :param dictionary_list: dictionary or list of values
     :param variable_name: name of the variable
-    :param kwargs: A valide kwarg if filename.
-    :return:
+    :param kwargs: filename String.Full path to the output file.
+    :param kwargs: excluded_keys list of strings. List with keys to exclud
+    :return: filename string.
     """
-    writer = AssertionWriter()
+    writer = AssertionWriter(excluded_keys=kwargs.get('excluded_keys'))
     return writer.write_assert_list(dictionary_list, variable_name, filename=kwargs.get('filename'))
 
 
@@ -41,6 +43,10 @@ class AssertionWriter(object):
     """
     def __init__(self, **kwargs):
         self.excluded_variable_names = ['created', 'modified']
+        if kwargs.get('excluded_keys') is not None:
+            for key in kwargs.get('excluded_keys'):
+                self.excluded_variable_names.append(key)
+
 
     def write_assert_list(self, dictionary_list, variable_name, **kwargs):
         """
