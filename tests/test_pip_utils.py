@@ -39,11 +39,7 @@ class TestParseSpecifier(SimpleTestCase):
         mock_pip_main.return_value = main_result
         outdated = list_outdated_libraries()
         mock_pip_main.assert_called_with(['list', '--outdated'])
-        write_assertions(outdated, 'outdated')
-        # self.assertTrue(len(outdated)>0)
-        # self.assertIsNotNone(outdated[0]['current_version'])
-        # self.assertIsNotNone(outdated[0]['name'])
-        # self.assertIsNotNone(outdated[0]['new_version'])
+
 
     def test_list_outdated_libraries2(self):
         outdated = list_outdated_libraries()
