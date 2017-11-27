@@ -22,7 +22,7 @@ class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
         model = app_manager.get_model(app_name, model_name)
         mtg = ModelTestCaseGenerator(model)
         hash = self.write_generator_to_file(self.test_str.filename, mtg)
-        self.assertEqual('da7ee9f3f2564ec735da4023341bf2617d0b92a0', hash)
+        self.assertEqual(hash, '66ed114f8f2427ea4bdb17141fffb0741b9cd680')
 
 
 class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
@@ -33,4 +33,4 @@ class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
         app = app_manager.get_app(app_name)
         app_model_tests = AppModelsTestCaseGenerator(app)
         hash = self.write_generator_to_file(self.test_app_str.filename, app_model_tests)
-        self.assertEqual('70b422e9c7e1fc7c8e12b93960d614ac1c4f99b9', hash)
+        self.assertEqual(hash, 'aa938222425fd4a5c704ed45c89f8053249cffe3')

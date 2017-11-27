@@ -1,0 +1,9 @@
+FROM python:3.6
+ENV PYTHONUNBUFFERED 1
+
+#dockerfile instructions
+COPY . /requirements_dev.txt /app/
+WORKDIR /app
+RUN pip install -r /app/requirements_dev.txt
+
+

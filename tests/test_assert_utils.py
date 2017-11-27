@@ -5,7 +5,7 @@ from decimal import Decimal
 import pytz
 from django.test import TestCase
 
-from django_test_tools.assert_utils import write_assert_list, AssertionWriter
+from django_test_tools.assert_utils import write_assert_list, AssertionWriter, write_assertions
 from django_test_tools.file_utils import temporary_file, hash_file
 
 logger = logging.getLogger(__name__)
@@ -23,6 +23,25 @@ class TestAssertionWriter(TestCase):
 
         results = self.writer._generate_assert_equals_list(data, 'data')
         self.assertEqual(results[0], 'self.assertEqual(len(data), 1)')
+
+    @temporary_file('py', delete_on_exit=True)
+    def test_write_assertions(self):
+        data = [
+            {'name': 'kilo', 'password': 9999,
+             'groups': ['admin', 'users'],
+             'config': {'server': 'all', 'bulding': 116}},
+            {'name': 'pasto', 'password': 'nogo',
+             'groups': ['users'],
+             'config': {'server': 'database', 'bulding': 116},
+             'created': '2016-10-01',
+             'modified': '2016-10-01'}
+        ]
+        filename = write_assertions(data,
+                                     'data', filename=self.test_write_assertions.filename,
+                                     excluded_keys=['config'])
+        self.assertEqual(filename, self.test_write_assertions.filename)
+        hash_digest = hash_file(filename)
+        self.assertEqual(hash_digest, 'bd059f11bb7a5a2db70c89d94c9cd681f4684fa4')
 
     @temporary_file('py', delete_on_exit=True)
     def test_write_assert_list(self):

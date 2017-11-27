@@ -49,3 +49,7 @@ db.sqlite3
 django-test-tools.log
 example.log
 output
+
+# Patchfiles
+.diff
+patch.diff
