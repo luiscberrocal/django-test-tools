@@ -60,6 +60,28 @@ class TestAssertionWriter(TestCase):
         hash_digest = hash_file(filename)
         self.assertEqual('5cd2e29830c5c0a9af1e60a8f08b3ffc49cf92fb', hash_digest)
 
+    @temporary_file('py', delete_on_exit=True)
+    def test_write_assert_regexp(self):
+        data = [
+            {'name': 'kilo', 'password': 9999,
+             'groups': ['ADMIN', 'USERS'],
+             'config': {'server': 'all', 'bulding': 116}},
+            {'name': 'pasto', 'password': 'nogo',
+             'groups': ['users'],
+             'config': {'server': 'database', 'bulding': 116},
+             'time': '11:45',
+             'cost': '1234.45',
+             'created': '2016-10-01',
+             'modified': '2016-10-01'}
+        ]
+        filename = self.test_write_assert_regexp.filename
+        assertion_writer = AssertionWriter(use_regexp_assertion=True)
+        assertion_writer.add_regular_expression('constant', '^[A-Z]+$')
+        assertion_writer.write_assert_list(data, 'data', filename=filename)
+        hash_digest = hash_file(filename)
+        self.assertEqual(hash_digest, '73025ea6c99ef8b5fbf03c71b5156a11c4f68a9a')
+
+
     def test__build_assertion_datetime(self):
         date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
         assertion_list = list()

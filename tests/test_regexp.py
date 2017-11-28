@@ -32,6 +32,17 @@ class TestCommonRegExp(SimpleTestCase):
         self.assertEqual(regular_expression, '^[A-Z]+$')
         self.assertEqual(key, 'constant')
 
+    def test_add_regular_expression_strict(self):
+        str_data = 'snake_case'
+
+        common_regexp = CommonRegExp(strict=True)
+        common_regexp.add_regular_expression('snake_case', r'^[a-z_]+$')
+        regular_expression, key = common_regexp.match_regexp(str_data)
+
+        self.assertEqual(regular_expression, '^[a-z_]+$')
+        self.assertEqual(key, 'snake_case')
+
+
     def test_add_regular_expression_strict2(self):
         str_data = 'KILOVATIO'
 

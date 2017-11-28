@@ -54,7 +54,7 @@ class AssertionWriter(object):
             self.common_regexp = CommonRegExp(strict=True)
 
     def add_regular_expression(self, name, pattern, **kwargs):
-        self.add_regular_expression(name, pattern, **kwargs)
+        self.common_regexp.add_regular_expression(name, pattern, **kwargs)
 
     def write_assert_list(self, dictionary_list, variable_name, **kwargs):
         """

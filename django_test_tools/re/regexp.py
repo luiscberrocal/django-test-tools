@@ -47,10 +47,10 @@ class CommonRegExp(object):
         self.regular_expressions_compiled[name] = self._compile_regular_expression(regexp_dict)
 
     def _compile_regular_expression(self, regexp_dict):
-        if self.strict or regexp_dict.get('strict') and not regexp_dict['pattern'].startswith('^'):
+        if (self.strict or regexp_dict.get('strict')) and not regexp_dict['pattern'].startswith('^'):
             regexp_dict['pattern'] = '^{}'.format(regexp_dict['pattern'])
 
-        if self.strict or regexp_dict.get('strict') and not regexp_dict['pattern'].endswith('$'):
+        if (self.strict or regexp_dict.get('strict')) and not regexp_dict['pattern'].endswith('$'):
             regexp_dict['pattern'] = '{}$'.format(regexp_dict['pattern'])
         return re.compile(regexp_dict['pattern'])
 
