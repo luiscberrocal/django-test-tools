@@ -4,6 +4,7 @@ from decimal import Decimal
 
 from openpyxl.compat import deprecated
 
+from django_test_tools.re.regexp import CommonRegExp
 from django_test_tools.utils import create_output_filename_with_date
 
 
@@ -16,7 +17,7 @@ def write_assertions(dictionary_list, variable_name, **kwargs):
 
     :param dictionary_list: dictionary or list of values
     :param variable_name: name of the variable
-    :param kwargs: filename String.Full path to the output file.
+    :param kwargs: filename String. Full path to the output file.
     :param kwargs: excluded_keys list of strings. List with keys to exclud
     :return: filename string.
     """
@@ -37,6 +38,7 @@ def write_assert_list(filename, dictionary_list, variable_name):
     return writer.write_assert_list(dictionary_list, variable_name, filename=filename)
 
 
+
 class AssertionWriter(object):
     """
     This class generates assertions using Django practice of putting actual value first and then expected value.
@@ -47,6 +49,12 @@ class AssertionWriter(object):
             for key in kwargs.get('excluded_keys'):
                 self.excluded_variable_names.append(key)
 
+        self.use_regexp_assertion = kwargs.get('use_regexp_assertion', False)
+        if self.use_regexp_assertion:
+            self.common_regexp = CommonRegExp(strict=True)
+
+    def add_regular_expression(self, name, pattern, **kwargs):
+        self.add_regular_expression(name, pattern, **kwargs)
 
     def write_assert_list(self, dictionary_list, variable_name, **kwargs):
         """
@@ -71,7 +79,7 @@ class AssertionWriter(object):
 
         return filename
 
-    def _generate_assert_equals_list(self, data_list, variable_name):
+    def _generate_assert_equals_list(self, data_list, variable_name, indentation_level=0):
         assert_list = list()
         if variable_name not in self.excluded_variable_names:
             index = 0
@@ -83,7 +91,7 @@ class AssertionWriter(object):
                 index += 1
         return assert_list
 
-    def _generate_assert_equals_dictionaries(self, dictionary, variable_name):
+    def _generate_assert_equals_dictionaries(self, dictionary, variable_name, **kwargs):
         assert_list = list()
         if variable_name not in self.excluded_variable_names:
             ordered_dictionary = collections.OrderedDict(sorted(dictionary.items()))
@@ -97,7 +105,14 @@ class AssertionWriter(object):
         if variable_name not in self.excluded_variable_names:
             if isinstance(data, str):
                 data = data.translate(str.maketrans({"'":'\\\''}))
-                assert_list.append('self.assertEqual({}, \'{}\')'.format(variable_name, data))
+                if self.use_regexp_assertion:
+                    pattern = self.common_regexp.match_regexp(data)[0]
+                    if pattern is None:
+                        assert_list.append('self.assertEqual({}, \'{}\')'.format(variable_name, data))
+                    else:
+                        assert_list.append('self.assertRegex({}, r\'{}\')'.format(variable_name, pattern))
+                else:
+                    assert_list.append('self.assertEqual({}, \'{}\')'.format(variable_name, data))
             elif isinstance(data, datetime):
                 date_time_format = '%Y-%m-%d %H:%M:%S%z'
                 str_datetime = data.strftime(date_time_format)
@@ -121,6 +136,7 @@ class AssertionWriter(object):
                 assert_list += self._generate_assert_equals_dictionaries(data, variable_name)
             else:
                 assert_list.append('self.assertEqual({}, {})'.format(variable_name, data))
+
 
 
 
