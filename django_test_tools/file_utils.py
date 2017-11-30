@@ -114,10 +114,12 @@ def serialize_data(data, output_file=None, format='json', **kwargs):
     :param kwargs:
     """
     assert format in ['json', 'pickle'], 'Unsupported format {}'.format(format)
+    base_filename = kwargs.get('base_filename', 'serialized_data')
+
     if output_file is None:
-        filename = create_dated('{}.{}'.format('serialize_data_q', format))
+        filename = create_dated('{}.{}'.format(base_filename, format))
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file, '{}.{}'.format('serialize_data_f', format))
+        filename = os.path.join(output_file, '{}.{}'.format(base_filename, format))
     else:
         filename = output_file
     if format == 'json':
