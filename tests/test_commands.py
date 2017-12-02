@@ -12,7 +12,7 @@ from django_test_tools.utils import create_output_filename_with_date
 
 
 class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
-    def test_generate(self):
+    def test_generate_factories(self):
         call_command('generate_factories', 'example.servers', stdout=self.content)
         results = self.get_results()
         self.assertEqual(44, len(results))
@@ -24,6 +24,12 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
         hash_sha = hash_file(filename, algorithm='sha256')
         self.assertEqual('c8c331856529fe10afe8460de8dbd04b5f208d2a4922c275c1f6309bf7a3ed95', hash_sha)
         self.clean_output_folder(filename)
+
+    def test_generate_factories_error(self):
+        call_command('generate_factories', 'invalid_name', stdout=self.content, stderr=self.error_content)
+        results = self.get_results()
+        self.assertEqual(len(results), 0)
+        self.assertEqual(len(self.get_errors()), 10)
 
 
 class FileFieldMockType(object):

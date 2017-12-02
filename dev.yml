@@ -1,18 +1,12 @@
 version: '2'
 
 services:
-  environment:
+  django:
     build:
       context: .
-      dockerfile: ./compose/environment/Dockerfile-dev
+      dockerfile: compose/django/Dockerfile
     volumes:
       - .:/app
+    ports:
+      - "8000:8000"
 
-
-  test:
-    build:
-      context: .
-      dockerfile: ./compose/test/Dockerfile-test
-    command: python runtests.py
-    volumes:
-      - .:/app

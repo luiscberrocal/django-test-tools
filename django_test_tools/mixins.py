@@ -7,14 +7,15 @@ from .excel import ExcelAdapter
 
 class TestCommandMixin(object):
     """
-    This mixin helps capture the output of a command written with the stdout.write() method
+    This mixin helps capture the output of a command written with the stdout.write() method and
+     the stderr.write
 
     .. code-block:: python
 
         class TestYourCommand(TestCommandMixin, TestCase):
 
             def test_your_command_action(self):
-                call_command('your_command', 'your_argument', stdout=self.content)
+                call_command('your_command', 'your_argument', stdout=self.content, stderr=self.error_content)
                 results = self.get_results()
                 self.assertEqual(23, len(results))
     """
@@ -22,6 +23,7 @@ class TestCommandMixin(object):
     # noinspection PyPep8Naming
     def setUp(self):
         self.content = StringIO()
+        self.error_content = StringIO()
 
     def get_results(self, content=None):
         if content is None:
@@ -32,6 +34,11 @@ class TestCommandMixin(object):
         for line in lines:
             results.append(line.strip('\n'))
         return results
+
+    def get_errors(self):
+        return self.get_results(self.error_content)
+
+
 
 
 class TestOutputMixin(object):

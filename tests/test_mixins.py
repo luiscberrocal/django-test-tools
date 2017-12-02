@@ -1,9 +1,9 @@
 import csv
 
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.file_utils import temporary_file
-from django_test_tools.mixins import TestOutputMixin
+from django_test_tools.mixins import TestOutputMixin, TestCommandMixin
 
 
 class TestTestOutputMixin(TestCase):
@@ -20,3 +20,14 @@ class TestTestOutputMixin(TestCase):
         data = output_mixin.get_csv_content(outputfile)
         self.assertEqual(7, len(data))
         self.assertEqual('Title 1', data[0][0])
+
+
+class TestTestCommandMixin(SimpleTestCase):
+
+    def test_(self):
+        mixin = TestCommandMixin()
+        mixin.setUp()
+        mixin.content.write('Kilo\n')
+        mixin.content.write('VIctor\n')
+        results = mixin.get_results()
+        self.assertEqual(len(results),2)
