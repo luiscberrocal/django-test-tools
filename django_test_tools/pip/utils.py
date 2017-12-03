@@ -23,7 +23,7 @@ def parse_pip_list(line):
     match = regexp.match(line)
     if match:
         library = dict()
-        library['name'] = match.group(1)
+        library['name'] = match.group(1).lower()
         library['current_version'] = match.group(2)
         library['new_version'] = match.group(3)
         return library
@@ -103,8 +103,8 @@ def update_outdated_libraries(requirement_file, **kwargs):
             with open(change['filename'], 'r') as file:
                 data = file.readlines()
             new_value = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'])
-            change['previous'] = data[line_no]
-            change['new'] = new_value
+            change['previous'] = data[line_no].strip('\n')
+            change['new'] = new_value.strip('\n')
             data[line_no] = new_value
             with open(change['filename'], 'w') as file:
                 file.writelines(data)
