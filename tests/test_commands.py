@@ -1,3 +1,4 @@
+from unittest import mock
 from unittest.mock import Mock, patch
 
 from django.core.management import call_command
@@ -79,6 +80,21 @@ class TestCheckRequirementsCommand(TestCommandMixin, SimpleTestCase):
     @classmethod
     def setUpClass(cls):
         super(TestCheckRequirementsCommand, cls).setUpClass()
+        cls.pip_main_result = 'Django (1.11.3) - Latest: 2.1.0 [wheel]\ncelery (4.0.1) - Latest: 4.10.1 [wheel]\n' \
+                              'cookiecutter (1.5.1) - Latest: 1.6.0 [wheel]\ncoverage (4.4.1) - Latest: 4.4.2 [wheel]\n' \
+                              'Faker (0.7.17) - Latest: 0.8.7 [wheel]\nflake8 (3.3.0) - Latest: 3.5.0 [wheel]\n' \
+                              'Jinja2 (2.9.6) - Latest: 2.10 [wheel]\nopenpyxl (2.4.8) - Latest: 2.4.9 [sdist]\n' \
+                              'pbr (3.0.1) - Latest: 3.1.1 [wheel]\npluggy (0.4.0) - Latest: 0.5.2 [sdist]\n' \
+                              'py (1.4.33) - Latest: 1.5.2 [wheel]\npyflakes (1.5.0) - Latest: 1.6.0 [wheel]\n' \
+                              'pylint (1.7.2) - Latest: 1.7.4 [wheel]\npython-dateutil (2.6.0) - Latest: 2.6.1 [wheel]\n' \
+                              'pytz (2017.2) - Latest: 2017.3 [wheel]\nradon (2.0.2) - Latest: 2.1.1 [wheel]\n' \
+                              'requests (2.14.2) - Latest: 2.18.4 [wheel]\nsetuptools (36.0.1) - Latest: 37.0.0 [wheel]\n' \
+                              'six (1.10.0) - Latest: 1.11.0 [wheel]\ntox (2.7.0) - Latest: 2.9.1 [wheel]\n' \
+                              'wrapt (1.10.10) - Latest: 1.10.11 [sdist]\n' \
+                              'DEPRECATION: The default format will switch to columns in the future. ' \
+                              'You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf ' \
+                              'under the [list] section) to disable this warning.\n'
+
         cls.base_content = """# Wheel 0.25+ needed to install certain packages on CPython 3.5+
 # like Pillow and psycopg2
 # See http://bitly.com/wheel-building-fails-CPython-35
@@ -97,14 +113,22 @@ django-braces==1.11.0
 django-crispy-forms==1.6.1
 django-floppyforms==1.7.0   """
 
-
+    @mock.patch('django_test_tools.pip.utils.pip.main')
     @temporary_file('txt', delete_on_exit=True)
-    def test_check_requirements(self):
+    def test_check_requirements(self, mock_pip_main):
         requirement_file = self.test_check_requirements.filename
         with open(requirement_file, 'w', encoding='utf-8') as req_file:
             req_file.write(self.base_content)
+        mock_capture = mock.Mock()
+        mock_capture.return_value = mock_capture
+        mock_capture.__enter__ = mock.Mock(return_value=(self.pip_main_result, ['\n']))
+        mock_capture.__exit__ = mock.Mock(return_value=(mock.Mock(), None))
 
-        call_command('check_requirements', requirement_file, stdout=self.content)
+        with mock.patch('django_test_tools.pip.utils.capture', mock_capture):
+            call_command('check_requirements', requirement_file, stdout=self.content)
+        mock_pip_main.assert_called_with(['list', '--outdated'])
         results = self.get_results()
-        #write_assertions(results, 'results')
-        #self.assertEqual(len(results), -1)
+        self.assertEqual(len(results), 1)
+        regexp= r"^Changed\sdjango\sin\sfile\soutput/test_check_requirements_\d{8}_\d{4,6}.txt to django==(2.1.0)$"
+        self.assertRegex(results[0], regexp )
+

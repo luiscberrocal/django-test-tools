@@ -113,10 +113,6 @@ class TestParseSpecifier(SimpleTestCase):
         self.assertEqual(outdated[20]['new_version'], '1.10.11')
 
 
-    def test_list_outdated_libraries2(self):
-        outdated = list_outdated_libraries()
-        self.fail('Parasitic tets')
-
 
 class TestReadRequirementFile(SimpleTestCase):
 
