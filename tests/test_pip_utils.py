@@ -20,9 +20,9 @@ class TestParseSpecifier(SimpleTestCase):
 
         self.assertEqual(str(context.exception), 'Invalid speficier "2.1.1"')
 
-    @mock.patch('django_test_tools.pip.utils.pip.main')
-    def test_list_outdated_libraries(self, mock_pip_main):
-        main_result = ['binaryornot (0.4.3) - Latest: 0.4.4 [wheel]\nchardet (3.0.2) - Latest: 3.0.4 [wheel]\n'
+
+    def test_list_outdated_libraries(self):
+        main_result = ['binaryornot (0.4.3) - Latest: 1.4.4 [wheel]\nchardet (3.0.2) - Latest: 3.0.4 [wheel]\n'
                        'cookiecutter (1.5.1) - Latest: 1.6.0 [wheel]\ncoverage (4.4.1) - Latest: 4.4.2 [wheel]\n'
                        'Faker (0.7.17) - Latest: 0.8.7 [wheel]\nflake8 (3.3.0) - Latest: 3.5.0 [wheel]\n'
                        'Jinja2 (2.9.6) - Latest: 2.10 [wheel]\nopenpyxl (2.4.8) - Latest: 2.4.9 [sdist]\n'
@@ -36,9 +36,19 @@ class TestParseSpecifier(SimpleTestCase):
                        'DEPRECATION: The default format will switch to columns in the future. '
                        'You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf '
                        'under the [list] section) to disable this warning.\n']
-        mock_pip_main.return_value = main_result
-        outdated = list_outdated_libraries()
-        mock_pip_main.assert_called_with(['list', '--outdated'])
+
+        mock_capture = mock.Mock()
+        mock_capture.return_value = mock_capture
+        mock_capture.__enter__ = mock.Mock(return_value=('cookiecutter (1.5.1) - Latest: 1.6.0 [wheel]\n', ['\n']))
+        mock_capture.__exit__ = mock.Mock(return_value=(mock.Mock(), None))
+
+        #mock_capture.__exit__().return_value = ['cookiecutter (1.5.1) - Latest: 1.6.0 [wheel]\n'], ['\n']
+
+        with mock.patch('django_test_tools.pip.utils.capture', mock_capture):
+            outdated = list_outdated_libraries()
+        #mock_pip_main.assert_called_with(['list', '--outdated'])
+        write_assertions(outdated, 'outdated')
+        self.fail('KILO')
 
 
     def test_list_outdated_libraries2(self):
@@ -52,13 +62,14 @@ class TestReadRequirementFile(SimpleTestCase):
         self.requirements.append('celery==4.0.1\n')
         self.requirements.append('redis>=2.10.5\n')
 
-    @temporary_file(extension='txt', delete_on_exit=True)
+    @temporary_file(extension='txt', delete_on_exit=False)
     def test_update_outdated_libraries(self):
         filename = self.test_update_outdated_libraries.filename
         with open(filename, 'w', encoding='utf-8') as req_file:
             req_file.writelines(self.requirements)
         changes = update_outdated_libraries(filename)
-        # write_assertions(changes, 'changes')
+        write_assertions(changes, 'changes')
+        self.fail('kkkk')
 
     @temporary_file(extension='txt', delete_on_exit=True)
     def test_read_requirement_file(self):

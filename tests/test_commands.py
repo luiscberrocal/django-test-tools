@@ -3,9 +3,10 @@ from unittest.mock import Mock, patch
 from django.core.management import call_command
 from django.db.models import FileField
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 
-from django_test_tools.file_utils import hash_file
+from django_test_tools.assert_utils import write_assertions
+from django_test_tools.file_utils import hash_file, temporary_file
 from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
 from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
@@ -73,9 +74,37 @@ class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase
         self.assertEqual(22, len(results))
 
 
-class TestCheckRequirementsCommand(TestOutputMixin, TestCommandMixin, TestCase):
+class TestCheckRequirementsCommand(TestCommandMixin, SimpleTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        super(TestCheckRequirementsCommand, cls).setUpClass()
+        cls.base_content = """# Wheel 0.25+ needed to install certain packages on CPython 3.5+
+# like Pillow and psycopg2
+# See http://bitly.com/wheel-building-fails-CPython-35
+# Verified bug on Python 3.5.1
+wheel==0.29.0
+
+# Bleeding edge Django
+django==1.11.3
+
+# Configuration
+django-environ==0.4.4
+
+
+# Forms
+django-braces==1.11.0
+django-crispy-forms==1.6.1
+django-floppyforms==1.7.0   """
+
+
+    @temporary_file('txt', delete_on_exit=True)
     def test_check_requirements(self):
-        filename = settings.ROOT_DIR.path('tests', 'fixtures', 'local.txt').root
-        call_command('check_requirements', filename, stdout=self.content)
+        requirement_file = self.test_check_requirements.filename
+        with open(requirement_file, 'w', encoding='utf-8') as req_file:
+            req_file.write(self.base_content)
+
+        call_command('check_requirements', requirement_file, stdout=self.content)
         results = self.get_results()
+        #write_assertions(results, 'results')
         #self.assertEqual(len(results), -1)

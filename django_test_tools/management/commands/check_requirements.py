@@ -46,7 +46,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         changes = update_outdated_libraries(options['requirement_filename'])
         for change in changes:
-            self.stdout.write('Changed {}'.format(change))
+            self.stdout.write('Changed {library_name} in file {filename} to {new}'.format(change))
 
 
 
