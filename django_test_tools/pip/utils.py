@@ -1,7 +1,13 @@
 import contextlib
+import pkg_resources
 
 import pip
 import re
+
+import requests
+
+from django_test_tools.file_utils import serialize_data
+
 
 @contextlib.contextmanager
 def capture():
@@ -28,6 +34,14 @@ def parse_pip_list(line):
         library['new_version'] = match.group(3)
         return library
     return None
+
+
+def get_latest_version(package_name):
+    url = 'https://pypi.python.org/pypi/{}/json'.format(package_name)
+    r = requests.get(url)
+    serialize_data(r.json(), base_filename='celery')
+    versions = sorted(r.json()["releases"], key=pkg_resources.parse_version)
+    return versions[-1]
 
 
 def parse_comes_from(comes_from):
@@ -83,7 +97,7 @@ def list_outdated_libraries():
 
 def update_outdated_libraries(requirement_file, **kwargs):
     """
-    Updates thr requiremns to their latest version.
+    Updates the requirements to their latest version.
 
     :param requirement_file: String with the path to the requirement fiel
     :param kwargs:
