@@ -29,6 +29,8 @@ def dict_compare(d1, d2):
 
 first_cap_re = re.compile('(.)([A-Z][a-z]+)')
 all_cap_re = re.compile('([a-z0-9])([A-Z])')
+
+
 def convert_to_snake_case(camel_case):
     s1 = first_cap_re.sub(r'\1_\2', camel_case)
     return all_cap_re.sub(r'\1_\2', s1).lower()

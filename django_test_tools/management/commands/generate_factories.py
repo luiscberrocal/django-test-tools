@@ -188,20 +188,15 @@ class Command(BaseCommand):
         app_manager = DjangoAppManager()
         app = app_manager.get_app(app_name)
         if not app:
-            self.warning('This command requires an existing app name as '
+            self.stderr.write('This command requires an existing app name as '
                          'argument')
-            self.warning('Available apps:')
+            self.stderr.write('Available apps:')
             for app in sorted(app_manager.installed_apps):
-                self.warning('    %s' % app)
-            sys.exit(1)
-        self.stdout.write(PRINT_IMPORTS)
-        for model in app.get_models():
-            model_fact = ModelFactoryGenerator(model)
-            self.stdout.write(str(model_fact))
+                self.stderr.write('    %s' % app)
+        else:
+            self.stdout.write(PRINT_IMPORTS)
+            for model in app.get_models():
+                model_fact = ModelFactoryGenerator(model)
+                self.stdout.write(str(model_fact))
 
-    def warning(self, message):
-        # This replaces the regular warning method from the CustomBaseCommand
-        # since some Django installations capture all logging output
-        # unfortunately
-        sys.stderr.write(message)
-        sys.stderr.write('\n')
+
