@@ -1,13 +1,19 @@
 import contextlib
+import pkg_resources
 
 import pip
 import re
+
+import requests
+
+from django_test_tools.file_utils import serialize_data
+
 
 @contextlib.contextmanager
 def capture():
     import sys
     from io import StringIO
-    oldout,olderr = sys.stdout, sys.stderr
+    oldout, olderr = sys.stdout, sys.stderr
     try:
         out=[StringIO(), StringIO()]
         sys.stdout,sys.stderr = out
@@ -23,11 +29,19 @@ def parse_pip_list(line):
     match = regexp.match(line)
     if match:
         library = dict()
-        library['name'] = match.group(1)
+        library['name'] = match.group(1).lower()
         library['current_version'] = match.group(2)
         library['new_version'] = match.group(3)
         return library
     return None
+
+
+def get_latest_version(package_name):
+    url = 'https://pypi.python.org/pypi/{}/json'.format(package_name)
+    r = requests.get(url)
+    serialize_data(r.json(), base_filename='celery')
+    versions = sorted(r.json()["releases"], key=pkg_resources.parse_version)
+    return versions[-1]
 
 
 def parse_comes_from(comes_from):
@@ -82,21 +96,33 @@ def list_outdated_libraries():
 
 
 def update_outdated_libraries(requirement_file, **kwargs):
+    """
+    Updates the requirements to their latest version.
+
+    :param requirement_file: String with the path to the requirement fiel
+    :param kwargs:
+    :return: list of dictionaries containting the changes
+    """
     requirements = read_requirement_file(requirement_file)
     outdated_libraries = list_outdated_libraries()
     changes = list()
     for outdated_library in outdated_libraries:
         library_name = outdated_library['name']
         if requirements.get(library_name):
-            filename = requirements[library_name]['comes_from']['filename']
+            change = dict()
+            change['library_name'] = library_name
+            change['filename'] = requirements[library_name]['comes_from']['filename']
             line_no = requirements[library_name]['comes_from']['line_no'] - 1
             operator = requirements[library_name]['operator']
-            with open(filename, 'r') as file:
+            with open(change['filename'], 'r') as file:
                 data = file.readlines()
             new_value = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'])
-            changes.append('Changed {} => {}'.format(data[line_no], new_value))
+            change['previous'] = data[line_no].strip('\n')
+            change['new'] = new_value.strip('\n')
             data[line_no] = new_value
-            with open(filename, 'w') as file:
+            with open(change['filename'], 'w') as file:
                 file.writelines(data)
+            change['line_no'] = line_no
+            changes.append(change)
     return changes
 

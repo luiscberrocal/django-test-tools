@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
 
+from django_test_tools.file_utils import shorten_path
 from django_test_tools.pip.utils import update_outdated_libraries
 
 
@@ -46,7 +47,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         changes = update_outdated_libraries(options['requirement_filename'])
         for change in changes:
-            self.stdout.write('Changed {}'.format(change))
+            change['filename'] = shorten_path(change['filename'])
+            self.stdout.write('Changed {library_name} in file {filename} to {new}'.format(**change))
 
 
 

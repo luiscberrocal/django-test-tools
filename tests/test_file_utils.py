@@ -6,10 +6,10 @@ from unittest import mock
 
 import pytz
 from django.conf import settings
-from django.test import TestCase, override_settings
+from django.test import TestCase, override_settings, SimpleTestCase
 from django.test import tag
 
-from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated
+from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated, shorten_path
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
@@ -105,6 +105,35 @@ class CreateDatedTest(TestCase):
             msg = 'You need a the variable TEST_OUTPUT_PATH in settings.' \
                   ' It should point to a folderfor temporary data to be written and reviewed.'
             self.assertEqual(msg, str(e))
+
+
+class TestShortenPath(SimpleTestCase):
+
+    def test_shorten_path(self):
+        filename = '/user/documents/personal/file.txt'
+        shortened = shorten_path(filename)
+        self.assertEqual(shortened, 'personal/file.txt')
+
+    def test_shorten_path_level(self):
+        filename = '/user/documents/personal/secret/file.txt'
+        shortened = shorten_path(filename, 3)
+        self.assertEqual(shortened, 'personal/secret/file.txt')
+
+    def test_shorten_path_level_one(self):
+        filename = '/user/documents/personal/secret/file.txt'
+        shortened = shorten_path(filename, 1)
+        self.assertEqual(shortened, 'file.txt')
+
+    def test_shorten_path_level_too_big(self):
+        filename = '/secret/file.txt'
+        shortened = shorten_path(filename, 8)
+        self.assertEqual(shortened, 'secret/file.txt')
+
+    def test_shorten_path_leve_zero(self):
+        filename = '/user/documents/personal/secret/file.txt'
+        with self.assertRaises(ValueError) as context:
+            shortened = shorten_path(filename, 0)
+        self.assertEqual(str(context.exception), 'The minimum level accepted is one')
 
 
 @tag('UNIT')

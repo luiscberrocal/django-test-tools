@@ -89,6 +89,18 @@ def temporary_file(func, extension, delete_on_exit=True):
     return function_t_return
 
 
+def shorten_path(path, level=2, current_level=1):
+    if level == 0:
+        raise ValueError('The minimum level accepted is one')
+    path, tail = os.path.split(path)
+    if level == current_level:
+        return tail
+    else:
+        if path != os.path.sep:
+            return shorten_path(path, level, current_level+1) + os.path.sep + tail
+        return tail
+
+
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code
     taken from: https://stackoverflow.com/questions/11875770/how-to-overcome-datetime-datetime-not-json-serializable
@@ -114,10 +126,12 @@ def serialize_data(data, output_file=None, format='json', **kwargs):
     :param kwargs:
     """
     assert format in ['json', 'pickle'], 'Unsupported format {}'.format(format)
+    base_filename = kwargs.get('base_filename', 'serialized_data')
+
     if output_file is None:
-        filename = create_dated('{}.{}'.format('serialize_data_q', format))
+        filename = create_dated('{}.{}'.format(base_filename, format))
     elif os.path.isdir(output_file):
-        filename = os.path.join(output_file, '{}.{}'.format('serialize_data_f', format))
+        filename = os.path.join(output_file, '{}.{}'.format(base_filename, format))
     else:
         filename = output_file
     if format == 'json':
