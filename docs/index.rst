@@ -14,6 +14,7 @@ Contents:
    readme
    installation
    usage
+   django_test_tools
    contributing
    authors
    history
