@@ -28,6 +28,13 @@ def create_dated(filename):
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
+    """
+    Creates a unique hash for a file.
+    :param filename: String with the full path to the file
+    :param algorithm: String Algorithm to create the hash
+    :param block_size: int for the size of the block while reading the file
+    :return: string the hash for the file
+    """
     try:
         hasher = getattr(hashlib, algorithm)()
     except AttributeError:
@@ -90,6 +97,21 @@ def temporary_file(func, extension, delete_on_exit=True):
 
 
 def shorten_path(path, level=2, current_level=1):
+    """
+    This method shortens the path by eliminating the folders on top.
+
+    .. code-block:: python
+
+        filename = '/user/documents/personal/file.txt'
+        shortened = shorten_path(filename)
+        self.assertEqual(shortened, 'personal/file.txt')
+
+
+    :param path: string full path for the filename
+    :param level: int, number of levels to show.
+    :param current_level: int, recursing level.
+    :return: string shortened path
+    """
     if level == 0:
         raise ValueError('The minimum level accepted is one')
     path, tail = os.path.split(path)
@@ -154,8 +176,6 @@ def add_date(filename, **kwargs):
     The function will detect if another file exists with the same name if it exist it will append seconds to the
     filename. For example if file /my/path/myexcel_20170101_1305.xlsx alread exist thte function will return
     /my/path/myexcel_20170101_130521.xlsx.
-
-
 
     :param filename: string with fullpath to file or just the filename
     :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension

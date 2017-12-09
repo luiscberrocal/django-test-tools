@@ -9,7 +9,8 @@ from django.conf import settings
 from django.test import TestCase, override_settings, SimpleTestCase
 from django.test import tag
 
-from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated, shorten_path
+from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated, \
+    shorten_path
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
@@ -266,6 +267,5 @@ class TestHashFile(TestOutputMixin, TestCase):
         self.assertEqual(data.name, pickled_person.name)
         self.assertEqual(data.attributes['age'], pickled_person.attributes['age'])
         self.assertEqual(data.attributes['sex'], pickled_person.attributes['sex'])
-
 
 

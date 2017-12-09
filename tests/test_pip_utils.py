@@ -6,6 +6,7 @@ from django_test_tools.assert_utils import write_assertions
 from django_test_tools.file_utils import temporary_file
 from django_test_tools.pip.utils import parse_specifier, read_requirement_file, list_outdated_libraries, \
     update_outdated_libraries, get_latest_version
+from tests.mixins import TestFixtureMixin
 
 
 class TestParseSpecifier(SimpleTestCase):
@@ -114,7 +115,7 @@ class TestParseSpecifier(SimpleTestCase):
 
 
 
-class TestReadRequirementFile(SimpleTestCase):
+class TestReadRequirementFile(TestFixtureMixin, SimpleTestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -200,6 +201,11 @@ class TestReadRequirementFile(SimpleTestCase):
         self.assertEqual(requirements['redis']['operator'], '>=')
         self.assertEqual(requirements['redis']['version'], '2.10.5')
 
-    def test_get_latest_version(self):
+    @mock.patch('django_test_tools.pip.utils.requests.get')
+    def test_get_latest_version(self, mock_get):
+        mock_response = mock.Mock()
+        mock_response.json.return_value = self.get_json_data('celery.json')
+        mock_get.return_value = mock_response
         version = get_latest_version('celery')
-        self.assertEqual(version, '')
+        self.assertEqual(version, '4.1.0')
+        mock_get.assert_called_with('https://pypi.python.org/pypi/celery/json')
