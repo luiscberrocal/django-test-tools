@@ -32,12 +32,11 @@ class TestFolderStructure(TestCase):
     @temporary_file('json')
     def test_get_module_files(self):
         folder = str(settings.ROOT_DIR.path('example', 'servers'))
-        # folder = str(settings.ROOT_DIR.path('django_test_tools'))
         files = get_module_files(folder)
         serialize_data(files, self.test_get_module_files.filename)
-        # for file in files:
-        #     logger.debug('File: {filename} Package: {package_name}'.format(**file))
-        self.assertEqual(1, len(files))
+        for file in files:
+            logger.debug('File: {filename} Package: {package_name}'.format(**file))
+        self.assertEqual(len(files), 2)
 
     def test_create_folder_structure2(self):
         # logger.debug('Version {}'.format(django.VERSION))

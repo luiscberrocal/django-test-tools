@@ -9,7 +9,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools.apps.DjangoTestToolsConfig',
-    'servers',
+    'servers.apps.ExampleConfig',
 
     # if your app has other dependencies that need to be added to the site
     # they should be added here

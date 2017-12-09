@@ -15,9 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django import VERSION as django_version
+if django_version >= (2, 0):
+    from django.urls import path
+else:
+    from django.conf.urls import url
 
-
-urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'', include('django_test_tools.urls', namespace='django_test_tools')),
-]
+if django_version >= (2, 0):
+    urlpatterns = [
+        path(r'^admin/', admin.site.urls),
+        path(r'', include('django_test_tools.urls')),
+    ]
+else:
+    urlpatterns = [
+        url(r'^admin/', admin.site.urls),
+        url(r'', include('django_test_tools.urls', namespace='django_test_tools')),
+    ]

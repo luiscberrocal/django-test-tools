@@ -22,7 +22,7 @@ class Server(models.Model):
     ip_address = models.GenericIPAddressField()
     created = models.DateTimeField()
     online_date = models.DateField()
-    operating_system = models.ForeignKey(OperatingSystem, related_name='servers')
+    operating_system = models.ForeignKey(OperatingSystem, related_name='servers', on_delete=models.CASCADE)
     server_id = models.CharField(max_length=6)
     use = models.CharField(max_length=4, choices=USE_CHOICES, default=DEVELOPMENT)
     comments = models.TextField(null=True, blank=True)
