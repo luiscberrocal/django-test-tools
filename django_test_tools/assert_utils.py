@@ -4,8 +4,8 @@ from decimal import Decimal
 
 from openpyxl.compat import deprecated
 
-from django_test_tools.re.regexp import CommonRegExp
-from django_test_tools.utils import create_output_filename_with_date
+from .re.regexp import CommonRegExp
+from .utils import create_output_filename_with_date
 
 
 def write_assertions(dictionary_list, variable_name, **kwargs):

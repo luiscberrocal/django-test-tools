@@ -1,4 +1,4 @@
-from django_test_tools.utils import convert_to_snake_case
+from ..utils import convert_to_snake_case
 
 PRINT_IMPORTS = ['from django.forms.models import model_to_dict',
                  'from django.conf import settings',

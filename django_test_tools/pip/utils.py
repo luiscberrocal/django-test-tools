@@ -6,7 +6,7 @@ import re
 
 import requests
 
-from django_test_tools.file_utils import serialize_data
+from ..file_utils import serialize_data
 
 
 @contextlib.contextmanager
