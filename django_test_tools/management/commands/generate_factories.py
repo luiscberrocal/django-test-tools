@@ -65,7 +65,7 @@ class ModelFactoryGenerator(object):
                 field_data = self._get_charfield(field)
                 factory_class_content.append(field_data)
             elif field_type == 'ForeignKey':
-                related_model = field.rel.to.__name__
+                related_model = field.remote_field.model.__name__
                 field_data = {'print': PRINT_FOREIGNKEY,
                               'args': [field.name, related_model, '']}
                 factory_class_content.append(field_data)
