@@ -18,7 +18,7 @@ def write_assertions(dictionary_list, variable_name, **kwargs):
     :param dictionary_list: dictionary or list of values
     :param variable_name: name of the variable
     :param kwargs: filename String. Full path to the output file.
-    :param kwargs: excluded_keys list of strings. List with keys to exclud
+    :param kwargs: excluded_keys list of strings. List with keys to exclude
     :return: filename string.
     """
     writer = AssertionWriter(excluded_keys=kwargs.get('excluded_keys'))

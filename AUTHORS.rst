@@ -9,5 +9,4 @@ Development Lead
 
 Contributors
 ------------
-
-None yet. Why not be the first?
+Issis Itzel Montilla <issis.montilla@gmail.com>
