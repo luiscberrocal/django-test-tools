@@ -39,7 +39,6 @@ def parse_pip_list(line):
 def get_latest_version(package_name):
     url = 'https://pypi.python.org/pypi/{}/json'.format(package_name)
     r = requests.get(url)
-    serialize_data(r.json(), base_filename='celery')
     versions = sorted(r.json()["releases"], key=pkg_resources.parse_version)
     return versions[-1]
 
