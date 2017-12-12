@@ -32,6 +32,17 @@ all_cap_re = re.compile('([a-z0-9])([A-Z])')
 
 
 def convert_to_snake_case(camel_case):
+    """
+    Converts a CamelCase name to snake case.
+    ..code-block:: python
+
+        camel_case = 'OperatingSystemLongName'
+        snake_case = convert_to_snake_case(camel_case)
+        self.assertEqual(snake_case, 'operating_system_long_name')
+
+    :param camel_case: string. Camel case name
+    :return: string. Snake case name
+    """
     s1 = first_cap_re.sub(r'\1_\2', camel_case)
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
