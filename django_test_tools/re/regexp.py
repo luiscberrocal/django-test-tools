@@ -2,16 +2,23 @@ import re
 
 
 class CommonRegExp(object):
+    """
+    This class is a utility for commonly used regular expressions.
+    .. code-block:: python
+
+        str_data = '10:45'
+        common_regexp = CommonRegExp()
+        regular_expression, key = common_regexp.match_regexp(str_data)
+        self.assertEqual(regular_expression, '([0-1][0-9]|2[0-4]):([0-5][0-9])')
+        self.assertEqual(key, 'time_military')
+
+    if the strict keyword is used the class will add ^ at the begining and a $ at the end if the already are not present.
+
+    """
 
     def __init__(self,**kwargs):
         self.strict = kwargs.get('strict', False)
         self.regular_expressions = dict()
-        # self.regular_expressions['full_date_ymd'] =  {
-        #     'pattern': r''
-        # }
-        # self.regular_expressions['date_ymd'] = {
-        #     'pattern': r''
-        # }
         self.regular_expressions['time_military'] = {
             'pattern': r'([0-1][0-9]|2[0-4]):([0-5][0-9])'
         }
@@ -29,7 +36,8 @@ class CommonRegExp(object):
 
         self.regular_expressions_compiled = dict()
         for key, reg_exp in self.regular_expressions.items():
-            self.regular_expressions_compiled[key] = re.compile(reg_exp['pattern'])
+            #self.regular_expressions_compiled[key] = re.compile(reg_exp['pattern'])
+            self.regular_expressions_compiled[key] = self._compile_regular_expression(self.regular_expressions[key])
 
     def match_regexp(self, value):
         for key, regexp in self.regular_expressions_compiled.items():
