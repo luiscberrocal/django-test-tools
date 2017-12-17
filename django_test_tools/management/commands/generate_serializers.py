@@ -1,6 +1,6 @@
 from django.core.management import BaseCommand
 
-from django_test_tools.generators.serializer_gen import AppSerializerGenerator
+from ...generators.serializer_gen import AppSerializerGenerator
 from ...app_manager import DjangoAppManager
 
 

@@ -142,7 +142,7 @@ class TestReadRequirementFile(TestFixtureMixin, SimpleTestCase):
         self.requirements.append('redis>=2.10.5\n')
 
     @mock.patch('django_test_tools.pip.utils.pip.main')
-    @temporary_file(extension='txt', delete_on_exit=False)
+    @temporary_file(extension='txt', delete_on_exit=True)
     def test_update_outdated_libraries(self, mock_pip_main):
         filename = self.test_update_outdated_libraries.filename
         with open(filename, 'w', encoding='utf-8') as req_file:

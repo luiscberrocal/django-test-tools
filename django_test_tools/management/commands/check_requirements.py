@@ -1,7 +1,7 @@
 from django.core.management import BaseCommand
 
-from django_test_tools.file_utils import shorten_path
-from django_test_tools.pip.utils import update_outdated_libraries
+from ...file_utils import shorten_path
+from ...pip.utils import update_outdated_libraries
 
 
 class Command(BaseCommand):

@@ -2,19 +2,21 @@ import hashlib
 import json
 import os
 import pickle
-
+import shutil
 from datetime import date, datetime
 
-import shutil
 from django.conf import settings
 from django.utils import timezone
 
 BLOCKSIZE = 65536
 
+
 def create_dated(filename):
     """
     Based on the filename will create a full path filename including the date and time in '%Y%m%d_%H%M' format.
     The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
+
+    If the TEST_OUTPUT_PATH folder doesn't exist the function will create it.
 
     :param filename: base filename. my_excel_data.xlsx for example
     :return: string, full path to file with date and time in the TEST_OUTPUT_PATH folder
@@ -26,6 +28,7 @@ def create_dated(filename):
     if not os.path.exists(settings.TEST_OUTPUT_PATH):
         os.makedirs(settings.TEST_OUTPUT_PATH)
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
+
 
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     """
@@ -59,7 +62,9 @@ def parametrized(dec):
     def layer(*args, **kwargs):
         def repl(f):
             return dec(f, *args, **kwargs)
+
         return repl
+
     return layer
 
 
@@ -119,7 +124,7 @@ def shorten_path(path, level=2, current_level=1):
         return tail
     else:
         if path != os.path.sep:
-            return shorten_path(path, level, current_level+1) + os.path.sep + tail
+            return shorten_path(path, level, current_level + 1) + os.path.sep + tail
         return tail
 
 

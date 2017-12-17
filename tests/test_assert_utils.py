@@ -3,17 +3,19 @@ from datetime import datetime, date
 from decimal import Decimal
 
 import pytz
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.assert_utils import write_assert_list, AssertionWriter, write_assertions
 from django_test_tools.file_utils import temporary_file, hash_file
+from django_test_tools.mixins import TestOutputMixin
 
 logger = logging.getLogger(__name__)
 
 
-class TestAssertionWriter(TestCase):
+class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
     @classmethod
-    def setUpTestData(cls):
+    def setUpClass(cls):
+        super(TestAssertionWriter, cls).setUpClass()
         cls.writer = AssertionWriter()
 
     def test_generate_assert_equals_dictionaries(self):
@@ -42,6 +44,20 @@ class TestAssertionWriter(TestCase):
         self.assertEqual(filename, self.test_write_assertions.filename)
         hash_digest = hash_file(filename)
         self.assertEqual(hash_digest, 'bd059f11bb7a5a2db70c89d94c9cd681f4684fa4')
+        content = self.get_txt_content(filename)
+
+        self.assertEqual(len(content), 10)
+        self.assertEqual(content[0], 'self.assertEqual(len(data), 2)')
+        self.assertEqual(content[1], 'self.assertEqual(len(data[0][\'groups\']), 2)')
+        self.assertEqual(content[2], 'self.assertEqual(data[0][\'groups\'][0], \'admin\')')
+        self.assertEqual(content[3], 'self.assertEqual(data[0][\'groups\'][1], \'users\')')
+        self.assertEqual(content[4], 'self.assertEqual(data[0][\'name\'], \'kilo\')')
+        self.assertEqual(content[5], 'self.assertEqual(data[0][\'password\'], 9999)')
+        self.assertEqual(content[6], 'self.assertEqual(len(data[1][\'groups\']), 1)')
+        self.assertEqual(content[7], 'self.assertEqual(data[1][\'groups\'][0], \'users\')')
+        self.assertEqual(content[8], 'self.assertEqual(data[1][\'name\'], \'pasto\')')
+        self.assertEqual(content[9], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
+
 
     @temporary_file('py', delete_on_exit=True)
     def test_write_assert_list(self):
@@ -79,7 +95,27 @@ class TestAssertionWriter(TestCase):
         assertion_writer.add_regular_expression('constant', '^[A-Z]+$')
         assertion_writer.write_assert_list(data, 'data', filename=filename)
         hash_digest = hash_file(filename)
-        self.assertEqual(hash_digest, '73025ea6c99ef8b5fbf03c71b5156a11c4f68a9a')
+
+        content = self.get_txt_content(filename)
+
+        self.assertEqual(len(content), 16)
+        self.assertEqual(content[0], 'self.assertEqual(len(data), 2)')
+        self.assertEqual(content[1], 'self.assertEqual(data[0][\'config\'][\'bulding\'], 116)')
+        self.assertEqual(content[2], 'self.assertEqual(data[0][\'config\'][\'server\'], \'all\')')
+        self.assertEqual(content[3], 'self.assertEqual(len(data[0][\'groups\']), 2)')
+        self.assertEqual(content[4], 'self.assertRegex(data[0][\'groups\'][0], r\'^[A-Z]+$\')')
+        self.assertEqual(content[5], 'self.assertRegex(data[0][\'groups\'][1], r\'^[A-Z]+$\')')
+        self.assertEqual(content[6], 'self.assertEqual(data[0][\'name\'], \'kilo\')')
+        self.assertEqual(content[7], 'self.assertEqual(data[0][\'password\'], 9999)')
+        self.assertEqual(content[8], 'self.assertEqual(data[1][\'config\'][\'bulding\'], 116)')
+        self.assertEqual(content[9], 'self.assertEqual(data[1][\'config\'][\'server\'], \'database\')')
+        self.assertEqual(content[10], 'self.assertRegex(data[1][\'cost\'], r\'^(\d+\.\d+)$\')')
+        self.assertEqual(content[11], 'self.assertEqual(len(data[1][\'groups\']), 1)')
+        self.assertEqual(content[12], 'self.assertEqual(data[1][\'groups\'][0], \'users\')')
+        self.assertEqual(content[13], 'self.assertEqual(data[1][\'name\'], \'pasto\')')
+        self.assertEqual(content[14], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
+        self.assertEqual(content[15], 'self.assertRegex(data[1][\'time\'], r\'^([0-1][0-9]|2[0-4]):([0-5][0-9])$\')')
+
 
 
     def test__build_assertion_datetime(self):

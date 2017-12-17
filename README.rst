@@ -17,7 +17,7 @@ Django Test Tools
 
 Simple tests tools to make testing faster and easier.
 
-Supports Python 3.4, 3.5, 3.5 with Django 1.10.7 and 1.11.x.
+Supports Python 3.4, 3.5, 3.5 with Django 1.10.7, 1.11.x and 2.0.
 
 
 Documentation
@@ -63,14 +63,14 @@ Factory Generator
 
 .. code-block:: bash
 
-    $  $ python manage.py generate_factories project.app
+    $  python manage.py generate_factories project.app
 
 Model Test Case Generator
 +++++++++++++++++++++++++
 
 .. code-block:: bash
 
-    $  $ python manage.py generate_model_test_cases project.app
+    $  python manage.py generate_model_test_cases project.app
 
 Serializer Generator
 ++++++++++++++++++++
