@@ -4,12 +4,12 @@ import os
 from unittest import mock
 
 import pytz
-from django.test import TestCase
+from django.test import TestCase, SimpleTestCase
 from django.test import override_settings
 
 from django_test_tools.file_utils import TemporaryFolder, hash_file
 from django_test_tools.utils import Timer, add_date_to_filename, daterange, parse_spanish_date, spanish_date_util, \
-    create_output_filename_with_date, dict_compare
+    create_output_filename_with_date, dict_compare, convert_to_snake_case
 
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -241,3 +241,16 @@ class TemporyFolderTest(TestCase):
             digest = hash_file(filename)
             self.assertEqual('2b7db434f52eb470e1a6dcdc39063536c075a4f0', digest)
         self.assertFalse(os.path.exists(folder.new_path))
+
+class TestSnakeCase(SimpleTestCase):
+
+    def test_convert_to_snake_case(self):
+        camel_case = 'OperatingSystem'
+        snake_case = convert_to_snake_case(camel_case)
+        self.assertEqual(snake_case, 'operating_system')
+
+
+    def test_convert_to_snake_case_long(self):
+        camel_case = 'OperatingSystemLongName'
+        snake_case = convert_to_snake_case(camel_case)
+        self.assertEqual(snake_case, 'operating_system_long_name')

@@ -6,7 +6,7 @@ import re
 
 import requests
 
-from django_test_tools.file_utils import serialize_data
+from ..file_utils import serialize_data
 
 
 @contextlib.contextmanager
@@ -39,7 +39,6 @@ def parse_pip_list(line):
 def get_latest_version(package_name):
     url = 'https://pypi.python.org/pypi/{}/json'.format(package_name)
     r = requests.get(url)
-    serialize_data(r.json(), base_filename='celery')
     versions = sorted(r.json()["releases"], key=pkg_resources.parse_version)
     return versions[-1]
 

@@ -67,3 +67,11 @@ class TestOutputMixin(object):
             for row in reader:
                 content.append(row)
         return content
+
+    def get_txt_content(self, filename, encoding='utf-8'):
+        content = list()
+        with open(filename, 'r', encoding=encoding) as file:
+            lines = file.readlines()
+        for line in lines:
+            content.append(line.strip('\n'))
+        return content
