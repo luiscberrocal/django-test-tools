@@ -4,6 +4,13 @@ from openpyxl import load_workbook
 class ExcelAdapter(object):
     @classmethod
     def convert_to_list(cls, filename, sheet_name=None, has_header=True):
+        """
+        Reads an Excel file and convertes every row into a list of values.
+        :param filename: <str> Excel filename
+        :param sheet_name: <str> Name of the sheet
+        :param has_header: <bool> If true the first row is not included in the list.
+        :return: <list> A list of lists.
+        """
         data = list()
         wb = load_workbook(filename=filename, data_only=True)
         if sheet_name is None:
