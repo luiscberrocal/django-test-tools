@@ -1,5 +1,5 @@
 -r requirements.txt
-django==2.0.1
+django==2.0.3
 bumpversion==0.5.3
 wheel==0.30.0
 django-environ==0.4.4
