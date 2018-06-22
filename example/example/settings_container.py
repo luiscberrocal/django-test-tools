@@ -1,5 +1,6 @@
 from .settings import *
 
+TEST_APP = 'servers'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -8,11 +9,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_test_tools.apps.DjangoTestToolsConfig',
-    'servers.apps.ExampleConfig',
-
+    'django_test_tools',
+    TEST_APP,
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]
 ROOT_URLCONF = 'example.urls'
-WSGI_APPLICATION = 'example.wsgi.application'

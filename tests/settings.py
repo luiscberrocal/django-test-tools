@@ -33,6 +33,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TEST_APP = 'example.servers'
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,8 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
-    'example.servers',
-
+    TEST_APP,
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]

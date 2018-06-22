@@ -17,7 +17,7 @@ Django Test Tools
 
 Simple tests tools to make testing faster and easier.
 
-Supports Python 3.4, 3.5, 3.5 with Django 1.10.7, 1.11.x and 2.0.
+Supports Python 3.4, 3.5, 3.6 with Django 1.10.7, 1.11.x and 2.0.x
 
 
 Documentation
@@ -44,16 +44,7 @@ Add it to your `INSTALLED_APPS`:
 
 Add Django Test Tools's URL patterns:
 
-.. code-block:: python
 
-    from django_test_tools import urls as django_test_tools_urls
-
-
-    urlpatterns = [
-        ...
-        url(r'^', include(django_test_tools_urls)),
-        ...
-    ]
 
 Features
 --------
