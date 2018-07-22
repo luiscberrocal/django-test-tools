@@ -1,5 +1,3 @@
-import sys
-
 from django.core.management import BaseCommand
 
 from ...app_manager import DjangoAppManager
@@ -43,6 +41,7 @@ PRINT_IPADDRESSFIELD = """    {} = LazyAttribute(lambda o: faker.ipv4(network=Fa
 PRINT_TEXTFIELD = """    {} = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))"""
 PRINT_DECIMALFIELD = """    {} = LazyAttribute(lambda x: faker.pydecimal(left_digits={}, right_digits={}, positive=True))"""
 PRINT_UNSUPPORTED_FIELD = """    #{} = {} We do not support this field type"""
+PRINT_COUNTRYFIELD = """    {} = Iterator(['PA', 'US'])"""
 
 
 # noinspection PyProtectedMember
@@ -85,7 +84,7 @@ class ModelFactoryGenerator(object):
                 field_data = {'print': PRINT_FILEFIELD, 'args': [field.name, field.name, 'xlsx']}
                 factory_class_content.append(field_data)
 
-            elif field_type == 'DecimalField':
+            elif field_type == 'DecimalField' or field_type == 'MoneyField':
                 max_left = field.max_digits - field.decimal_places
                 max_right = field.decimal_places
                 field_data = {'print': PRINT_DECIMALFIELD,
@@ -96,6 +95,9 @@ class ModelFactoryGenerator(object):
                 field_data = {'print': PRINT_IPADDRESSFIELD, 'args': [field.name]}
                 factory_class_content.append(field_data)
 
+            elif field_type == 'CountryField':
+                field_data = {'print': PRINT_COUNTRYFIELD, 'args': [field.name]}
+                factory_class_content.append(field_data)
             else:
                 field_data = {'print': PRINT_UNSUPPORTED_FIELD,
                               'args': [field.name, field_type]}
@@ -189,7 +191,7 @@ class Command(BaseCommand):
         app = app_manager.get_app(app_name)
         if not app:
             self.stderr.write('This command requires an existing app name as '
-                         'argument')
+                              'argument')
             self.stderr.write('Available apps:')
             for app in sorted(app_manager.installed_apps):
                 self.stderr.write('    %s' % app)
@@ -198,5 +200,3 @@ class Command(BaseCommand):
             for model in app.get_models():
                 model_fact = ModelFactoryGenerator(model)
                 self.stdout.write(str(model_fact))
-
-
