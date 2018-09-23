@@ -16,6 +16,9 @@ from .file_utils import add_date
 __author__ = 'lberrocal'
 
 
+def versiontuple(v):
+    return tuple(map(int, (v.split("."))))
+
 def dict_compare(d1, d2):
     d1_keys = set(d1.keys())
     d2_keys = set(d2.keys())

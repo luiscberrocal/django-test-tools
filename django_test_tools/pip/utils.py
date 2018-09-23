@@ -1,12 +1,23 @@
 import contextlib
-import pkg_resources
+import subprocess
 
 import pip
+import pkg_resources
+
+from django_test_tools.utils import versiontuple
+
+if versiontuple(pip.__version__) >= (10, 0, 0):
+    from pip._internal.req import parse_requirements
+    from pip._internal.req.req_install import InstallRequirement
+else:
+    from pip.req import parse_requirements, InstallRequirement
+
 import re
 
 import requests
+import logging
 
-from ..file_utils import serialize_data
+logger = logging.getLogger(__name__)
 
 
 @contextlib.contextmanager
@@ -15,17 +26,18 @@ def capture():
     from io import StringIO
     oldout, olderr = sys.stdout, sys.stderr
     try:
-        out=[StringIO(), StringIO()]
-        sys.stdout,sys.stderr = out
+        out = [StringIO(), StringIO()]
+        sys.stdout, sys.stderr = out
         yield out
     finally:
-        sys.stdout,sys.stderr = oldout, olderr
+        sys.stdout, sys.stderr = oldout, olderr
         out[0] = out[0].getvalue()
         out[1] = out[1].getvalue()
 
 
 def parse_pip_list(line):
     regexp = re.compile(r'([\w\-]*)\s\(([\w\-_\.]*)\)\s\-\sLatest:\s([\w\-_\.]*)\s\[([a-z]*)\]')
+    regexp_list = re.compile(r'([\w\-]*)\s+([\w\-_\.]*)')
     match = regexp.match(line)
     if match:
         library = dict()
@@ -33,6 +45,13 @@ def parse_pip_list(line):
         library['current_version'] = match.group(2)
         library['new_version'] = match.group(3)
         return library
+    match_list = regexp_list.match(line)
+    if match_list:
+        library = dict()
+        library['name'] = match_list.group(1).lower()
+        library['current_version'] = match_list.group(2)
+        return library
+
     return None
 
 
@@ -62,9 +81,10 @@ def parse_specifier(specifier):
 
 
 def read_requirement_file(req_file):
+    # print('pip version {}'.format(pip.__version__))
     requirements = dict()
-    for item in pip.req.parse_requirements(req_file, session="somesession"):
-        if isinstance(item, pip.req.InstallRequirement):
+    for item in parse_requirements(req_file, session="somesession"):
+        if isinstance(item, InstallRequirement):
             requirement = dict()
             requirement['name'] = item.name
             if len(str(item.req.specifier)) > 0:
@@ -83,9 +103,16 @@ def read_requirement_file(req_file):
 
 
 def list_outdated_libraries():
-    with capture() as out:
-        pip.main(['list', '--outdated'])
-    library_lines = out[0].split('\n')
+    return list_libraries(True)
+
+
+def list_libraries(outdated=False):
+    command_list = ['pip', 'list']
+    if outdated:
+        command_list.append('--outdated')
+    pip_list = subprocess.check_output(command_list)
+    # pip.main(['list', '--outdated'])
+    library_lines = pip_list.decode("utf-8").split('\n')
     outdated_libraries = list()
     for line in library_lines:
         library = parse_pip_list(line)
@@ -124,4 +151,3 @@ def update_outdated_libraries(requirement_file, **kwargs):
             change['line_no'] = line_no
             changes.append(change)
     return changes
-

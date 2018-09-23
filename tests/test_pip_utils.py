@@ -5,7 +5,7 @@ from django.test import SimpleTestCase
 from django_test_tools.assert_utils import write_assertions
 from django_test_tools.file_utils import temporary_file
 from django_test_tools.pip.utils import parse_specifier, read_requirement_file, list_outdated_libraries, \
-    update_outdated_libraries, get_latest_version
+    update_outdated_libraries, get_latest_version, list_libraries
 from tests.mixins import TestFixtureMixin
 
 
@@ -21,32 +21,32 @@ class TestParseSpecifier(SimpleTestCase):
 
         self.assertEqual(str(context.exception), 'Invalid speficier "2.1.1"')
 
-    @mock.patch('django_test_tools.pip.utils.pip.main')
+    @mock.patch('django_test_tools.pip.utils.subprocess.check_output')
     def test_list_outdated_libraries(self, mock_pip_main):
-        main_result = 'binaryornot (0.4.3) - Latest: 1.4.4 [wheel]\nchardet (3.0.2) - Latest: 3.0.4 [wheel]\n' \
-                       'cookiecutter (1.5.1) - Latest: 1.6.0 [wheel]\ncoverage (4.4.1) - Latest: 4.4.2 [wheel]\n' \
-                       'Faker (0.7.17) - Latest: 0.8.7 [wheel]\nflake8 (3.3.0) - Latest: 3.5.0 [wheel]\n' \
-                       'Jinja2 (2.9.6) - Latest: 2.10 [wheel]\nopenpyxl (2.4.8) - Latest: 2.4.9 [sdist]\n' \
-                       'pbr (3.0.1) - Latest: 3.1.1 [wheel]\npluggy (0.4.0) - Latest: 0.5.2 [sdist]\n' \
-                       'py (1.4.33) - Latest: 1.5.2 [wheel]\npyflakes (1.5.0) - Latest: 1.6.0 [wheel]\n' \
-                       'pylint (1.7.2) - Latest: 1.7.4 [wheel]\npython-dateutil (2.6.0) - Latest: 2.6.1 [wheel]\n' \
-                       'pytz (2017.2) - Latest: 2017.3 [wheel]\nradon (2.0.2) - Latest: 2.1.1 [wheel]\n' \
-                       'requests (2.14.2) - Latest: 2.18.4 [wheel]\nsetuptools (36.0.1) - Latest: 37.0.0 [wheel]\n' \
-                       'six (1.10.0) - Latest: 1.11.0 [wheel]\ntox (2.7.0) - Latest: 2.9.1 [wheel]\n' \
-                       'wrapt (1.10.10) - Latest: 1.10.11 [sdist]\n' \
-                       'DEPRECATION: The default format will switch to columns in the future. '  \
-                       'You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf '  \
-                       'under the [list] section) to disable this warning.\n'
+        main_result = b'binaryornot (0.4.3) - Latest: 1.4.4 [wheel]\nchardet (3.0.2) - Latest: 3.0.4 [wheel]\n' \
+                       b'cookiecutter (1.5.1) - Latest: 1.6.0 [wheel]\ncoverage (4.4.1) - Latest: 4.4.2 [wheel]\n' \
+                       b'Faker (0.7.17) - Latest: 0.8.7 [wheel]\nflake8 (3.3.0) - Latest: 3.5.0 [wheel]\n' \
+                       b'Jinja2 (2.9.6) - Latest: 2.10 [wheel]\nopenpyxl (2.4.8) - Latest: 2.4.9 [sdist]\n' \
+                       b'pbr (3.0.1) - Latest: 3.1.1 [wheel]\npluggy (0.4.0) - Latest: 0.5.2 [sdist]\n' \
+                       b'py (1.4.33) - Latest: 1.5.2 [wheel]\npyflakes (1.5.0) - Latest: 1.6.0 [wheel]\n' \
+                       b'pylint (1.7.2) - Latest: 1.7.4 [wheel]\npython-dateutil (2.6.0) - Latest: 2.6.1 [wheel]\n' \
+                       b'pytz (2017.2) - Latest: 2017.3 [wheel]\nradon (2.0.2) - Latest: 2.1.1 [wheel]\n' \
+                       b'requests (2.14.2) - Latest: 2.18.4 [wheel]\nsetuptools (36.0.1) - Latest: 37.0.0 [wheel]\n' \
+                       b'six (1.10.0) - Latest: 1.11.0 [wheel]\ntox (2.7.0) - Latest: 2.9.1 [wheel]\n' \
+                       b'wrapt (1.10.10) - Latest: 1.10.11 [sdist]\n' \
+                       b'DEPRECATION: The default format will switch to columns in the future. '  \
+                       b'You can use --format=(legacy|columns) (or define a format=(legacy|columns) in your pip.conf '  \
+                       b'under the [list] section) to disable this warning.\n'
 
         mock_capture = mock.Mock()
-        mock_capture.return_value = mock_capture
-        mock_capture.__enter__ = mock.Mock(return_value=(main_result, ['\n']))
-        mock_capture.__exit__ = mock.Mock(return_value=(mock.Mock(), None))
+        mock_capture.return_value = main_result
+        #mock_capture.__enter__ = mock.Mock(return_value=(main_result, ['\n']))
+        #mock_capture.__exit__ = mock.Mock(return_value=(mock.Mock(), None))
 
 
-        with mock.patch('django_test_tools.pip.utils.capture', mock_capture):
+        with mock.patch('django_test_tools.pip.utils.subprocess.check_output', mock_capture):
             outdated = list_outdated_libraries()
-        mock_pip_main.assert_called_with(['list', '--outdated'])
+        #mock_pip_main.assert_called_with(['list', b'--outdated'])
 
         self.assertEqual(len(outdated), 21)
         self.assertEqual(outdated[0]['current_version'], '0.4.3')
@@ -113,6 +113,10 @@ class TestParseSpecifier(SimpleTestCase):
         self.assertEqual(outdated[20]['name'], 'wrapt')
         self.assertEqual(outdated[20]['new_version'], '1.10.11')
 
+    def test_list_libraries(self):
+        outdated = list_libraries()
+        self.assertTrue(len(outdated)> 10)
+
 
 
 class TestReadRequirementFile(TestFixtureMixin, SimpleTestCase):
@@ -141,7 +145,7 @@ class TestReadRequirementFile(TestFixtureMixin, SimpleTestCase):
         self.requirements.append('celery==4.0.1\n')
         self.requirements.append('redis>=2.10.5\n')
 
-    @mock.patch('django_test_tools.pip.utils.pip.main')
+    @mock.patch('django_test_tools.pip.utils.pip._internal.main')
     @temporary_file(extension='txt', delete_on_exit=True)
     def test_update_outdated_libraries(self, mock_pip_main):
         filename = self.test_update_outdated_libraries.filename

@@ -53,3 +53,7 @@ output
 # Patchfiles
 .diff
 patch.diff
+
+\.DS_Store
+
+django_test_tools/django-test-tool\.sqlite3
