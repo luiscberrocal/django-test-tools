@@ -143,9 +143,9 @@ class TestReadRequirementFile(TestFixtureMixin, SimpleTestCase):
         self.requirements.append('celery==4.0.1\n')
         self.requirements.append('redis>=2.10.5\n')
 
-    @mock.patch('django_test_tools.pip.utils.pip._internal.main')
+
     @temporary_file(extension='txt', delete_on_exit=True)
-    def test_update_outdated_libraries(self, mock_pip_main):
+    def test_update_outdated_libraries(self):
         filename = self.test_update_outdated_libraries.filename
         with open(filename, 'w', encoding='utf-8') as req_file:
             req_file.writelines(self.requirements)

@@ -121,7 +121,7 @@ django-floppyforms==1.7.0   """
             req_file.write(self.base_content)
         mock_capture = mock.Mock()
         mock_capture.return_value = self.pip_main_result
-       
+
         with mock.patch('django_test_tools.pip.utils.subprocess.check_output', mock_capture):
             call_command('check_requirements', requirement_file, stdout=self.content)
         results = self.get_results()
