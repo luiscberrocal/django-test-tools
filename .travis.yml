@@ -5,12 +5,24 @@ language: python
 env:
   - DJANGO_VERSION=1.10.8
   - DJANGO_VERSION=1.11.14
-  - DJANGO_VERSION=2.0.7
+  - DJANGO_VERSION=2.0.9
+  - DJANGO_VERSION=2.1.1
 
 python:
+  - "3.7"
   - "3.6"
   - "3.5"
   - "3.4"
+
+matrix:
+  exclude:
+    - python: 3.4
+      env: DJANGO_VERSION=2.1.1
+    - python: 3.7
+      env: DJANGO_VERSION=1.10.8
+    - python: 3.7
+      env: DJANGO_VERSION=1.11.14
+
 
 before_install:
   - pip install codecov
