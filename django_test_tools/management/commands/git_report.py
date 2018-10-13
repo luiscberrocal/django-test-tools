@@ -1,7 +1,13 @@
+import os
+
 import subprocess
+from django.conf import settings
 from django.core.management import BaseCommand
 
 import logging
+from openpyxl import Workbook
+
+from django_test_tools.file_utils import add_date
 
 logger = logging.getLogger(__name__)
 
@@ -28,23 +34,52 @@ class Command(BaseCommand):
                             default=None,
                             )
 
+        parser.add_argument('-f', "--filename",
+                            dest="filename",
+                            help="Output filename",
+                            default=None,
+                            )
+
         # parser.add_argument("-u", "--username",
         #                 dest="usernames",
         #                 help="LDAP usernames for employees",
         #                 nargs='+',
         #                 )
-        pass
 
     def handle(self, *args, **options):
+        headers = ['Hash', 'Email', 'Date', 'Description']
         if options.get('format') is None:
             git_format = '%h|%ae|%ai|%s'
         else:
             git_format = options.get('format')
 
+        if options.get('filename') is None:
+            filepath = os.path.join(settings.TEST_OUTPUT_PATH, 'gir_report.xlsx')
+            filename = add_date(filepath)
+        else:
+            filename = options.get('filename')
+
+        wb = Workbook()
+        sheet = wb.create_sheet()
+        row = 1
+        col = 1
+        for header in headers:
+            sheet.cell(row=row, column=col, value=header)
+            col += 1
+        row += 1
         git_lines = self.report(git_format)
         for line in git_lines:
             self.stdout.write(line)
-        self.stdout.write('Finished processing')
+            line_data = line.split('|')
+            col = 1
+            for data in line_data:
+                sheet.cell(row=row, column=col, value=data)
+                col += 1
+            row += 1
+
+        wb.save(filename)
+
+        self.stdout.write('Finished processing {}'.format(filename))
 
     def report(self, git_format):
         # git log --pretty=format:"%h - %an, %ad : %s" --date=iso
