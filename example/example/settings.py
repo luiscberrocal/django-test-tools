@@ -35,7 +35,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-TEST_APP = 'example.servers'
+TEST_APP = 'servers'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,7 +62,7 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'example.example.urls'
+ROOT_URLCONF = 'example.urls'
 
 TEMPLATES = [
     {
@@ -81,7 +81,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'example.example.wsgi.application'
+WSGI_APPLICATION = 'example.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
