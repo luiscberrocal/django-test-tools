@@ -24,7 +24,7 @@ class Command(BaseCommand):
 
         parser.add_argument("--format",
                             dest="format",
-                            help="Git forma",
+                            help="Git format",
                             default=None,
                             )
 
@@ -41,11 +41,10 @@ class Command(BaseCommand):
         else:
             git_format = options.get('format')
 
-        self.stdout.write('format: {}'.format(git_format))
         git_lines = self.report(git_format)
         for line in git_lines:
             self.stdout.write(line)
-        self.stdout.write('lllllllllllllllllllll')
+        self.stdout.write('Finished processing')
 
     def report(self, git_format):
         # git log --pretty=format:"%h - %an, %ad : %s" --date=iso
@@ -58,8 +57,7 @@ class Command(BaseCommand):
 
             # get info about the latest tag in git
             git_commands = ["git", "log", '--date=iso', '--pretty=format:"{}"'.format(git_format)]
-            #git_commands = ["git", "log", '--pretty=format:"{}"'.format(git_format)]
-            #git_commands = ['git', 'log', '--pretty=format:"%h|%ae|%ai|%s"']
+
             describe_out = subprocess.check_output(
                 git_commands,
                 stderr=subprocess.STDOUT
