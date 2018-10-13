@@ -1,6 +1,10 @@
 import subprocess
 from django.core.management import BaseCommand
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     """
@@ -32,31 +36,36 @@ class Command(BaseCommand):
         pass
 
     def handle(self, *args, **options):
-        git_format = options.get('format', '%h|%ae|%ai|%s"')
+        if options.get('format') is None:
+            git_format = '%h|%ae|%ai|%s'
+        else:
+            git_format = options.get('format')
+
+        self.stdout.write('format: {}'.format(git_format))
         git_lines = self.report(git_format)
         for line in git_lines:
-            self.stdout.writable(line)
+            self.stdout.write(line)
+        self.stdout.write('lllllllllllllllllllll')
 
-
-    def report(self, format):
+    def report(self, git_format):
         # git log --pretty=format:"%h - %an, %ad : %s" --date=iso
         #
         # git log --pretty="%h - %s" --author=gitster --since="2008-10-01"
         # --before="2008-11-01" --no-merges -- t/
         try:
             # git-describe doesn't update the git-index, so we do that
-            subprocess.check_output(["git", "update-index", "--refresh"])
+            # subprocess.check_output(["git", "update-index", "--refresh"])
 
             # get info about the latest tag in git
-            describe_out = subprocess.check_output([
-                "git",
-                "log",
-                '--date=iso',
-                '--pretty=format:"{}"'.format(format)
-            ], stderr=subprocess.STDOUT
+            git_commands = ["git", "log", '--date=iso', '--pretty=format:"{}"'.format(git_format)]
+            #git_commands = ["git", "log", '--pretty=format:"{}"'.format(git_format)]
+            #git_commands = ['git', 'log', '--pretty=format:"%h|%ae|%ai|%s"']
+            describe_out = subprocess.check_output(
+                git_commands,
+                stderr=subprocess.STDOUT
             ).decode()
         except subprocess.CalledProcessError:
-            # logger.warn("Error when running git describe")
+            logger.warning("Error when running git describe")
             return {}
 
         return describe_out.split('\n')
