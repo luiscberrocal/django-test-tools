@@ -16,9 +16,9 @@ class TestSerializerGenerator(PythonWritingTestMixin, TestCase):
         model_serializer = SerializerGenerator(model)
         hash = self.write_generator_to_file(self.test_app_str.filename, model_serializer)
         if app_name == 'example.servers':
-            self.assertEqual('574fb193778e3bfcec65fe0fa4a0e56eace86280', hash)
+            self.assertEqual('09bef8e0953d83295b870d82f856b219d8fd68d4', hash)
         else:
-            self.assertEqual(hash, '574fb193778e3bfcec65fe0fa4a0e56eace86280')
+            self.assertEqual(hash, '09bef8e0953d83295b870d82f856b219d8fd68d4')
 
 
 class TestAppSerializerGenerator(PythonWritingTestMixin, TestCase):
@@ -30,6 +30,6 @@ class TestAppSerializerGenerator(PythonWritingTestMixin, TestCase):
         app_serializers = AppSerializerGenerator(app)
         hash = self.write_generator_to_file(self.test_app_str.filename, app_serializers)
         if app_name == 'example.servers':
-            self.assertEqual('dccc94d94b0ca509032d70a2670f2693279bd148', hash)
+            self.assertEqual('408e2da1f563da009af5da9c4c9e7ee11cc3beae', hash)
         else:
-            self.assertEqual(hash, 'e2ee40dfc4ed435dd701e29548edfa31288604af')
+            self.assertEqual(hash, 'e2ee40dfc4ed435dd701e29548edfa31288604af') #FIXME Why do this?
