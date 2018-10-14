@@ -109,13 +109,19 @@ class Command(BaseCommand):
 
             describe_out = subprocess.check_output(
                 git_commands,
-                stderr=subprocess.STDOUT
-            ).decode()
+            ).decode('utf-8')
         except subprocess.CalledProcessError:
             logger.warning("Error when running git describe")
             return {}
 
-        return describe_out.split('\n')
+        return self.cleanup(describe_out.split('\n'))
+
+    def cleanup(self, git_lines):
+        cleaned_up = list()
+        for git_line in git_lines:
+            cleaned_up.append(git_line[1:-1])
+        return cleaned_up
+
 
     def parse_date(self, date_value):
         """

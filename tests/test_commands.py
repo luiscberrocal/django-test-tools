@@ -133,18 +133,18 @@ django-floppyforms==1.7.0   """
 
 class TestGitReportCommand(TestCommandMixin, SimpleTestCase):
 
-    @temporary_file('xlsx', delete_on_exit=False)
+    @temporary_file('xlsx', delete_on_exit=True)
     def test_command_git_report(self):
-        output = b'552472e|github-bot@pyup.io|2018-10-01 10:16:27 -0500|Update django from 2.0.7 to 2.1.2\n' \
-                 b'bbb1c9e|github-bot@pyup.io|2018-10-01 10:16:26 -0500|Update django from 2.0.7 to 2.1.2\n' \
-                 b'8d3e049|luis.berrocal.1942@gmail.com|2018-09-25 20:44:39 -0500|Merge pull request #51 from luiscberrocal/pyup-update-openpyxl-2.5.4-to-2.5.8\n' \
-                 b'07f2ef3|github-bot@pyup.io|2018-09-25 12:36:13 -0500|Update openpyxl from 2.5.4 to 2.5.8\n' \
-                 b'b319f74|luis.berrocal.1942@gmail.com|2018-09-23 10:37:30 -0500|Merge pull request #50 from luiscberrocal/pyup-update-faker-0.8.17-to-0.9.1\n' \
-                 b'166c5b0|unknown@example.com|2018-09-23 09:40:44 -0500|Merge branch \'release/1.1.2\'\n' \
-                 b'98e74fb|unknown@example.com|2018-09-23 09:40:43 -0500|Merge branch \'release/1.1.2\' into develop\n' \
-                 b'cb0c110|luis.berrocal.1942@gmail.com|2018-09-23 09:40:16 -0500|Bump version: 1.1.1 -> 1.1.2\n' \
-                 b'5ca8421|github-bot@pyup.io|2018-09-23 09:39:23 -0500|Update faker from 0.8.17 to 0.9.1\n' \
-                 b'2fbee22|luis.berrocal.1942@gmail.com|2018-09-23 09:37:50 -0500|Updated requirements\n'
+        output = b'"552472e|github-bot@pyup.io|2018-10-01 10:16:27 -0500|Update django from 2.0.7 to 2.1.2"\n' \
+                 b'"bbb1c9e|github-bot@pyup.io|2018-10-01 10:16:26 -0500|Update django from 2.0.7 to 2.1.2"\n' \
+                 b'"8d3e049|luis.berrocal.1942@gmail.com|2018-09-25 20:44:39 -0500|Merge pull request #51 from luiscberrocal/pyup-update-openpyxl-2.5.4-to-2.5.8"\n' \
+                 b'"07f2ef3|github-bot@pyup.io|2018-09-25 12:36:13 -0500|Update openpyxl from 2.5.4 to 2.5.8"\n' \
+                 b'"b319f74|luis.berrocal.1942@gmail.com|2018-09-23 10:37:30 -0500|Merge pull request #50 from luiscberrocal/pyup-update-faker-0.8.17-to-0.9.1"\n' \
+                 b'"166c5b0|unknown@example.com|2018-09-23 09:40:44 -0500|Merge branch \'release/1.1.2\'"\n' \
+                 b'"98e74fb|unknown@example.com|2018-09-23 09:40:43 -0500|Merge branch \'release/1.1.2\' into develop"\n' \
+                 b'"cb0c110|luis.berrocal.1942@gmail.com|2018-09-23 09:40:16 -0500|Bump version: 1.1.1 -> 1.1.2"\n' \
+                 b'"5ca8421|github-bot@pyup.io|2018-09-23 09:39:23 -0500|Update faker from 0.8.17 to 0.9.1"\n' \
+                 b'"2fbee22|luis.berrocal.1942@gmail.com|2018-09-23 09:37:50 -0500|Updated requirements"\n'
 
         mock_capture = mock.Mock()
         mock_capture.return_value = output
@@ -159,4 +159,9 @@ class TestGitReportCommand(TestCommandMixin, SimpleTestCase):
 
         self.assertTrue(os.path.exists(filename))
 
+    # @temporary_file('xlsx', delete_on_exit=True)
+    # def test_(self):
+    #     filename = self.test_.filename
+    #     call_command('git_report', filename=filename, stdout=self.content)
+    #
 
