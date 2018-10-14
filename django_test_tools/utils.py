@@ -270,10 +270,10 @@ def datetime_to_local_time(date_time):
     """
     Converts a naive date to a time zoned date based in hte setting.TIME_ZONE variable. If the date has already a time zone
     it will localize the date.
-    :param date_time: date or datetime to be localized
+    :param date_time: <date> or <datetime> to be localized
     :return: localized non naive datetime
     """
-    if isinstance(date_time, date):
+    if isinstance(date_time, date) and not isinstance(date_time, datetime):
         date_time = datetime.combine(date_time, datetime.min.time())
 
     is_naive = date_time.tzinfo is None or date_time.tzinfo.utcoffset(date_time) is None

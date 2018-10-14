@@ -9,7 +9,7 @@ from django.test import override_settings
 
 from django_test_tools.file_utils import TemporaryFolder, hash_file
 from django_test_tools.utils import Timer, add_date_to_filename, daterange, parse_spanish_date, spanish_date_util, \
-    create_output_filename_with_date, dict_compare, convert_to_snake_case
+    create_output_filename_with_date, dict_compare, convert_to_snake_case, datetime_to_local_time
 
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
@@ -242,6 +242,7 @@ class TemporyFolderTest(TestCase):
             self.assertEqual('2b7db434f52eb470e1a6dcdc39063536c075a4f0', digest)
         self.assertFalse(os.path.exists(folder.new_path))
 
+
 class TestSnakeCase(SimpleTestCase):
 
     def test_convert_to_snake_case(self):
@@ -249,8 +250,30 @@ class TestSnakeCase(SimpleTestCase):
         snake_case = convert_to_snake_case(camel_case)
         self.assertEqual(snake_case, 'operating_system')
 
-
     def test_convert_to_snake_case_long(self):
         camel_case = 'OperatingSystemLongName'
         snake_case = convert_to_snake_case(camel_case)
         self.assertEqual(snake_case, 'operating_system_long_name')
+
+
+class TestDatetimeToLocalTime(SimpleTestCase):
+
+    def test_datetime_to_local_time_datetime(self):
+        input_date_format = '%Y-%m-%d %H:%M:%S %z'
+        output_date_format = '%Y-%m-%d %H:%M:%S'
+        date_value = '2018-09-23 09:37:50 -0500'
+        datetime_object = datetime.datetime.strptime(date_value, input_date_format)
+
+        datetime_object_with_timezone = datetime_to_local_time(datetime_object)
+        str_datetime_w_tz = datetime_object_with_timezone.strftime(output_date_format)
+        self.assertEqual(str_datetime_w_tz, '2018-09-23 09:37:50')
+
+    def test_datetime_to_local_time_date(self):
+        input_date_format = '%Y-%m-%d %H:%M:%S %z'
+        output_date_format = '%Y-%m-%d %H:%M:%S'
+        date_value = '2018-09-23 09:37:50 -0500'
+        date_object = datetime.datetime.strptime(date_value, input_date_format).date()
+        
+        datetime_object_with_timezone = datetime_to_local_time(date_object)
+        str_datetime_w_tz = datetime_object_with_timezone.strftime(output_date_format)
+        self.assertEqual(str_datetime_w_tz, '2018-09-23 00:00:00')
