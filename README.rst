@@ -15,6 +15,11 @@ Django Test Tools
    :target: https://landscape.io/github/luiscberrocal/django-test-tools/master
    :alt: Code Health
 
+.. image:: https://pyup.io/repos/github/luiscberrocal/django-test-tools/shield.svg
+     :target: https://pyup.io/repos/github/luiscberrocal/django-test-tools/
+     :alt: Updates
+
+
 Simple tests tools to make testing faster and easier.
 
 Supports Python 3.4, 3.5, 3.6 with Django 1.10.7, 1.11.x and 2.1.x
@@ -42,7 +47,7 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
-Add Django Test Tools's URL patterns:
+
 
 
 
