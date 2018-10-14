@@ -23,7 +23,7 @@ else:
 
 if django_version >= (2, 0):
     urlpatterns = [
-        path(r'^admin/', admin.site.urls),
+        path(r'admin/', admin.site.urls),
         path(r'', include('django_test_tools.urls')),
     ]
 else:

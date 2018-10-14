@@ -32,4 +32,4 @@ class TestAppSerializerGenerator(PythonWritingTestMixin, TestCase):
         if app_name == 'example.servers':
             self.assertEqual('408e2da1f563da009af5da9c4c9e7ee11cc3beae', hash)
         else:
-            self.assertEqual(hash, 'e2ee40dfc4ed435dd701e29548edfa31288604af') #FIXME Why do this?
+            self.assertEqual(hash, 'fa5509b309d47913af26c20e1800f0921a2783a8') #FIXME Why do this?
