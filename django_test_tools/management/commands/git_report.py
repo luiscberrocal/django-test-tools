@@ -1,3 +1,5 @@
+import pytz
+from datetime import datetime
 import os
 
 import subprocess
@@ -7,17 +9,27 @@ from django.core.management import BaseCommand
 import logging
 from openpyxl import Workbook
 
-from django_test_tools.file_utils import add_date
+from ...file_utils import add_date
+from ...utils import datetime_to_local_time
 
 logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
     """
-    git log --pretty="format:%h|%ae|%ai|%s" > ./output/commits.txt
+    This command will export your git commits into a simple excel sheet. The report includes hash, email, date and
+    description.
 
+    Instead of using:
 
-        $ python manage.py git_report
+        git log --date=iso --pretty="format:%h|%ae|%ai|%s" > ./output/commits.txt
+
+    You can type
+
+        $ python manage.py git_report -f /path/to/excel.xlsx
+
+    Note: usefulll datetime format in excel dd-mmm-yy h:mm:ss
+
     """
 
     def add_arguments(self, parser):
@@ -54,7 +66,7 @@ class Command(BaseCommand):
             git_format = options.get('format')
 
         if options.get('filename') is None:
-            filepath = os.path.join(settings.TEST_OUTPUT_PATH, 'gir_report.xlsx')
+            filepath = os.path.join(settings.TEST_OUTPUT_PATH, 'git_report.xlsx')
             filename = add_date(filepath)
         else:
             filename = options.get('filename')
@@ -73,6 +85,8 @@ class Command(BaseCommand):
             line_data = line.split('|')
             col = 1
             for data in line_data:
+                if col == 3:
+                    data = self.parse_date(data)
                 sheet.cell(row=row, column=col, value=data)
                 col += 1
             row += 1
@@ -102,3 +116,18 @@ class Command(BaseCommand):
             return {}
 
         return describe_out.split('\n')
+
+    def parse_date(self, date_value):
+        """
+        Will transform a string in the format '2018-09-23 09:37:50 -0500' to a datetime object
+        :param date_value: <str> date in iso format
+        :return: <datetime> datetime object of the string value
+        """
+        date_format = '%Y-%m-%d %H:%M:%S %z'
+
+        datetime_object = datetime.strptime(date_value, date_format)
+        datetime_object = datetime_object.replace(tzinfo=pytz.UTC)
+        time_zone = pytz.timezone(settings.TIME_ZONE)
+
+        datetime_object_with_timezone = datetime_object.astimezone(time_zone)
+        return datetime_object

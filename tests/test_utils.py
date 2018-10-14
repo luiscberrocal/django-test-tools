@@ -273,7 +273,7 @@ class TestDatetimeToLocalTime(SimpleTestCase):
         output_date_format = '%Y-%m-%d %H:%M:%S'
         date_value = '2018-09-23 09:37:50 -0500'
         date_object = datetime.datetime.strptime(date_value, input_date_format).date()
-        
+
         datetime_object_with_timezone = datetime_to_local_time(date_object)
         str_datetime_w_tz = datetime_object_with_timezone.strftime(output_date_format)
         self.assertEqual(str_datetime_w_tz, '2018-09-23 00:00:00')
