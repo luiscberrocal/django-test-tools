@@ -14,3 +14,11 @@ class UrlGenerator(object):
         rendered = render_to_string(self.template, data)
         with open(filename, 'w', encoding='utf-8') as url_file:
             url_file.write(rendered)
+
+    def print_paths(self, filename):
+        data = dict()
+        data['model_name'] = self.model_name
+        data['print_paths'] = True
+        rendered = render_to_string(self.template, data)
+        with open(filename, 'w', encoding='utf-8') as url_file:
+            url_file.write(rendered)
