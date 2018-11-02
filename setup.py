@@ -23,10 +23,10 @@ def get_version(*file_paths):
 
 version = get_version("django_test_tools", "__init__.py")
 
-
 if sys.argv[-1] == 'publish':
     try:
         import wheel
+
         print("Wheel version: ", wheel.__version__)
     except ImportError:
         print('Wheel library missing. Please run "pip install wheel"')
@@ -56,17 +56,17 @@ setup(
         'django_test_tools',
     ],
     include_package_data=True,
-    install_requires=['openpyxl==2.5.4'],
+    install_requires=['openpyxl==2.5.9', 'Jinja2==2.10', 'requests==2.20.0'],
     license="MIT",
     zip_safe=False,
     keywords='django-test-tools',
     classifiers=[
-         'Development Status :: 5 - Production/Stable',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 1.10',
         'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.0',
+        'Framework :: Django :: 2.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',

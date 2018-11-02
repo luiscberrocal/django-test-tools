@@ -102,11 +102,9 @@ Instead of minor you could also use **major** o **patch** depending on the level
 
 .. code-block:: bash
 
-    python setup.py sdist bdist_wheel
+    make sdist
 
-    python setup.py register -r pypitest
-
-    python setup.py sdist upload -r pypitest
+    twine ./sdist/*
 
 
 To publish to pypi run:
