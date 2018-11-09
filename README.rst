@@ -91,11 +91,15 @@ Builds
 
 Create a release using git-flow
 
+Update setup.py. Make sure the versions in **install_requies** matches the contente of the requirements.txt file.
+
 Run bumpversion
 
 .. code-block:: bash
 
     $ bumpversion minor
+
+Check the .travis.yml to make sure the versions of Djago are the latests
 
 
 Instead of minor you could also use **major** o **patch** depending on the level of the release.
@@ -104,7 +108,7 @@ Instead of minor you could also use **major** o **patch** depending on the level
 
     make sdist
 
-    twine ./sdist/*
+
 
 
 To publish to pypi run:
@@ -112,7 +116,7 @@ To publish to pypi run:
 
 .. code-block:: bash
 
-    python setup.py sdist upload -r pypi
+    twine ./sdist/*
 
 Credits
 -------
