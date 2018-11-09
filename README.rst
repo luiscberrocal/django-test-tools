@@ -125,7 +125,7 @@ To publish to pypi run:
 
 .. code-block:: bash
 
-    twine ./sdist/*
+    twine upload ./dist/*
 
 Credits
 -------
