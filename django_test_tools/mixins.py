@@ -1,5 +1,6 @@
 import csv
 import os
+from django.urls import reverse
 from io import StringIO
 
 from .excel import ExcelAdapter
@@ -75,3 +76,31 @@ class TestOutputMixin(object):
         for line in lines:
             content.append(line.strip('\n'))
         return content
+
+
+class JWTTestMixin(object):
+
+    def get_access_token(self, user):
+        token_url = reverse('token_obtain_pair')
+        pay_load = {'username': user.username, 'password': 'password'}
+        token_response = self.post(token_url, data=pay_load)
+        access_token = token_response.data['access']
+        return access_token
+
+    def get_with_token(self, url, access_token):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer {}'.format(access_token))
+        response = client.get(url, data={'format': 'json'})
+        return response
+
+    def delete_with_token(self, url, access_token):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer {}'.format(access_token))
+        response = client.delete(url, data={'format': 'json'})
+        return response
+
+    def put_with_token(self, url, access_token, data):
+        client = APIClient()
+        client.credentials(HTTP_AUTHORIZATION='Bearer {}'.format(access_token))
+        response = client.put(url, data=data)
+        return response
