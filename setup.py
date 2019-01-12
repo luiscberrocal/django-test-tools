@@ -56,7 +56,7 @@ setup(
         'django_test_tools',
     ],
     include_package_data=True,
-    install_requires=['openpyxl==2.5.9', 'Jinja2==2.10', 'requests==2.20.1'],
+    install_requires=['openpyxl==2.5.12', 'Jinja2==2.10', 'requests==2.21.0'],
     license="MIT",
     zip_safe=False,
     keywords='django-test-tools',
