@@ -39,8 +39,8 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
              'modified': '2016-10-01'}
         ]
         filename = write_assertions(data,
-                                     'data', filename=self.test_write_assertions.filename,
-                                     excluded_keys=['config'])
+                                    'data', filename=self.test_write_assertions.filename,
+                                    excluded_keys=['config'])
         self.assertEqual(filename, self.test_write_assertions.filename)
         hash_digest = hash_file(filename)
         self.assertEqual(hash_digest, 'bd059f11bb7a5a2db70c89d94c9cd681f4684fa4')
@@ -57,7 +57,6 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[7], 'self.assertEqual(data[1][\'groups\'][0], \'users\')')
         self.assertEqual(content[8], 'self.assertEqual(data[1][\'name\'], \'pasto\')')
         self.assertEqual(content[9], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
-
 
     @temporary_file('py', delete_on_exit=True)
     def test_write_assert_list(self):
@@ -116,12 +115,18 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[14], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
         self.assertEqual(content[15], 'self.assertRegex(data[1][\'time\'], r\'^([0-1][0-9]|2[0-4]):([0-5][0-9])$\')')
 
-
+    def test__build_assertion_datetime(self):
+        date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
+        assertion_list = list()
+        self.writer._build_equals_assertion('date_time', date_time, assertion_list)
+        expected_result = "self.assertEqual(date_time.strftime('%Y-%m-%d %H:%M:%S%z'), '2017-02-21 14:45:04+0000')"
+        self.assertEqual(expected_result, assertion_list[0])
+        eval(assertion_list[0])
 
     def test__build_assertion_datetime(self):
         date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
         assertion_list = list()
-        self.writer._build_assertion('date_time', date_time, assertion_list)
+        self.writer._build_equals_assertion('date_time', date_time, assertion_list)
         expected_result = "self.assertEqual(date_time.strftime('%Y-%m-%d %H:%M:%S%z'), '2017-02-21 14:45:04+0000')"
         self.assertEqual(expected_result, assertion_list[0])
         eval(assertion_list[0])
@@ -129,7 +134,7 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
     def test__build_assertion_date(self):
         date_value = date(2017, 2, 21)
         assertion_list = list()
-        self.writer._build_assertion('date_value', date_value, assertion_list)
+        self.writer._build_equals_assertion('date_value', date_value, assertion_list)
         expected_result = "self.assertEqual(date_value.strftime('%Y-%m-%d'), '2017-02-21')"
         self.assertEqual(expected_result, assertion_list[0])
         eval(assertion_list[0])
@@ -137,7 +142,7 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
     def test__build_assertion_decimal(self):
         decimal_value = Decimal(34.5)
         assertion_list = list()
-        self.writer._build_assertion('decimal_value', decimal_value, assertion_list)
+        self.writer._build_equals_assertion('decimal_value', decimal_value, assertion_list)
         expected_result = "self.assertEqual(decimal_value, Decimal(34.5))"
         self.assertEqual(expected_result, assertion_list[0])
         eval(assertion_list[0])
@@ -145,7 +150,42 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
     def test__build_assertion_string_with_quotes(self):
         string_var = r"The quoted values is 'KILO'"
         assertion_list = list()
-        self.writer._build_assertion('string_var', string_var, assertion_list)
+        self.writer._build_equals_assertion('string_var', string_var, assertion_list)
         expected_result = "self.assertEqual(string_var, 'The quoted values is \\'KILO\\'')"
         self.assertEqual(assertion_list[0], expected_result)
+        eval(assertion_list[0])
+
+    def test__build_type_assertion_string_with_quotes(self):
+        string_var = r"The quoted values is 'KILO'"
+        assertion_list = list()
+        self.writer._build_type_assertion('string_var', string_var, assertion_list)
+        expected_result = "self.assertIsNotNone(string_var) # Example: The quoted values is 'KILO'"
+        self.assertEqual(assertion_list[0], expected_result)
+        eval(assertion_list[0])
+
+    def test__build_type_assertion_datetime(self):
+        date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
+        assertion_list = list()
+        self.writer._build_type_assertion('date_time', date_time, assertion_list)
+        expected_result = "self.assertRegex(date_time.strftime('%Y-%m-%d %H:%M:%S%z')," \
+                          " r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\s\d{2}:\d{2}:\d{2}\+\d{4}') " \
+                          "# Example: 2017-02-21 14:45:04+0000"
+        self.assertEqual(assertion_list[0], expected_result, )
+        eval(assertion_list[0])
+
+    def test__build_type_assertion_date(self):
+        date_value = date(2017, 2, 21)
+        assertion_list = list()
+        self.writer._build_type_assertion('date_value', date_value, assertion_list)
+        expected_result = "self.assertRegex(date_value.strftime('%Y-%m-%d')," \
+                          " r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))') # Example: 2017-02-21"
+        self.assertEqual(expected_result, assertion_list[0])
+        eval(assertion_list[0])
+
+    def test__build_type_assertion_decimal(self):
+        decimal_value = Decimal(34.5)
+        assertion_list = list()
+        self.writer._build_type_assertion('decimal_value', decimal_value, assertion_list)
+        expected_result = "self.assertIsNotNone(decimal_value) # Example: Decimal(34.5)"
+        self.assertEqual(expected_result, assertion_list[0])
         eval(assertion_list[0])
