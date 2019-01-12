@@ -58,6 +58,27 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[8], 'self.assertEqual(data[1][\'name\'], \'pasto\')')
         self.assertEqual(content[9], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
 
+    @temporary_file('py', delete_on_exit=False)
+    def test_write_assertions_type_only(self):
+        data = [
+            {'name': 'kilo', 'password': 9999,
+             'groups': ['admin', 'users'],
+             'config': {'server': 'all', 'bulding': 116}},
+            {'name': 'pasto', 'password': 'nogo',
+             'groups': ['users'],
+             'config': {'server': 'database', 'bulding': None},
+             'created': '2016-10-01',
+             'modified': '2016-10-01'}
+        ]
+        filename = write_assertions(data,
+                                    'data', filename=self.test_write_assertions_type_only.filename,
+                                    type_only=True)
+
+        self.assertEqual(filename, self.test_write_assertions.filename)
+        hash_digest = hash_file(filename)
+        self.assertEqual(hash_digest, 'bd059f11bb7a5a2db70c89d94c9cd681f4684fa4')
+        content = self.get_txt_content(filename)
+
     @temporary_file('py', delete_on_exit=True)
     def test_write_assert_list(self):
         data = [

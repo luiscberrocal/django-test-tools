@@ -173,11 +173,14 @@ class AssertionWriter(object):
             elif isinstance(data, Decimal):
                 assert_list.append('self.assertIsNotNone({}) # Example: Decimal({})'.format(variable_name, data))
             elif isinstance(data, list):
-                assert_list += self._generate_assert_equals_list(data, variable_name)
+                assert_list += self._generate_assert_type_list(data, variable_name)
             elif isinstance(data, dict):
                 assert_list += self._generate_assert_type_dictionaries(data, variable_name)
             else:
-                assert_list.append('self.assertEqual({}, {})'.format(variable_name, data))
+                if data is None:
+                    assert_list.append('self.assertIsNone({}) # Example: {}'.format(variable_name, data))
+                else:
+                    assert_list.append('self.assertIsNotNone({}) # Example: {}'.format(variable_name, data))
 
     def _generate_assert_type_dictionaries(self, dictionary, variable_name, **kwargs):
         assert_list = list()
