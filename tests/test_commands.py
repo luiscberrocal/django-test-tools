@@ -174,7 +174,7 @@ class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):
             call_command('generate_serializers_tests',
                          'servers.api.serializers.ServerSerializer',
                          filename=filename, stdout=self.content)
-        except ModuleNotFoundError:
+        except:
             call_command('generate_serializers_tests',
                          'example.servers.api.serializers.ServerSerializer',
                          filename=filename, stdout=self.content)
