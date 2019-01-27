@@ -1,0 +1,45 @@
+from django.forms import model_to_dict
+
+class Test{{ model_name }}Serializer(TestCase):
+
+    def test_expected_fields(self):
+        {{ model_name | lower}} = {{ model_name }}Factory.create()
+        serializer = {{ model_name }}Serializer(instance={{ model_name | lower}})
+        {{ model_name | lower}}_data = serializer.data
+        {{ model_name | lower}}_data_keys = [{% for field in fields %}{{ field }}, {% endfor %}]
+        self.assertEqual(set({{ model_name | lower}}_data.keys()), set({{ model_name | lower}}_data_keys))
+
+    def test_creation(self):
+        {{ model_name | lower}} = {{ model_name }}Factory.create()
+
+        {{ model_name | lower}}_dict = model_to_dict({{ model_name | lower}})
+        {{ model_name | lower}}.delete()
+        {{ model_name | lower}}_dict.pop('id')
+
+        serializer = {{ model_name }}Serializer(data={{ model_name | lower}}_dict)
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+        self.assertEqual({{ model_name }}.objects.count(), 1)
+    {%  for var_name in string_vars%}
+    def test_update_{{ var_name }}(self):
+        {{ model_name | lower}} = {{ model_name }}Factory.create({{ var_name }}='OLD {{ var_name | upper }}')
+
+        {{ model_name | lower}}_dict = model_to_dict({{ model_name | lower}})
+
+        {{ model_name | lower}}_dict['{{ var_name }}'] = 'NEW {{ var_name | upper }}'
+
+        serializer = {{ model_name }}Serializer(data={{ model_name | lower}}_dict, instance={{ model_name | lower}})
+        self.assertTrue(serializer.is_valid())
+        serializer.save()
+        self.assertEqual({{ model_name }}.objects.filter({{ var_name }}='NEW {{ var_name | upper}}').count(), 1)
+    {% endfor %}
+
+    def test_serialize_many(self):
+        {{ model_name }}Factory.create_batch(10)
+        {{ model_name | lower}}s = {{ model_name }}.objects.all()
+        serializer = {{ model_name }}Serializer({{ model_name | lower}}s, many=True)
+
+        {{ model_name | lower}}_data = serializer.data
+
+        #write_assertions({{ model_name | lower}}_data, '{{ model_name | lower}}_data', type_only=True)
+        self.fail('Not implemented')
