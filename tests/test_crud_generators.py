@@ -1,12 +1,13 @@
+import importlib
 import os
 from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.file_utils import hash_file, temporary_file
 from django_test_tools.generators.crud_generator import UrlGenerator, SerializerTestGenerator
-try:
-    from example.servers.api.serializers import ServerSerializer
-except:
-    from servers.api.serializers import ServerSerializer
+# try:
+#     from example.servers.api.serializers import ServerSerializer
+# except:
+#     from servers.api.serializers import ServerSerializer
 
 
 class TestUrlGenerator(TestCase):
@@ -37,6 +38,8 @@ class TestSerializerTestGenerator(SimpleTestCase):
         filename = self.test_print.filename
         generator = SerializerTestGenerator()
         data= dict()
+        my_module = importlib.import_module("servers.api.serializers")
+        ServerSerializer = getattr(my_module, "ServerSerializer")
 
         serializer = ServerSerializer()
         rep_ser = repr(serializer)
@@ -54,5 +57,5 @@ class TestSerializerTestGenerator(SimpleTestCase):
         data['fields'] = fields
         data['string_vars'] = str_fields
         generator.print(data, filename)
-
-        self.assertEqual(1, 1)
+        hash = hash_file(filename)
+        self.assertEqual(hash, 'a6961c9294f5acc02350835596faa3c38ee266df')

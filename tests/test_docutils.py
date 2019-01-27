@@ -36,7 +36,7 @@ class TestFolderStructure(TestCase):
         serialize_data(files, self.test_get_module_files.filename)
         for file in files:
             logger.debug('File: {filename} Package: {package_name}'.format(**file))
-        self.assertEqual(len(files), 2)
+        self.assertEqual(len(files), 3)
 
     def test_create_folder_structure2(self):
         # logger.debug('Version {}'.format(django.VERSION))
