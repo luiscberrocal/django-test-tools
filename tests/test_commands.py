@@ -170,8 +170,14 @@ class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):
     @temporary_file('py', delete_on_exit=True)
     def test_generate_serializers_tests(self):
         filename = self.test_generate_serializers_tests.filename
-        call_command('generate_serializers_tests',
-                     'servers.api.serializers.ServerSerializer',
-                     filename=filename, stdout=self.content)
+        try:
+            call_command('generate_serializers_tests',
+                         'servers.api.serializers.ServerSerializer',
+                         filename=filename, stdout=self.content)
+        except ModuleNotFoundError:
+            call_command('generate_serializers_tests',
+                         'example.servers.api.serializers.ServerSerializer',
+                         filename=filename, stdout=self.content)
+
         results = self.get_results()
         self.assertTrue('Printed to file' in results[0])
