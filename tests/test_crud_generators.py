@@ -38,7 +38,10 @@ class TestSerializerTestGenerator(SimpleTestCase):
         filename = self.test_print.filename
         generator = SerializerTestGenerator()
         data= dict()
-        my_module = importlib.import_module("servers.api.serializers")
+        try:
+            my_module = importlib.import_module("servers.api.serializers")
+        except:
+            my_module = importlib.import_module("example.servers.api.serializers")
         ServerSerializer = getattr(my_module, "ServerSerializer")
 
         serializer = ServerSerializer()
