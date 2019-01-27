@@ -71,4 +71,7 @@ minor: clean ## package and upload a release
 	git commit -m "Updating version to $(REL)"
 
 upload: sdist
+	git push origin master
+	git push origin develop
+	git push --tags
 	twine upload ./dist/*
