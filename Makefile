@@ -53,11 +53,25 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
 
-release: clean ## package and upload a release
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
-
 sdist: clean ## package
 	python setup.py sdist
 	python setup.py sdist bdist_wheel
 	ls -l dist
+
+patch: clean ## package and upload a release
+	git-flow release start $(REL)
+	bumpversion patch
+	git add .
+	git commit -m "Updating version to $(REL)"
+
+minor: clean ## package and upload a release
+	git-flow release start $(REL)
+	bumpversion minor
+	git add .
+	git commit -m "Updating version to $(REL)"
+
+upload: sdist
+	git push origin master
+	git push origin develop
+	git push --tags
+	twine upload ./dist/*

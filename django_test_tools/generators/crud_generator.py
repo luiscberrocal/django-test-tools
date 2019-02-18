@@ -20,3 +20,14 @@ class UrlGenerator(object):
         rendered = render_to_string(self.template, data)
         with open(filename, 'w', encoding='utf-8') as url_file:
             url_file.write(rendered)
+
+
+class SerializerTestGenerator(object):
+
+    def __init__(self):
+        self.template = 'django_test_tools/test_serializers.py.j2'
+
+    def print(self, serializer_info, filename):
+        rendered = render_to_string(self.template, serializer_info)
+        with open(filename, 'w', encoding='utf-8') as file:
+            file.write(rendered)
