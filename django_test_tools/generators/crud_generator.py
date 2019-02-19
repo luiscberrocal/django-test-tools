@@ -1,5 +1,6 @@
 import jinja2
 from django.template.loader import render_to_string
+from jinja2 import Environment, PackageLoader, select_autoescape
 
 from ..templatetags.dtt_filters import to_snake_case
 
@@ -28,10 +29,16 @@ class UrlGenerator(object):
 class SerializerTestGenerator(object):
 
     def __init__(self):
-        jinja2.filters.FILTERS['to_snake_case'] = to_snake_case
-        self.template = 'django_test_tools/test_serializers.py.j2'
+        self.env = Environment(
+            loader=PackageLoader('django_test_tools', 'templates'),
+            autoescape=select_autoescape(['html', 'j2'])
+        )
+        self.env.filters['to_snake_case'] = to_snake_case
+
+        self.template_name = 'django_test_tools/test_serializers.py.j2'
+        self.template = self.env.get_template(self.template_name)
 
     def print(self, serializer_info, filename):
-        rendered = render_to_string(self.template, serializer_info)
+        rendered = self.template.render(serializer_info)
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(rendered)

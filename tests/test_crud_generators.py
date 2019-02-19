@@ -65,7 +65,7 @@ class TestSerializerTestGenerator(SimpleTestCase):
         hash = hash_file(filename)
         self.assertEqual(hash, 'a6961c9294f5acc02350835596faa3c38ee266df')
 
-    @temporary_file('.py', delete_on_exit=False)
+    @temporary_file('.py', delete_on_exit=True)
     def test_print_snake_case(self):
         filename = self.test_print_snake_case.filename
         generator = SerializerTestGenerator()
@@ -78,4 +78,4 @@ class TestSerializerTestGenerator(SimpleTestCase):
         data['string_vars'] = str_fields
         generator.print(data, filename)
         hash = hash_file(filename)
-        self.assertEqual(hash, '')
+        self.assertEqual(hash, '29839e26b3d9e7d9581891c5d1d78236dde8c468')
