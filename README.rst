@@ -43,7 +43,7 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'django_test_tools.apps.DjangoTestToolsConfig',
+        'django_test_toolsg',
         ...
     )
 
@@ -89,43 +89,21 @@ Does the code actually work?
 Builds
 ------
 
-Create a release using git-flow
-
-Update setup.py. Make sure the versions in **install_requies** matches the content of the requirements.txt file.
-
-Run bumpversion
-
 .. code-block:: bash
 
-    $ bumpversion minor
+    $ make REL=1.5.1 patch
 
 Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
 for the latest versions.
 
 Close the git-flow release.
 
-Push develop and master to the repository.
-
-Push the tags
-
-.. code-block:: bash
-
-    $ git push --tags
-
-
 Instead of minor you could also use **major** o **patch** depending on the level of the release.
 
 .. code-block:: bash
 
-    make sdist
+    make upload
 
-
-To publish to pypi run:
-
-
-.. code-block:: bash
-
-    twine upload ./dist/*
 
 Credits
 -------
