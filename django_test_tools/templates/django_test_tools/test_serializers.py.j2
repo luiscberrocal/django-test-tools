@@ -3,10 +3,14 @@ from django.forms import model_to_dict
 class Test{{ model_name }}Serializer(TestCase):
 
     def test_expected_fields(self):
+        """
+        This tests verifies what fields are expected when serializing a {{ model_name }}
+        using a {{ model_name }}Serializer.
+        """
         {{ model_name | to_snake_case}} = {{ model_name }}Factory.create()
         serializer = {{ model_name }}Serializer(instance={{ model_name | to_snake_case}})
         {{ model_name | to_snake_case}}_data = serializer.data
-        {{ model_name | to_snake_case}}_data_keys = [{% for field in fields %}{{ field }}, {% endfor %}]
+        {{ model_name | to_snake_case}}_data_keys = [{% for field in fields %}'{{ field }}', {% endfor %}]
         self.assertEqual(set({{ model_name | to_snake_case}}_data.keys()), set({{ model_name | to_snake_case}}_data_keys))
 
     def test_creation(self):
@@ -39,7 +43,7 @@ class Test{{ model_name }}Serializer(TestCase):
         {{ model_name | to_snake_case}}s = {{ model_name }}.objects.all()
         serializer = {{ model_name }}Serializer({{ model_name | to_snake_case}}s, many=True)
 
-        {{ model_name | to_snake_case}}_data = serializer.data
+        {{ model_name | to_snake_case}}_data_many = serializer.data
 
-        #write_assertions({{ model_name | to_snake_case}}_data, '{{ model_name | to_snake_case}}_data', type_only=True)
+        #write_assertions({{ model_name | to_snake_case}}_data_many, '{{ model_name | to_snake_case}}_data_many', type_only=True)
         self.fail('Not implemented')

@@ -153,9 +153,11 @@ class TestGitReportCommand(TestCommandMixin, SimpleTestCase):
             call_command('git_report', filename=filename, stdout=self.content)
             results = self.get_results()
             self.assertEqual(len(results), 12)
-            self.assertEqual(results[0], '552472e|github-bot@pyup.io|2018-10-01 10:16:27 -0500|Update django from 2.0.7 to 2.1.2')
+            self.assertEqual(results[0],
+                             '552472e|github-bot@pyup.io|2018-10-01 10:16:27 -0500|Update django from 2.0.7 to 2.1.2')
             self.assertEqual(results[-2], '')
-            self.assertEqual(results[-3], '2fbee22|luis.berrocal.1942@gmail.com|2018-09-23 09:37:50 -0500|Updated requirements')
+            self.assertEqual(results[-3],
+                             '2fbee22|luis.berrocal.1942@gmail.com|2018-09-23 09:37:50 -0500|Updated requirements')
 
         self.assertTrue(os.path.exists(filename))
 
@@ -164,6 +166,7 @@ class TestGitReportCommand(TestCommandMixin, SimpleTestCase):
     #     filename = self.test_.filename
     #     call_command('git_report', filename=filename, stdout=self.content)
     #
+
 
 class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):
 
