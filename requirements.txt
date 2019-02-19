@@ -1,5 +1,3 @@
-
-# Additional requirements go here
 openpyxl==2.6.0
 Jinja2==2.10
 requests==2.21.0
