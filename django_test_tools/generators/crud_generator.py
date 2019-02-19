@@ -1,4 +1,7 @@
+import jinja2
 from django.template.loader import render_to_string
+
+from ..templatetags.dtt_filters import to_snake_case
 
 
 class UrlGenerator(object):
@@ -25,6 +28,7 @@ class UrlGenerator(object):
 class SerializerTestGenerator(object):
 
     def __init__(self):
+        jinja2.filters.FILTERS['to_snake_case'] = to_snake_case
         self.template = 'django_test_tools/test_serializers.py.j2'
 
     def print(self, serializer_info, filename):

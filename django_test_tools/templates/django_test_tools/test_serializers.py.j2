@@ -3,7 +3,7 @@ from django.forms import model_to_dict
 class Test{{ model_name }}Serializer(TestCase):
 
     def test_expected_fields(self):
-        {{ model_name | lower}} = {{ model_name }}Factory.create()
+        {{ model_name | to_snake_case}} = {{ model_name }}Factory.create()
         serializer = {{ model_name }}Serializer(instance={{ model_name | lower}})
         {{ model_name | lower}}_data = serializer.data
         {{ model_name | lower}}_data_keys = [{% for field in fields %}{{ field }}, {% endfor %}]
