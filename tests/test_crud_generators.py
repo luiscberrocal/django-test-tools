@@ -4,6 +4,8 @@ from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.file_utils import hash_file, temporary_file
 from django_test_tools.generators.crud_generator import UrlGenerator, SerializerTestGenerator
+
+
 # try:
 #     from example.servers.api.serializers import ServerSerializer
 # except:
@@ -33,11 +35,11 @@ class TestUrlGenerator(TestCase):
 
 class TestSerializerTestGenerator(SimpleTestCase):
 
-    @temporary_file('.py', delete_on_exit=False)
+    @temporary_file('.py', delete_on_exit=True)
     def test_print(self):
         filename = self.test_print.filename
         generator = SerializerTestGenerator()
-        data= dict()
+        data = dict()
         try:
             my_module = importlib.import_module("servers.api.serializers")
         except:
@@ -62,3 +64,18 @@ class TestSerializerTestGenerator(SimpleTestCase):
         generator.print(data, filename)
         hash = hash_file(filename)
         self.assertEqual(hash, 'a6961c9294f5acc02350835596faa3c38ee266df')
+
+    @temporary_file('.py', delete_on_exit=True)
+    def test_print_snake_case(self):
+        filename = self.test_print_snake_case.filename
+        generator = SerializerTestGenerator()
+        data = dict()
+        fields = ['name', 'power']
+        str_fields = ['name']
+
+        data['model_name'] = 'ComplicatedObject'
+        data['fields'] = fields
+        data['string_vars'] = str_fields
+        generator.print(data, filename)
+        hash = hash_file(filename)
+        self.assertEqual(hash, '29839e26b3d9e7d9581891c5d1d78236dde8c468')
