@@ -11,7 +11,7 @@ from ...flake8.parsers import Flake8Parser, RadonParser
 class Command(BaseCommand):
     """
 
-        $ python manage.py
+        $ python manage.py generate_serializers_test my_application.app.api.serializers.MyObjectSerializer -f output/m.py
     """
 
     def add_arguments(self, parser):
