@@ -44,6 +44,10 @@ if sys.argv[-1] == 'tag':
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
+
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='django-test-tools',
     version=version,
@@ -56,7 +60,7 @@ setup(
         'django_test_tools',
     ],
     include_package_data=True,
-    install_requires=['openpyxl==2.6.0', 'Jinja2==2.10', 'requests==2.21.0'],
+    install_requires=required,
     license="MIT",
     zip_safe=False,
     keywords='django-test-tools',
@@ -64,13 +68,13 @@ setup(
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
+        'Framework :: Django :: 1.10',
         'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.0',
         'Framework :: Django :: 2.1',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
     ],
