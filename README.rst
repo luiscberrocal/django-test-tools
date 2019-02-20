@@ -43,7 +43,7 @@ Add it to your `INSTALLED_APPS`:
 
     INSTALLED_APPS = (
         ...
-        'django_test_toolsg',
+        'django_test_tools',
         ...
     )
 
