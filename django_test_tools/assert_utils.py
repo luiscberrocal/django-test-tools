@@ -184,6 +184,7 @@ class AssertionWriter(object):
 
     def _generate_assert_type_dictionaries(self, dictionary, variable_name, **kwargs):
         assert_list = list()
+        assert_list.append('self.assertEqual(len({}.keys()), {})'.format(variable_name, len(dictionary.keys())))
         if variable_name not in self.excluded_variable_names:
             ordered_dictionary = collections.OrderedDict(sorted(dictionary.items()))
             for key, value in ordered_dictionary.items():

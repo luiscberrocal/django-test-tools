@@ -1,0 +1,89 @@
+class Test{{ model_name }}ListAPIView(JWTTestMixin, TestCase):
+
+    def test_get(self):
+        {{ model_name }}Factory.create_batch(10)
+        url = reverse('{{ namespace }}:list-{{ model_name | to_slug }}')
+        user = SimpleUserFactory.create()
+
+        response = self.get_with_token(url, user)
+
+        self.response_200(response)
+        {{ model_name | to_snake_case }}_list_data = response.data
+
+        write_assertions({{ model_name | to_snake_case }}_list_data, '{{ model_name | to_snake_case }}_list_data', type_only=True)
+
+
+class Test{{ model_name }}DetailAPIView(JWTTestMixin, TestCase):
+
+    def test_get(self):
+        {{ model_name | to_snake_case }} = {{ model_name }}Factory.create()
+
+        url = reverse('{{ namespace }}:detail-{{ model_name | to_slug }}', kwargs={'pk': {{ model_name | to_snake_case }}.pk})
+        user = SimpleUserFactory.create()
+
+        response = self.get_with_token(url, user)
+
+        self.response_200(response)
+        {{ model_name | to_snake_case }}_data = response.data
+
+        write_assertions({{ model_name | to_snake_case }}_data, '{{ model_name | to_snake_case }}_data', type_only=True)
+
+    def test_get_invalid_pk(self):
+        url = reverse('{{ namespace }}:detail-{{ model_name | to_slug }}', kwargs={'pk': 1000000})
+        user = SimpleUserFactory.create()
+
+        response = self.get_with_token(url, user)
+
+        self.response_404(response)
+        {{ model_name | to_snake_case }}_invalid_data = response.data
+
+        write_assertions({{ model_name | to_snake_case }}_invalid_data, '{{ model_name | to_snake_case }}_invalid_data', type_only=False)
+
+    def test_put(self):
+        {{ model_name | to_snake_case }} = {{ model_name }}Factory.create()
+
+        url = reverse('{{ namespace }}:update-{{ model_name | to_slug }}', kwargs={'pk': {{ model_name | to_snake_case }}.pk})
+        user = SimpleUserFactory.create()
+        {{ model_name | to_snake_case }}_data = model_to_dict({{ model_name | to_snake_case }})
+        {{ model_name | to_snake_case }}_data[''] = 'VERY_NEW_VALUE' #FIXME Change something
+        response = self.put_with_token(url, user, data={{ model_name | to_snake_case }}_data)
+
+        self.response_200(response)
+        {{ model_name | to_snake_case }}_put_data = response.data
+
+        write_assertions({{ model_name | to_snake_case }}_put_data, '{{ model_name | to_snake_case }}_put_data', type_only=True)
+
+        self.assertEqual({{ model_name | to_snake_case }}_put_data[''], 'VERY_NEW_VALUE') #FIXME Compare the data that changed
+
+    def test_delete(self):
+        {{ model_name | to_snake_case }} = {{ model_name }}Factory.create()
+
+        url = reverse('{{ namespace }}:delete-{{ model_name | to_slug }}', kwargs={'pk': {{ model_name | to_snake_case }}.pk})
+        user = SimpleUserFactory.create()
+
+        response = self.delete_with_token(url, user)
+
+        self.response_204(response)
+
+        self.assertEqual({{ model_name }}.objects.count(), 0)
+
+class Test{{ model_name }}CreateAPIView(JWTTestMixin, TestCase):
+
+    def test_post(self):
+        {{ model_name | to_snake_case }} = {{ model_name }}Factory.create()
+
+        {{ model_name | to_snake_case }}_dict = model_to_dict({{ model_name | to_snake_case }})
+        {{ model_name | to_snake_case }}.delete()
+        {{ model_name | to_snake_case }}_dict.pop('id')
+
+        url = reverse('{{ namespace }}:create-{{ model_name | to_slug }}')
+
+        user = SimpleUserFactory.create()
+
+        response = self.post_with_token(url, user, data={{ model_name | to_snake_case }}_dict)
+
+        self.response_201(response)
+        {{ model_name | to_snake_case }}_post_data = response.data
+        
+        self.assertEqual({{ model_name }}.objects.count(), 1)
+        write_assertions({{ model_name | to_snake_case }}_post_data, '{{ model_name | to_snake_case }}_post_data', type_only=True)

@@ -1,0 +1,20 @@
+from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
+from ..models import {{ model_name }}
+
+class {{ model_name }}ListAPIView(ListAPIView):
+    serializer_class = {{ model_name }}Serializer
+
+    def get_queryset(self):
+        return {{ model_name }}.objects.all()
+
+
+class {{ model_name }}DetailAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = {{ model_name }}Serializer
+    queryset = {{ model_name }}.objects.all()
+
+    def get_object(self):
+        return super({{ model_name }}DetailAPIView, self).get_object()
+
+ 
+class {{ model_name }}CreateAPIView(CreateAPIView):
+    serializer_class = {{ model_name }}Serializer
