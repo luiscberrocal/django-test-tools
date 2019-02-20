@@ -4,7 +4,7 @@ class Test{{ model_name }}Serializer(TestCase):
 
     def test_expected_fields(self):
         """
-        This tests verifies what fields are expected when serializing a {{ model_name }}
+        This test verifies what fields are expected when serializing a {{ model_name }}
         using a {{ model_name }}Serializer.
         """
         {{ model_name | to_snake_case}} = {{ model_name }}Factory.create()
@@ -14,10 +14,17 @@ class Test{{ model_name }}Serializer(TestCase):
         self.assertEqual(set({{ model_name | to_snake_case}}_data.keys()), set({{ model_name | to_snake_case}}_data_keys))
 
     def test_creation(self):
+        """
+        This test verifies that the serializer can create a {{ model_name }} in the database.
+        """
+        # Create a {{ model_name }} object to serialize
         {{ model_name | to_snake_case}} = {{ model_name }}Factory.create()
 
+        # Convert the model to dictionary
         {{ model_name | to_snake_case}}_dict = model_to_dict({{ model_name | to_snake_case}})
+        # Delete the object from the database
         {{ model_name | to_snake_case}}.delete()
+        # Eliminate the primary key (id) from the dictionary
         {{ model_name | to_snake_case}}_dict.pop('id')
 
         serializer = {{ model_name }}Serializer(data={{ model_name | to_snake_case}}_dict)

@@ -58,7 +58,7 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[8], 'self.assertEqual(data[1][\'name\'], \'pasto\')')
         self.assertEqual(content[9], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
 
-    @temporary_file('py', delete_on_exit=False)
+    @temporary_file('py', delete_on_exit=True)
     def test_write_assertions_type_only(self):
         data = [
             {'name': 'kilo', 'password': 9999,
@@ -76,25 +76,29 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
 
         self.assertEqual(filename, self.test_write_assertions_type_only.filename)
         hash_digest = hash_file(filename)
-        self.assertEqual(hash_digest, '702040e388cc1beebd865e6abc07b1ec1855296a')
+        self.assertEqual(hash_digest, 'ca1619b2945c6a5934e4778c6157fa8392656f44')
         content = self.get_txt_content(filename)
-        self.assertEqual(len(content), 15)
+        self.assertEqual(len(content), 19)
         self.assertEqual(content[0], 'self.assertEqual(len(data), 2)')
-        self.assertEqual(content[1], 'self.assertIsNotNone(data[0][\'config\'][\'bulding\']) # Example: 116')
-        self.assertEqual(content[2], 'self.assertIsNotNone(data[0][\'config\'][\'server\']) # Example: all')
-        self.assertEqual(content[3], 'self.assertEqual(len(data[0][\'groups\']), 2)')
-        self.assertEqual(content[4], 'self.assertIsNotNone(data[0][\'groups\'][0]) # Example: admin')
-        self.assertEqual(content[5], 'self.assertIsNotNone(data[0][\'groups\'][1]) # Example: users')
-        self.assertEqual(content[6], 'self.assertIsNotNone(data[0][\'name\']) # Example: kilo')
-        self.assertEqual(content[7], 'self.assertIsNotNone(data[0][\'password\']) # Example: 9999')
-        self.assertEqual(content[8], 'self.assertIsNone(data[1][\'config\'][\'bulding\']) # Example: None')
-        self.assertEqual(content[9], 'self.assertIsNotNone(data[1][\'config\'][\'server\']) # Example: database')
-        self.assertEqual(content[10],
+        self.assertEqual(content[1], 'self.assertEqual(len(data[0].keys()), 4)')
+        self.assertEqual(content[2], 'self.assertEqual(len(data[0][\'config\'].keys()), 2)')
+        self.assertEqual(content[3], 'self.assertIsNotNone(data[0][\'config\'][\'bulding\']) # Example: 116')
+        self.assertEqual(content[4], 'self.assertIsNotNone(data[0][\'config\'][\'server\']) # Example: all')
+        self.assertEqual(content[5], 'self.assertEqual(len(data[0][\'groups\']), 2)')
+        self.assertEqual(content[6], 'self.assertIsNotNone(data[0][\'groups\'][0]) # Example: admin')
+        self.assertEqual(content[7], 'self.assertIsNotNone(data[0][\'groups\'][1]) # Example: users')
+        self.assertEqual(content[8], 'self.assertIsNotNone(data[0][\'name\']) # Example: kilo')
+        self.assertEqual(content[9], 'self.assertIsNotNone(data[0][\'password\']) # Example: 9999')
+        self.assertEqual(content[10], 'self.assertEqual(len(data[1].keys()), 6)')
+        self.assertEqual(content[11], 'self.assertEqual(len(data[1][\'config\'].keys()), 2)')
+        self.assertEqual(content[12], 'self.assertIsNone(data[1][\'config\'][\'bulding\']) # Example: None')
+        self.assertEqual(content[13], 'self.assertIsNotNone(data[1][\'config\'][\'server\']) # Example: database')
+        self.assertEqual(content[14],
                          'self.assertRegex(data[1][\'created_date\'].strftime(\'%Y-%m-%d\'), r\'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\') # Example: 2016-01-03')
-        self.assertEqual(content[11], 'self.assertEqual(len(data[1][\'groups\']), 1)')
-        self.assertEqual(content[12], 'self.assertIsNotNone(data[1][\'groups\'][0]) # Example: users')
-        self.assertEqual(content[13], 'self.assertIsNotNone(data[1][\'name\']) # Example: pasto')
-        self.assertEqual(content[14], 'self.assertIsNotNone(data[1][\'password\']) # Example: nogo')
+        self.assertEqual(content[15], 'self.assertEqual(len(data[1][\'groups\']), 1)')
+        self.assertEqual(content[16], 'self.assertIsNotNone(data[1][\'groups\'][0]) # Example: users')
+        self.assertEqual(content[17], 'self.assertIsNotNone(data[1][\'name\']) # Example: pasto')
+        self.assertEqual(content[18], 'self.assertIsNotNone(data[1][\'password\']) # Example: nogo')
 
     @temporary_file('py', delete_on_exit=True)
     def test_write_assert_list(self):
