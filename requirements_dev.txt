@@ -5,4 +5,4 @@ wheel==0.33.1
 django-environ==0.4.5
 radon==3.0.1
 pytz==2018.9
-djangorestframework==3.9.2
+djangorestframework==3.9.3
