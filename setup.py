@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import sys
+
 import os
 import re
-import sys
 
 try:
     from setuptools import setup
@@ -41,9 +42,11 @@ if sys.argv[-1] == 'tag':
     os.system("git push --tags")
     sys.exit()
 
-readme = open('README.rst').read()
-history = open('HISTORY.rst').read().replace('.. :changelog:', '')
+with open('README.rst') as rf:
+    readme = rf.read()
 
+with open('HISTORY.rst') as hf:
+    history = hf.read().replace('.. :changelog:', '')
 
 with open('requirements.txt') as f:
     required = f.read().splitlines()
@@ -72,10 +75,12 @@ setup(
         'Framework :: Django :: 1.11',
         'Framework :: Django :: 2.0',
         'Framework :: Django :: 2.1',
+        'Framework :: Django :: 2.2',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
     ],
 )
