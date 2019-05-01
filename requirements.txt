@@ -1,3 +1,4 @@
-openpyxl==2.6.1
-Jinja2==2.10
+
+openpyxl==2.6.2
+Jinja2==2.10.1
 requests==2.21.0
