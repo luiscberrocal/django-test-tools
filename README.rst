@@ -22,7 +22,7 @@ Django Test Tools
 
 Simple tests tools to make testing faster and easier.
 
-Supports Python 3.5, 3.6 with Django 1.10.8, 1.11.x, 2.0,x and 2.1.x
+Supports Python 3.5, 3.6, 3.7 with Django 1.10.8, 1.11.x, 2.0,x, 2.1.x adn 2.2.x
 
 
 Documentation
