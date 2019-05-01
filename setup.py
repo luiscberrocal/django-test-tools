@@ -14,7 +14,9 @@ except ImportError:
 def get_version(*file_paths):
     """Retrieves the version from django_test_tools/__init__.py"""
     filename = os.path.join(os.path.dirname(__file__), *file_paths)
-    version_file = open(filename).read()
+
+    with open(filename) as fn:
+        version_file = fn.read()
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
                               version_file, re.M)
     if version_match:
