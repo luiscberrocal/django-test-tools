@@ -61,10 +61,11 @@ if __name__ == '__main__':
     # construct the argument parse and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-a", "--action", required=True,
-                    help="Action patch, mayor or minor")
+                    help="Action patch, major or minor")
 
     args = vars(ap.parse_args())
     action = args['action']
+    assert action in ['major', 'minor', 'patch']
 
     verbose = True
     cmd = ['bumpversion', action, '--list', '--dry-run', '--allow-dirty']  # , '|', 'grep' 'new_version']

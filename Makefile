@@ -59,16 +59,10 @@ sdist: clean ## package
 	ls -l dist
 
 patch: clean ## package and upload a release
-	git-flow release start $(REL)
-	bumpversion patch
-	git add .
-	git commit -m "Updating version to $(REL)"
+	python ./scripts/bump.py --action=patch
 
 minor: clean ## package and upload a release
-	git-flow release start $(REL)
-	bumpversion minor
-	git add .
-	git commit -m "Updating version to $(REL)"
+	python ./scripts/bump.py --action=minor
 
 upload: sdist
 	git push origin master
