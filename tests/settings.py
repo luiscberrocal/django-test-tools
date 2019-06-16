@@ -76,7 +76,23 @@ else:
 
 ROOT_URLCONF = 'django_test_tools.urls'
 
-if django.VERSION > (1, 11):
+if django.VERSION > (1, 11) and django.VERSION < (2, 2):
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.jinja2.Jinja2',
+            'DIRS': [str(APPS_DIR.path('templates')), ],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
+        },
+    ]
+elif django.VERSION >= (2, 2):
     TEMPLATES = [
         {
             'BACKEND': 'django.template.backends.jinja2.Jinja2',
