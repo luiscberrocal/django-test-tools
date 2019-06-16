@@ -108,7 +108,7 @@ elif django.VERSION >= (2, 2):
             },
         },
         {
-            'BACKEND': 'django.template.backends.django.DjangoTemplate',
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
             'DIRS': '',
             'APP_DIRS': True,
             'OPTIONS': {},
