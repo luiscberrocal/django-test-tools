@@ -9,10 +9,9 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
-import os
-
 import django
 import environ
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -72,8 +71,6 @@ else:
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
     ]
 
-
-
 ROOT_URLCONF = 'django_test_tools.urls'
 
 if django.VERSION > (1, 11) and django.VERSION < (2, 2):
@@ -111,7 +108,14 @@ elif django.VERSION >= (2, 2):
             'BACKEND': 'django.template.backends.django.DjangoTemplates',
             'DIRS': '',
             'APP_DIRS': True,
-            'OPTIONS': {},
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
         },
     ]
 else:
