@@ -91,14 +91,14 @@ Builds
 
 .. code-block:: bash
 
-    $ make REL=1.5.1 patch
+    $ make patch
 
 Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
 for the latest versions.
 
 Close the git-flow release.
 
-Instead of minor you could also use **major** o **patch** depending on the level of the release.
+Instead of patch you could also use **major** o **minor** depending on the level of the release.
 
 .. code-block:: bash
 
