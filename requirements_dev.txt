@@ -5,5 +5,5 @@ wheel==0.33.4
 django-environ==0.4.5
 radon==3.0.3
 djangorestframework==3.10.2
-pytz==2019.1
+pytz==2019.2
 
