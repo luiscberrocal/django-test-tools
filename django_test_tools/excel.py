@@ -5,7 +5,7 @@ class ExcelAdapter(object):
     @classmethod
     def convert_to_list(cls, filename, sheet_name=None, has_header=True):
         """
-        Reads an Excel file and convertes every row into a list of values.
+        Reads an Excel file and converts every row into a list of values.
         :param filename: <str> Excel filename
         :param sheet_name: <str> Name of the sheet
         :param has_header: <bool> If true the first row is not included in the list.
@@ -25,6 +25,36 @@ class ExcelAdapter(object):
                 continue
             for column in range(0, len(row)):
                 row_data.append(row[column].value)
+            data.append(row_data)
+            row_num += 1
+        return data
+
+    @classmethod
+    def convert_to_dict(cls, filename, sheet_name=None):
+        """
+        Reads an Excel file and converts every row into a dictionary. All values are converted to strings.
+        Assumes first row contains the name of the attributes.
+        :param filename: <str> Excel filename
+        :param sheet_name: <str> Name of the sheet
+        :return: <list> A list of dictionaries.
+        """
+        data = list()
+        wb = load_workbook(filename=filename, data_only=True)
+        if sheet_name is None:
+            sheet = wb.active
+        else:
+            sheet = wb[sheet_name]
+        row_num = 1
+        attributes = list()
+        for row in sheet.rows:
+            row_data = dict()
+            if row_num == 1:
+                row_num += 1
+                for column in range(0, len(row)):
+                    attributes.append(row[column].value)
+                continue
+            for column in range(0, len(row)):
+                row_data[attributes[column]] = str(row[column].value)
             data.append(row_data)
             row_num += 1
         return data
