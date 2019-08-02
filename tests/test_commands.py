@@ -184,3 +184,16 @@ class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):
 
         results = self.get_results()
         self.assertTrue('Printed to file' in results[0])
+
+class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
+
+    @temporary_file('json', delete_on_exit=False)
+    def test_excel_to_json(self):
+        import environ
+        output = self.test_excel_to_json.filename
+        excel_file = (environ.Path(__file__) - 1).path('fixtures', 'excel_to_json.xlsx').root
+        call_command('convert_to_json', input=excel_file, output= output,
+                     stdout=self.content)
+        hash = hash_file(output)
+        self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
+
