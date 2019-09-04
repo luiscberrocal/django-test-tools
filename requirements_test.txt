@@ -8,6 +8,6 @@ codecov>=2.0.0
 Faker==2.0.0
 django-environ==0.4.5
 # Additional test requirements go here
-djangorestframework==3.10.2
+djangorestframework==3.10.3
 pytz==2019.2
 #Do not add Django here Travis CI will include it
