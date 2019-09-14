@@ -195,5 +195,9 @@ class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
         call_command('convert_to_json', input=excel_file, output= output,
                      stdout=self.content)
         hash = hash_file(output)
-        self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
+        app_name = settings.TEST_APP
+        if app_name == 'example.servers':
+            self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
+        else:
+            self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
 
