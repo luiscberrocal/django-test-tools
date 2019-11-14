@@ -5,7 +5,7 @@ mock>=1.0.1
 flake8>=2.1.0
 tox>=1.7.0
 codecov>=2.0.0
-Faker==2.0.1
+Faker==2.0.4
 django-environ==0.4.5
 # Additional test requirements go here
 djangorestframework==3.10.2
