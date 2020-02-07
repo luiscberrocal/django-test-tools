@@ -1,9 +1,9 @@
 -r requirements.txt
-django==2.2.8
+django==3.0.3
 bumpversion==0.5.3
-wheel==0.33.6
+wheel==0.34.2
 django-environ==0.4.5
-radon==3.0.3
-djangorestframework==3.10.2
-pytz==2019.2
+radon==4.1.0
+djangorestframework==3.11.0
+pytz==2019.3
 
