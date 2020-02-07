@@ -9,5 +9,5 @@ Faker==2.0.1
 django-environ==0.4.5
 # Additional test requirements go here
 djangorestframework==3.11.0
-pytz==2019.2
+pytz==2019.3
 #Do not add Django here Travis CI will include it
