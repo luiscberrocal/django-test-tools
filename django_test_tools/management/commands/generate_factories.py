@@ -107,7 +107,8 @@ class ModelFactoryGenerator(object):
 
     def _get_charfield(self, field):
         field_data = dict()
-        if len(field.choices) > 0:
+
+        if field.choices is not None and len(field.choices) > 0:
             field_data = {'print': PRINT_CHARFIELD_CHOICES, 'args': [field.name, self.model.__name__, 'CHOICES']}
             return field_data
         else:
