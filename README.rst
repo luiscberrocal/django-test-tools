@@ -37,6 +37,7 @@ Install Django Test Tools::
 
     pip install django-test-tools
 
+
 Add it to your `INSTALLED_APPS`:
 
 .. code-block:: python
@@ -47,11 +48,13 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
+
 in the settings.py file add an ouput folder (make sure it exists):
 
 .. code-block:: python
 
     TEST_OUTPUT_PATH = ROOT_DIR.path('output').root
+
 
 Features
 --------
@@ -91,6 +94,7 @@ The settings.TEST_OUTPUT_PATH must be configured in your settings file.
             filename = self.test_temporary_file_decorator.filename
             ... write to the file ...
 
+
 Running Tests
 -------------
 
@@ -102,6 +106,7 @@ Does the code actually work?
     (myenv) $ pip install tox
     (myenv) $ tox
 
+
 Builds
 ------
 1. Setup environment
@@ -109,11 +114,13 @@ Builds
 .. code-block:: bash
     source ~/python_envs/django_test_tools_env/bin/activate
 
-2, Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
+
+2. Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
 
 .. code-block:: bash
 
     $ make patch
+
 
 3. Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
 for the latest versions.
