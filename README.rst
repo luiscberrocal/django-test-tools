@@ -79,10 +79,10 @@ Serializer Generator
 
 File utilities
 +++++++++++++++
-This method decorator creates a filename with date using the provided extension and delete the file after the method
-    has been executed.
 
-    The settings.TEST_OUTPUT_PATH must be configured in your settings file.
+This method decorator creates a filename with date using the provided extension and delete the file after the method has been executed.
+
+The settings.TEST_OUTPUT_PATH must be configured in your settings file.
 
     .. code-block:: python
 
@@ -105,6 +105,7 @@ Does the code actually work?
 Builds
 ------
 1. Setup environment
+
 .. code-block:: bash
     source ~/python_envs/django_test_tools_env/bin/activate
 
