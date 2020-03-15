@@ -22,7 +22,7 @@ Django Test Tools
 
 Simple tests tools to make testing faster and easier.
 
-Supports Python 3.5, 3.6, 3.7 with Django 1.10.8, 1.11.x, 2.0,x, 2.1.x adn 2.2.x
+Supports Python 3.6, 3.7 with Django 1.11.29, 2.2.11 and 3.0.4
 
 
 Documentation
@@ -47,9 +47,11 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
+in the settings.py file add an ouput folder (make sure it exists):
 
+.. code-block:: python
 
-
+    TEST_OUTPUT_PATH = ROOT_DIR.path('output').root
 
 Features
 --------
@@ -75,6 +77,20 @@ Serializer Generator
 
     $ python manage.py generate_serializers project.app -s ModelSerializer
 
+File utilities
++++++++++++++++
+This method decorator creates a filename with date using the provided extension and delete the file after the method
+    has been executed.
+
+    The settings.TEST_OUTPUT_PATH must be configured in your settings file.
+
+    .. code-block:: python
+
+        @temporary_file('json')
+        def test_temporary_file_decorator(self):
+            filename = self.test_temporary_file_decorator.filename
+            ... write to the file ...
+
 Running Tests
 -------------
 
@@ -88,17 +104,24 @@ Does the code actually work?
 
 Builds
 ------
+1. Setup environment
+.. code-block:: bash
+    source ~/python_envs/django_test_tools_env/bin/activate
+
+2, Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
 
 .. code-block:: bash
 
     $ make patch
 
-Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
+3. Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
 for the latest versions.
 
-Close the git-flow release.
+4. Check setup.py for Django and Python versions.
 
-Instead of patch you could also use **major** o **minor** depending on the level of the release.
+5. Close the git-flow release manually.
+
+6. Upload the new version to pypi
 
 .. code-block:: bash
 
