@@ -20,7 +20,10 @@ Django Test Tools
      :alt: Updates
 
 
-Simple tests tools to make testing faster and easier.
+Simple tests tools to make testing faster and easier. The tools presume a naming convention:
+
+    **Tests:** Are named with the convention **TestCase**ModelName. For a model named *Poll* the test would be generated
+    as the testing class would be *TestCasePoll*
 
 Supports Python 3.6, 3.7 with Django 1.11.x, 2.0,x, 2.1.x adn 2.2.x
 
