@@ -53,6 +53,7 @@ Quickstart
 Install Django Test Tools:
 
 .. code-block:: bash
+
     pip install django-test-tools
 
 
@@ -70,6 +71,7 @@ In your settings.py file add it to your `INSTALLED_APPS`
 Add the settings variable **TEST_OUTPUT_PATH**
 
 .. code-block:: python
+
     import environ
 
     ROOT_DIR = (
