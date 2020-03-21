@@ -29,7 +29,7 @@ The tools presume a naming convention:
 - **Factories:** Are named with the convention **ModelName**. For a model named *Poll* the test would be generated
   as the testing class would be *PollFactory*
 - **Serializers:** Are named with the convention **TestCaseSerializer**. For a model named *Poll* the test would be generated
-as the testing class would be *PollSerializer*
+  as the testing class would be *PollSerializer*
 
 
 Compatibility matrix:
@@ -50,11 +50,13 @@ The full documentation is at https://django-test-tools.readthedocs.io.
 Quickstart
 ----------
 
-Install Django Test Tools::
+Install Django Test Tools:
 
+.. code-block:: bash
     pip install django-test-tools
 
-In your settings.py file add it to your `INSTALLED_APPS`:
+
+In your settings.py file add it to your `INSTALLED_APPS`
 
 .. code-block:: python
 
@@ -63,6 +65,7 @@ In your settings.py file add it to your `INSTALLED_APPS`:
         'django_test_tools',
         ...
     )
+
 
 Add the settings variable **TEST_OUTPUT_PATH**
 
