@@ -48,7 +48,6 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
-
 in the settings.py file add an ouput folder (make sure it exists):
 
 .. code-block:: python

@@ -22,19 +22,16 @@ Django Test Tools
 
 Simple tests tools to make testing faster and easier. Most of the tools are to do a quick scaffolding for tests.
 
-
-
-
 The tools presume a naming convention:
 
     **Tests:** Are named with the convention **TestCaseModelName**. For a model named *Poll* the test would be generated
-    as the testing class would be *TestCasePoll*
+as the testing class would be *TestCasePoll*
 
      **Factories:** Are named with the convention **ModelName**. For a model named *Poll* the test would be generated
-    as the testing class would be *PollFactory*
+as the testing class would be *PollFactory*
 
      **Serializers:** Are named with the convention **TestCaseSerializer**. For a model named *Poll* the test would be generated
-    as the testing class would be *PollSerializer*
+as the testing class would be *PollSerializer*
 
 
 
@@ -60,7 +57,7 @@ Install Django Test Tools::
 
     pip install django-test-tools
 
-Add it to your `INSTALLED_APPS`:
+In your settings.py file add it to your `INSTALLED_APPS`:
 
 .. code-block:: python
 
@@ -70,9 +67,14 @@ Add it to your `INSTALLED_APPS`:
         ...
     )
 
+Add the settings variable **TEST_OUTPUT_PATH**
 
-
-
+.. code-block:: python
+    ROOT_DIR = (
+        environ.Path(__file__) - 3
+    )  # (alpha_clinic/config/settings/base.py - 3 = alpha_clinic/)
+    APPS_DIR = ROOT_DIR.path("myapp")
+    TEST_OUTPUT_PATH = ROOT_DIR.path("output").root
 
 Features
 --------
