@@ -20,13 +20,33 @@ Django Test Tools
      :alt: Updates
 
 
-Simple tests tools to make testing faster and easier. The tools presume a naming convention:
+Simple tests tools to make testing faster and easier. Most of the tools are to do a quick scaffolding for tests.
 
-    **Tests:** Are named with the convention **TestCase**ModelName. For a model named *Poll* the test would be generated
+
+
+
+The tools presume a naming convention:
+
+    **Tests:** Are named with the convention **TestCaseModelName**. For a model named *Poll* the test would be generated
     as the testing class would be *TestCasePoll*
 
-Supports Python 3.6, 3.7 with Django 1.11.x, 2.0,x, 2.1.x adn 2.2.x
+     **Factories:** Are named with the convention **ModelName**. For a model named *Poll* the test would be generated
+    as the testing class would be *PollFactory*
 
+     **Serializers:** Are named with the convention **TestCaseSerializer**. For a model named *Poll* the test would be generated
+    as the testing class would be *PollSerializer*
+
+
+
+Compatibility matrix:
+
++----------------+---------------+--------------+--------------+
+| Python version | Django 1.11.x | Django 2.2.x | Django 3.0.x |
++----------------+---------------+--------------+--------------+
+|       3.7      |       x       |       x      |       x      |
++----------------+---------------+--------------+--------------+
+|       3.6      |       x       |       x      |       x      |
++----------------+---------------+--------------+--------------+
 
 Documentation
 -------------
