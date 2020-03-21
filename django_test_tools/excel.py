@@ -6,19 +6,12 @@ class ExcelAdapter(object):
     @classmethod
     def convert_to_list(cls, filename, sheet_name=None, has_header=True):
         """
-        Reads an Excel file and converts every row into a list of values.
+        Reads an Excel file and converts every row into a dictionary. All values are converted to strings.
+        Assumes first row contains the name of the attributes.
 
-        Args:
-            filename (str): Excel filename
-
-        Kwargs:
-            sheet_name (str): Name of the sheet
-            has_header (boolean): If true the first row is not included in the list.
-
-        Returns:
-            list. A list of lists containg the content of the sheet
-
-        
+        :param filename: <str> Excel filename
+        :param sheet_name: <str> Name of the sheet
+        :return: <list> A list of dictionaries.
         """
         data = list()
         wb = load_workbook(filename=filename, data_only=True)
@@ -43,6 +36,7 @@ class ExcelAdapter(object):
         """
         Reads an Excel file and converts every row into a dictionary. All values are converted to strings.
         Assumes first row contains the name of the attributes.
+
         :param filename: <str> Excel filename
         :param sheet_name: <str> Name of the sheet
         :return: <list> A list of dictionaries.
