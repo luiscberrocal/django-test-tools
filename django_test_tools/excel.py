@@ -18,7 +18,7 @@ class ExcelAdapter(object):
         Returns:
             list. A list of lists containg the content of the sheet
 
-        
+
         """
         data = list()
         wb = load_workbook(filename=filename, data_only=True)
