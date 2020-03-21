@@ -19,6 +19,9 @@ Django Test Tools
      :target: https://pyup.io/repos/github/luiscberrocal/django-test-tools/
      :alt: Updates
 
+.. image:: https://readthedocs.org/projects/django-test-tools/badge/?version=latest
+    :target: https://django-test-tools.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 Simple tests tools to make testing faster and easier. Most of the tools are to do a quick scaffolding for tests.
 
