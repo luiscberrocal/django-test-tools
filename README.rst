@@ -115,24 +115,35 @@ Does the code actually work?
     (myenv) $ pip install tox
     (myenv) $ tox
 
-Builds
-------
+
+Pushing code to Pypi
+--------------------
+1. Setup environment
+
+.. code-block:: bash
+
+    source ~/python_envs/django_test_tools_env/bin/activate
+
+
+2. Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
 
 .. code-block:: bash
 
     $ make patch
 
-Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
-for the latest versions.
 
-Close the git-flow release.
+3. Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
+   for the latest versions.
 
-Instead of patch you could also use **major** o **minor** depending on the level of the release.
+4. Check setup.py for Django and Python versions.
+
+5. Close the git-flow release manually.
+
+6. Upload the new version to pypi
 
 .. code-block:: bash
 
     make upload
-
 
 Credits
 -------
