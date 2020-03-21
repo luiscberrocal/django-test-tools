@@ -33,6 +33,7 @@ def create_dated(filename):
 def hash_file(filename, algorithm='sha1', block_size=BLOCKSIZE):
     """
     Creates a unique hash for a file.
+
     :param filename: String with the full path to the file
     :param algorithm: String Algorithm to create the hash
     :param block_size: int for the size of the block while reading the file
@@ -55,6 +56,7 @@ def parametrized(dec):
     """
     Need to study this code.
     Got it from http://stackoverflow.com/questions/5929107/python-decorators-with-parameters
+
     :param dec:
     :return:
     """
@@ -82,7 +84,6 @@ def temporary_file(func, extension, delete_on_exit=True):
         def test_temporary_file_decorator(self):
             filename = self.test_temporary_file_decorator.filename
             ... write to the file ...
-
 
     :param func: function to decorate
     :param extension: extension of the filename without the dot
