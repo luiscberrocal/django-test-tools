@@ -21,6 +21,17 @@ import sys, os
 cwd = os.getcwd()
 parent = os.path.dirname(cwd)
 sys.path.append(parent)
+test_project = os.path.abspath('../example/')
+sys.path.insert(0, test_project )
+
+print('Parent: {}'.format(parent))
+print('Test: {}'.format(test_project))
+
+
+import django
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "example.settings")
+
+django.setup()
 
 import django_test_tools
 
