@@ -89,9 +89,15 @@ Features
 Factory Generator
 ++++++++++++++++++
 
+To create `Factory Boy`_ style factories.
+
+For a django project named polling_app with an app name poll the following command will generate the scaffolding for
+the tests for all the models in th app polls.
+
 .. code-block:: bash
 
-    $  python manage.py generate_factories project.app
+    $  python manage.py generate_factories polling_app.polls
+
 
 Model Test Case Generator
 +++++++++++++++++++++++++
@@ -123,16 +129,16 @@ Pushing code to Pypi
 --------------------
 1. Setup environment
 
-.. code-block:: bash
+  .. code-block:: bash
 
     source ~/python_envs/django_test_tools_env/bin/activate
 
 
 2. Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
 
-.. code-block:: bash
+    .. code-block:: bash
 
-    $ make patch
+        $ make patch
 
 
 3. Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
@@ -158,3 +164,4 @@ Tools used in rendering this package:
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`cookiecutter-djangopackage`: https://github.com/pydanny/cookiecutter-djangopackage
+.. _`Factory Boy`: https://factoryboy.readthedocs.io/en/latest/
