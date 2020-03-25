@@ -4,6 +4,7 @@ import subprocess
 import pip
 import pkg_resources
 
+from django_test_tools.exceptions import DjangoTestToolsException
 from django_test_tools.utils import versiontuple
 
 if versiontuple(pip.__version__) >= (10, 0, 0):
@@ -142,7 +143,11 @@ def update_outdated_libraries(requirement_file, **kwargs):
             operator = requirements[library_name]['operator']
             with open(change['filename'], 'r') as file:
                 data = file.readlines()
-            new_value = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'])
+            try:
+                new_value = '{}{}{}\n'.format(library_name, operator, outdated_library['new_version'])
+            except KeyError as e:
+                msg = 'Could not find new version for library {library_name} in {filename}'.format(**change)
+                raise DjangoTestToolsException(msg)
             change['previous'] = data[line_no].strip('\n')
             change['new'] = new_value.strip('\n')
             data[line_no] = new_value
