@@ -1,0 +1,2 @@
+class DjangoTestToolsException(Exception):
+    pass
