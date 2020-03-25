@@ -38,8 +38,11 @@ def capture():
 
 def parse_pip_list(line):
     regexp = re.compile(r'([\w\-]*)\s\(([\w\-_\.]*)\)\s\-\sLatest:\s([\w\-_\.]*)\s\[([a-z]*)\]')
+    regexp_new = re.compile(r'([\w\-]*)\s+([\w\-_\.]*)\s+([\w\-_\.]*)\s+([\w\-_\.]*)')
     regexp_list = re.compile(r'([\w\-]*)\s+([\w\-_\.]*)')
     match = regexp.match(line)
+    if match is None:
+        match = regexp_new.match(line)
     if match:
         library = dict()
         library['name'] = match.group(1).lower()
