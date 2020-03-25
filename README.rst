@@ -66,12 +66,13 @@ In your settings.py file add it to your `INSTALLED_APPS`
 
     INSTALLED_APPS = (
         ...
-        'django_test_tools',
+        'django_test_tools.apps.DjangoTestToolsConfig',
         ...
     )
 
 
-Add the settings variable **TEST_OUTPUT_PATH**
+Create an output folder in the root folder of you project, name it what ever you want, and add the settings
+variable **TEST_OUTPUT_PATH** point to it.
 
 .. code-block:: python
 
@@ -79,8 +80,8 @@ Add the settings variable **TEST_OUTPUT_PATH**
 
     ROOT_DIR = (
         environ.Path(__file__) - 3
-    )  # (alpha_clinic/config/settings/base.py - 3 = alpha_clinic/)
-    APPS_DIR = ROOT_DIR.path("myapp")
+    )  # (my_project/config/settings/base.py - 3 = alpha_clinic/)
+    APPS_DIR = ROOT_DIR.path("my_project")
     TEST_OUTPUT_PATH = ROOT_DIR.path("output").root
 
 Features
@@ -136,9 +137,9 @@ Pushing code to Pypi
 
 2. Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
 
-    .. code-block:: bash
+  .. code-block:: bash
 
-        $ make patch
+    $ make patch
 
 
 3. Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
@@ -150,7 +151,7 @@ Pushing code to Pypi
 
 6. Upload the new version to pypi
 
-.. code-block:: bash
+  .. code-block:: bash
 
     make upload
 

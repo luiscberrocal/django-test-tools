@@ -4,6 +4,13 @@ Usage
 
 To use Django Test Tools in a project, add it to your `INSTALLED_APPS`:
 
+.. code-block:: bash
+
+    pip install django-test-tools
+
+
+In your settings.py file add it to your `INSTALLED_APPS`
+
 .. code-block:: python
 
     INSTALLED_APPS = (
@@ -12,15 +19,16 @@ To use Django Test Tools in a project, add it to your `INSTALLED_APPS`:
         ...
     )
 
-Add Django Test Tools's URL patterns:
+
+Create an output folder in the root folder of you project, name it what ever you want, and add the settings
+variable **TEST_OUTPUT_PATH** point to it.
 
 .. code-block:: python
 
-    from django_test_tools import urls as django_test_tools_urls
+    import environ
 
-
-    urlpatterns = [
-        ...
-        url(r'^', include(django_test_tools_urls)),
-        ...
-    ]
+    ROOT_DIR = (
+        environ.Path(__file__) - 3
+    )  # (my_project/config/settings/base.py - 3 = alpha_clinic/)
+    APPS_DIR = ROOT_DIR.path("my_project")
+    TEST_OUTPUT_PATH = ROOT_DIR.path("output").root
