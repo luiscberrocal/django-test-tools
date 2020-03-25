@@ -187,7 +187,7 @@ class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):
 
 class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
 
-    @temporary_file('json', delete_on_exit=False)
+    @temporary_file('json', delete_on_exit=True)
     def test_excel_to_json(self):
         import environ
         output = self.test_excel_to_json.filename
