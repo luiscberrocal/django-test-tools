@@ -72,7 +72,7 @@ In your settings.py file add it to your `INSTALLED_APPS`
 
 
 Create an output folder in the root folder of you project, name it what ever you want, and add the settings
-variable **TEST_OUTPUT_PATH** point to it.
+variable **TEST_OUTPUT_PATH** pointing to it.
 
 .. code-block:: python
 
