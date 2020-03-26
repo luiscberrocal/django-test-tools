@@ -3,7 +3,7 @@ import csv
 from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.file_utils import temporary_file
-from django_test_tools.mixins import TestOutputMixin, TestCommandMixin
+from django_test_tools.mixins import TestOutputMixin, TestCommandMixin, TestFixtureMixin
 
 
 class TestTestOutputMixin(TestCase):
@@ -31,3 +31,11 @@ class TestTestCommandMixin(SimpleTestCase):
         mixin.content.write('VIctor\n')
         results = mixin.get_results()
         self.assertEqual(len(results),2)
+
+
+class TestTestFixtureMixin(SimpleTestCase):
+
+    def test_(self):
+        mixin = TestFixtureMixin(app_name=None, strict=False)
+        celery_data = mixin.get_fixture_json('celery.json')
+        self.assertEqual(len(celery_data), 2)

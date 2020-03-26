@@ -4,6 +4,7 @@ import re
 class CommonRegExp(object):
     """
     This class is a utility for commonly used regular expressions.
+
     .. code-block:: python
 
         str_data = '10:45'
