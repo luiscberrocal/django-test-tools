@@ -1,14 +1,12 @@
 import os
-
 from unittest import mock
 from unittest.mock import Mock, patch
 
+from django.conf import settings
 from django.core.management import call_command
 from django.db.models import FileField
-from django.conf import settings
 from django.test import TestCase, SimpleTestCase
 
-from django_test_tools.assert_utils import write_assertions
 from django_test_tools.file_utils import hash_file, temporary_file
 from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
 from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
@@ -185,6 +183,7 @@ class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):
         results = self.get_results()
         self.assertTrue('Printed to file' in results[0])
 
+
 class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
 
     @temporary_file('json', delete_on_exit=True)
@@ -192,7 +191,7 @@ class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
         import environ
         output = self.test_excel_to_json.filename
         excel_file = (environ.Path(__file__) - 1).path('fixtures', 'excel_to_json.xlsx').root
-        call_command('convert_to_json', input=excel_file, output= output,
+        call_command('convert_to_json', input=excel_file, output=output,
                      stdout=self.content)
         hash = hash_file(output)
         app_name = settings.TEST_APP
@@ -200,4 +199,3 @@ class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
             self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
         else:
             self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
-
