@@ -69,3 +69,9 @@ upload: sdist
 	git push origin develop
 	git push --tags
 	twine upload ./dist/*
+
+travis-push:sdist
+	git push --tags
+	git push origin master
+	git push origin develop
+
