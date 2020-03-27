@@ -1,7 +1,7 @@
 language: python
 branches:
  only:
-#  - master
+   - master
 #  - develop
 #  - /^feature\/.+/
 #  - /^release\/.+/
@@ -48,4 +48,5 @@ deploy:
   on:
     tags: true
   skip_cleanup: true
+  skip_existing: true
 
