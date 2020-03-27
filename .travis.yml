@@ -1,12 +1,13 @@
 language: python
 branches:
- only:
-   - master
+  only:
+    - master
+    - /^v[\d\.]+/
 #  - develop
 #  - /^feature\/.+/
 #  - /^release\/.+/
 #  - /^hotfix\/.+/
-  - /^v[\d\.]+/
+
 env:
   - DJANGO_VERSION=3.0.4
   - DJANGO_VERSION=1.11.29
@@ -36,9 +37,9 @@ after_success:
   - codecov
   - coveralls
 
-before_deploy:
-  - python setup.py sdist
-  - python setup.py sdist bdist_wheel
+#before_deploy:
+#  - python setup.py sdist
+#  - python setup.py sdist bdist_wheel
 
 deploy:
   provider: pypi
