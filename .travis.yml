@@ -22,7 +22,9 @@ install:
   - git config --global user.name "Testing Git on Travis CI"
   - git --version
   - git config --list
-script: coverage run --source django_test_tools runtests.py
+script:
+  - coverage run --source django_test_tools runtests.py
+  - git add coverage.xml
 after_success:
   - codecov
   - coveralls
@@ -33,4 +35,3 @@ deploy:
     secure: PaWPotkFk08xQ9gOvc6+NmGcmDXzpXNd80uTyfz4qNnTvow5g2ApfgsPfeGByVPY8IpM76ZAu2Uo4zL1f+g2vmBnInzsV1zxhufjJCogVUhEUMUAEHOoaKQN0TnZo7J+fGS/97R1S4bHCMEjCmeoJDXsxJ04b0K21HnEddTGW2cFe+rs1Vk6yz8p1+HyqmOiSTUacGVAoxIHWdEtJzM7PkX4l60rkrFQlKh7OFtv4Ayoi4uwoy0MXsoA+pmYNZhh96zSwpBiw9lU42FS/K33/VUfCW+PYaEHHSFLo0yPnC2pi8B62yyw9pA8eurDCKZEio8gm6IHYTonL/Widw/9W8a0gEWl/6jO4DameEV1R3ZTqSSST6vwXaPNw7wOCHVMcg7shqeGskLnohVLDibfg26lHFi+B70my96OZoP2+nRKIebBenP0TIVz5hsl6MqxjMdSoZY2N1NYM3fpiw+ZnC2IBZaq4aJleQnp7ktbpaXs7d/e3qx4ltkzbC2WsVMd5B3xLf/IrlxODejg7Jvw9PE45XIE8IaFTWCkYttqgKU3VdwfVJwGiRBB5HAkcKifUtVwfGY2DESDfGU7ivwQ6QDLINH9kx6oAnFgvmCDykVHf+8l4YIXloxIhXCP4ioz9BpWVYIIHMzWrs5o30smf6eFLGanfB4SeQdstvL3H1E=
   on:
     tags: true
-  skip_cleanup: true
