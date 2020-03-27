@@ -238,11 +238,11 @@ Pushing code to Pypi
 
 5. Close the git-flow release manually.
 
-6. Upload the new version to pypi
+6. Push to repo, Travis CI should deploy to pypi
 
   .. code-block:: bash
 
-    make upload
+    make travis-push
 
 Credits
 -------
