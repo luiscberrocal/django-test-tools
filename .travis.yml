@@ -24,10 +24,12 @@ install:
   - git config --list
 script:
   - coverage run --source django_test_tools runtests.py
-  - git add coverage.xml
 after_success:
   - codecov
   - coveralls
+
+before_deploy: git add coverage.xml
+
 deploy:
   provider: pypi
   user: "__token__"
