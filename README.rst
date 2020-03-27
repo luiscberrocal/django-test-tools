@@ -100,6 +100,95 @@ the tests for all the models in th app polls.
     $  python manage.py generate_factories polling_app.polls
 
 
+For the following models
+
+
+.. code-block:: python
+
+    class OperatingSystem(models.Model):
+        name = models.CharField(max_length=20)
+        version = models.CharField(max_length=5)
+        licenses_available = models.IntegerField()
+        cost = models.DecimalField(decimal_places=2, max_digits=7)
+
+        class Meta:
+            unique_together = ('name', 'version')
+
+
+    class Server(models.Model):
+        PRODUCTION = 'PROD'
+        DEVELOPMENT = 'DEV'
+        USE_CHOICES = ((PRODUCTION, 'Prod'),
+                       (DEVELOPMENT, 'Dev'))
+        name = models.CharField(max_length=20, unique=True)
+        notes = models.TextField()
+        virtual = models.BooleanField()
+        ip_address = models.GenericIPAddressField()
+        created = models.DateTimeField()
+        online_date = models.DateField()
+        operating_system = models.ForeignKey(OperatingSystem, related_name='servers', on_delete=models.CASCADE)
+        server_id = models.CharField(max_length=6)
+        use = models.CharField(max_length=4, choices=USE_CHOICES, default=DEVELOPMENT)
+        comments = models.TextField(null=True, blank=True)
+
+
+running `python manage.py generate_factories example.servers > ./output/factories.py` will create the following factories
+
+.. code-block:: python
+
+    import string
+
+    from random import randint
+    from pytz import timezone
+
+    from django.conf import settings
+
+    from factory import Iterator
+    from factory import LazyAttribute
+    from factory import SubFactory
+    from factory import lazy_attribute
+    from factory.django import DjangoModelFactory, FileField
+    from factory.fuzzy import FuzzyText, FuzzyInteger
+    from faker import Factory as FakerFactory
+
+    from example.servers.models import OperatingSystem, Server
+
+    faker = FakerFactory.create()
+
+
+    class OperatingSystemFactory(DjangoModelFactory):
+        class Meta:
+            model = OperatingSystem
+
+        name = LazyAttribute(lambda x: faker.text(max_nb_chars=20))
+        version = LazyAttribute(lambda x: faker.text(max_nb_chars=5))
+        licenses_available = LazyAttribute(lambda o: randint(1, 100))
+        cost = LazyAttribute(lambda x: faker.pydecimal(left_digits=5, right_digits=2, positive=True))
+
+    class ServerFactory(DjangoModelFactory):
+        class Meta:
+            model = Server
+
+        name = LazyAttribute(lambda x: faker.text(max_nb_chars=20))
+        notes = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))
+        virtual = Iterator([True, False])
+        ip_address = LazyAttribute(lambda o: faker.ipv4(network=False))
+        created = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
+                                                               tzinfo=timezone(settings.TIME_ZONE)))
+        online_date = LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",
+                                                               tzinfo=timezone(settings.TIME_ZONE)))
+        operating_system = SubFactory(OperatingSystemFactory)
+        server_id = LazyAttribute(lambda x: FuzzyText(length=6, chars=string.digits).fuzz())
+        use = Iterator(Server.CHOICES, getter=lambda x: x[0])
+        comments = LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))
+
+Important the use attribute is created incorrectly. **When you use choices you need to manually change it** to USE_CHOICES.
+
+.. code-block:: python
+
+        use = Iterator(Server.USE_CHOICES, getter=lambda x: x[0])
+
+
 Model Test Case Generator
 +++++++++++++++++++++++++
 
