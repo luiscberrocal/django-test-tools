@@ -113,7 +113,7 @@ class FactoryBoyGenerator(object):
         return template.format(**config)
 
     def get_charfield_factory(self, *args, **kwargs):
-        if args[0]['choices']:
+        if args[0].get('choices'):
             template = 'Iterator({choices}, getter=lambda x: x[0])'
             return template.format(**args[0])
 
