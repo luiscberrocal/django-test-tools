@@ -37,10 +37,6 @@ after_success:
   - codecov
   - coveralls
 
-before_deploy:
-  - python setup.py sdist
-  - python setup.py sdist bdist_wheel
-
 deploy:
   provider: pypi
   user: "__token__"
@@ -50,4 +46,5 @@ deploy:
     tags: true
 #  skip_cleanup: true
   skip_existing: true
+  distributions: "sdist bdist_wheel"
 
