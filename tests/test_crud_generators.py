@@ -140,7 +140,7 @@ class TestGenericTemplateWriter(SimpleTestCase):
     #     writer = GenericTemplateWriter(template_name)
     #     writer.write(factory_data, self.test_write.filename)
 
-    @temporary_file('.py', delete_on_exit=False)
+    @temporary_file('.py', delete_on_exit=True)
     def test_write_2(self):
         generator = FactoryBoyGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP)
