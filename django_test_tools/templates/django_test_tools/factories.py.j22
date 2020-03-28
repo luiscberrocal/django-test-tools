@@ -1,0 +1,26 @@
+import string
+
+from random import randint
+from pytz import timezone
+
+from django.conf import settings
+
+from factory import Iterator
+from factory import LazyAttribute
+from factory import SubFactory
+from factory import lazy_field
+from factory.django import DjangoModelFactory, FileField
+from factory.fuzzy import FuzzyText, FuzzyInteger
+from faker import Factory as FakerFactory
+
+faker = FakerFactory.create()
+
+{% for key, model in models.items() %}
+class {{ model.model_name }}Factory(DjangoModelFactory):
+
+    class Meta:
+        model = {{model.model_name}}
+        {% if model.unique_together %}django_get_or_create = {{model.unique_together}}{% endif %}
+    {% for field in model.fields %}
+    {% if field.is_supported %}{{ field.field_name }} = {{field.factory}}{% else %}# Field type {{ field.type }} for field {{ field.field_name }} is not currently supported{% endif %}{% endfor %}
+{% endfor %}

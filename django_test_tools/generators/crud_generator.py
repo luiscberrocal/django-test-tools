@@ -42,3 +42,20 @@ class SerializerTestGenerator(object):
         rendered = self.template.render(serializer_info)
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(rendered)
+
+class GenericTemplateWriter(object):
+
+    def __init__(self, template_name):
+        self.env = Environment(
+            loader=PackageLoader('django_test_tools', 'templates'),
+            autoescape=select_autoescape(['html', 'j2',])
+        )
+        self.env.filters['to_snake_case'] = to_snake_case
+
+        self.template_name = 'django_test_tools/{}'.format(template_name)
+        self.template = self.env.get_template(self.template_name)
+
+    def write(self, template_data, filename):
+        rendered = self.template.render(template_data)
+        with open(filename, 'w', encoding='utf-8') as file:
+            file.write(rendered)
