@@ -19,7 +19,7 @@ faker = FakerFactory.create()
 class {{ model.model_name }}Factory(DjangoModelFactory):
 
     class Meta:
-        model = {{factory.model_name}}
-    {% for field in factory.fields %}
-    {% if field.is_supported %}{{ field.name }} = {{field.factory}}{% else %}# Field type {{ field.type }} for field {{ field.name }} is not currently supported{% endif %}{% endfor %}
+        model = {{model.model_name}}
+    {% for field in model.fields %}
+    {% if field.is_supported %}{{ field.field_name }} = {{field.factory}}{% else %}# Field type {{ field.type }} for field {{ field.field_name }} is not currently supported{% endif %}{% endfor %}
 {% endfor %}

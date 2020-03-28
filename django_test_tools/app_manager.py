@@ -36,16 +36,16 @@ class DjangoAppManager(object):
         """
         app = self.get_app(app_name)
         app_dict = dict()
-        app_dict['name'] = app.name
+        app_dict['app_name'] = app.name
         app_dict['models'] = dict()
         for key, model in app.models.items():
             app_dict['models'][key] = dict()
-            app_dict['models'][key]['name'] = model.__name__
+            app_dict['models'][key]['model_name'] = model.__name__
             app_dict['models'][key]['original_attrs'] = model._meta.original_attrs
             app_dict['models'][key]['fields'] = list()
             for field in model._meta.fields:
                 field_dict = dict()
-                field_dict['name'] = field.name
+                field_dict['field_name'] = field.name
                 field_dict['type'] = type(field).__name__
                 field_dict['unique'] = field.unique
                 field_dict['editable'] = field.editable
@@ -55,6 +55,9 @@ class DjangoAppManager(object):
                     field_dict['max_digits'] = field.max_digits
                 if hasattr(field, 'decimal_places') and field.decimal_places is not None:
                     field_dict['decimal_places'] = field.decimal_places
+                if hasattr(field, 'remote_field') and field.remote_field is not None:
+                    field_dict['remote_field'] = field.remote_field.model.__name__
+
 
                 app_dict['models'][key]['fields'].append(field_dict)
         return app_dict

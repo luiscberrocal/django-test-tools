@@ -1,5 +1,7 @@
 import importlib
 import os
+
+from django.conf import settings
 from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.file_utils import hash_file, temporary_file
@@ -10,6 +12,7 @@ from django_test_tools.generators.crud_generator import UrlGenerator, Serializer
 #     from example.servers.api.serializers import ServerSerializer
 # except:
 #     from servers.api.serializers import ServerSerializer
+from django_test_tools.generators.model_generator import FactoryBoyGenerator
 
 
 class TestUrlGenerator(TestCase):
@@ -82,57 +85,65 @@ class TestSerializerTestGenerator(SimpleTestCase):
 
 
 class TestGenericTemplateWriter(SimpleTestCase):
+    #
+    # @temporary_file('.py', delete_on_exit=True)
+    # def test_write(self):
+    #     factory_data = dict()
+    #     factory_data['factories'] = list()
+    #     factory = dict()
+    #     factory['model_name'] = 'Server'
+    #     factory['attributes'] = list()
+    #     attribute = dict()
+    #     attribute['is_supported'] = True
+    #     attribute['name'] = 'name'
+    #     attribute['factory_definition'] = 'LazyAttribute(lambda x: faker.text(max_nb_chars=20))'
+    #     attribute['type'] = 'CharField'
+    #     factory['attributes'].append(attribute)
+    #
+    #     attribute = dict()
+    #     attribute['is_supported'] = True
+    #     attribute['name'] = 'notes'
+    #     attribute['factory_definition'] = 'LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))'
+    #     attribute['type'] = 'TextField'
+    #     factory['attributes'].append(attribute)
+    #
+    #     attribute = dict()
+    #     attribute['is_supported'] = True
+    #     attribute['name'] = 'virtual'
+    #     attribute['factory_definition'] = 'Iterator([True, False])'
+    #     attribute['type'] = 'BooleanField'
+    #     factory['attributes'].append(attribute)
+    #
+    #     attribute = dict()
+    #     attribute['is_supported'] = True
+    #     attribute['name'] = 'ip_address'
+    #     attribute['factory_definition'] = 'LazyAttribute(lambda o: faker.ipv4(network=False))'
+    #     attribute['type'] = 'IPAddressField'
+    #     factory['attributes'].append(attribute)
+    #
+    #     attribute = dict()
+    #     attribute['is_supported'] = False
+    #     attribute['name'] = 'info'
+    #     attribute['factory_definition'] = ''
+    #     attribute['type'] = 'JSONField'
+    #     factory['attributes'].append(attribute)
+    #
+    #     attribute = dict()
+    #     attribute['is_supported'] = True
+    #     attribute['name'] = 'created'
+    #     attribute['factory_definition'] = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",tzinfo=timezone(settings.TIME_ZONE)))'
+    #     attribute['type'] = 'DateTimeField'
+    #     factory['attributes'].append(attribute)
+    #     factory_data['factories'].append(factory)
+    #
+    #     template_name = 'factories.py.j22'
+    #     writer = GenericTemplateWriter(template_name)
+    #     writer.write(factory_data, self.test_write.filename)
 
     @temporary_file('.py', delete_on_exit=False)
-    def test_write(self):
-        factory_data = dict()
-        factory_data['factories'] = list()
-        factory = dict()
-        factory['model_name'] = 'Server'
-        factory['attributes'] = list()
-        attribute = dict()
-        attribute['is_supported'] = True
-        attribute['name'] = 'name'
-        attribute['factory_definition'] = 'LazyAttribute(lambda x: faker.text(max_nb_chars=20))'
-        attribute['type'] = 'CharField'
-        factory['attributes'].append(attribute)
-
-        attribute = dict()
-        attribute['is_supported'] = True
-        attribute['name'] = 'notes'
-        attribute['factory_definition'] = 'LazyAttribute(lambda x: faker.paragraph(nb_sentences=3, variable_nb_sentences=True))'
-        attribute['type'] = 'TextField'
-        factory['attributes'].append(attribute)
-
-        attribute = dict()
-        attribute['is_supported'] = True
-        attribute['name'] = 'virtual'
-        attribute['factory_definition'] = 'Iterator([True, False])'
-        attribute['type'] = 'BooleanField'
-        factory['attributes'].append(attribute)
-
-        attribute = dict()
-        attribute['is_supported'] = True
-        attribute['name'] = 'ip_address'
-        attribute['factory_definition'] = 'LazyAttribute(lambda o: faker.ipv4(network=False))'
-        attribute['type'] = 'IPAddressField'
-        factory['attributes'].append(attribute)
-
-        attribute = dict()
-        attribute['is_supported'] = False
-        attribute['name'] = 'info'
-        attribute['factory_definition'] = ''
-        attribute['type'] = 'JSONField'
-        factory['attributes'].append(attribute)
-
-        attribute = dict()
-        attribute['is_supported'] = True
-        attribute['name'] = 'created'
-        attribute['factory_definition'] = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now",tzinfo=timezone(settings.TIME_ZONE)))'
-        attribute['type'] = 'DateTimeField'
-        factory['attributes'].append(attribute)
-        factory_data['factories'].append(factory)
-
+    def test_write_2(self):
+        generator = FactoryBoyGenerator()
+        factory_data = generator.create_template_data(settings.TEST_APP)
         template_name = 'factories.py.j22'
         writer = GenericTemplateWriter(template_name)
-        writer.write(factory_data, self.test_write.filename)
+        writer.write(factory_data, self.test_write_2.filename)

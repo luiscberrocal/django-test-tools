@@ -31,5 +31,5 @@ class TestDjangoAppManager(TestCase):
     def test_get_app(self):
         app_manager = DjangoAppManager()
         app_dict = app_manager.get_app_data(settings.TEST_APP)
-        write_assertions(app_dict, 'app_dict')
-        
+        #write_assertions(app_dict, 'app_dict')
+
