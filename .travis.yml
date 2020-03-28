@@ -37,9 +37,9 @@ after_success:
   - codecov
   - coveralls
 
-#before_deploy:
-#  - python setup.py sdist
-#  - python setup.py sdist bdist_wheel
+before_deploy:
+  - python setup.py sdist
+  - python setup.py sdist bdist_wheel
 
 deploy:
   provider: pypi
