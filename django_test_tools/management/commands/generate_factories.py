@@ -197,7 +197,7 @@ class Command(BaseCommand):
             filename = os.path.join(settings.TEST_OUTPUT_PATH, options.get('filename'))
             generator = FactoryBoyGenerator()
             factory_data = generator.create_template_data(app_name)
-            template_name = 'factories.py.jinja2'
+            template_name = 'factories.py.j2'
             writer = GenericTemplateWriter(template_name)
             writer.write(factory_data, filename)
         else:
