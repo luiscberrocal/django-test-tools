@@ -51,7 +51,7 @@ class FactoryBoyGenerator(object):
                 elif field['type'].lower() == 'charfield':
                     field_dict['factory'] = self.get_charfield_factory(field)
                     template_data['models'][model_key]['fields'].append(field_dict)
-                elif field['type'] == 'DateTimeField':
+                elif field['type'].lower() == 'datetimefield':
                     config = {'start_date': '-1y', 'end_date': 'now'}
                     template = 'LazyAttribute(lambda x: faker.date_time_between(start_date="{start_date}", ' \
                                'end_date="{end_date}", tzinfo=timezone(settings.TIME_ZONE)))'
@@ -87,12 +87,31 @@ class FactoryBoyGenerator(object):
                     field_dict['factory'] = self.get_genericipaddressfield_factory(field)
                     template_data['models'][model_key]['fields'].append(field_dict)
                 else:
-                    field_dict['is_supported'] = False
-                    template_data['models'][model_key]['fields'].append(field_dict)
+                    method_name = 'get_{}_factory'.format(field['type'].lower())
+                    if hasattr(self, method_name):
+                        field_dict['factory'] = getattr(self, method_name)(field)
+                        template_data['models'][model_key]['fields'].append(field_dict)
+                    else:
+                        field_dict['is_supported'] = False
+                        template_data['models'][model_key]['fields'].append(field_dict)
         return template_data
 
     def get_booleanfield_factory(self, *args, **kwargs):
         return 'Iterator([True, False])'
+
+    def get_datetimefield_factory(self, *args, **kwargs):
+        config = {'start_date': kwargs.get('start_date', '-1y'),
+                  'end_date': kwargs.get('end_date', 'now')}
+        template = 'LazyAttribute(lambda x: faker.date_time_between(start_date="{start_date}", ' \
+                   'end_date="{end_date}", tzinfo=timezone(settings.TIME_ZONE)))'
+        return template.format(**config)
+
+    def get_datefield_factory(self, *args, **kwargs):
+        config = {'start_date': kwargs.get('start_date', '-1y'),
+                  'end_date': kwargs.get('end_date', 'today')}
+        template = 'LazyAttribute(lambda x: faker.date_between(start_date="{start_date}", ' \
+                   'end_date="{end_date}", tzinfo=timezone(settings.TIME_ZONE)))'
+        return template.format(**config)
 
     def get_textfield_factory(self, *args, **kwargs):
         config = {'sentences': kwargs.get('sentences', 3)}
