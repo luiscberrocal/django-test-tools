@@ -1,5 +1,10 @@
+import os
+
+from django.conf import settings
 from django.core.management import BaseCommand
 
+from django_test_tools.generators.crud_generator import GenericTemplateWriter
+from django_test_tools.generators.model_generator import FactoryBoyGenerator
 from ...app_manager import DjangoAppManager
 
 PRINT_IMPORTS = """
@@ -165,11 +170,11 @@ class Command(BaseCommand):
         #                     )
         #
         #
-        # parser.add_argument("--office",
-        #                     dest="office",
-        #                     help="Organizational unit short name",
-        #                     default=None,
-        #                     )
+        parser.add_argument("--filename",
+                            dest="filename",
+                            help="Output filename",
+                            default=None,
+                            )
         # parser.add_argument("--start-date",
         #                     dest="start_date",
         #                     help="Start date for the assignment",
@@ -188,16 +193,24 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         app_name = options.get('app_name')
-        app_manager = DjangoAppManager()
-        app = app_manager.get_app(app_name)
-        if not app:
-            self.stderr.write('This command requires an existing app name as '
-                              'argument')
-            self.stderr.write('Available apps:')
-            for app in sorted(app_manager.installed_apps):
-                self.stderr.write('    %s' % app)
+        if options.get('filename'):
+            filename = os.path.join(settings.TEST_OUTPUT_PATH, options.get('filename'))
+            generator = FactoryBoyGenerator()
+            factory_data = generator.create_template_data(app_name)
+            template_name = 'factories.py.j22'
+            writer = GenericTemplateWriter(template_name)
+            writer.write(factory_data, filename)
         else:
-            self.stdout.write(PRINT_IMPORTS)
-            for model in app.get_models():
-                model_fact = ModelFactoryGenerator(model)
-                self.stdout.write(str(model_fact))
+            app_manager = DjangoAppManager()
+            app = app_manager.get_app(app_name)
+            if not app:
+                self.stderr.write('This command requires an existing app name as '
+                                  'argument')
+                self.stderr.write('Available apps:')
+                for app in sorted(app_manager.installed_apps):
+                    self.stderr.write('    %s' % app)
+            else:
+                self.stdout.write(PRINT_IMPORTS)
+                for model in app.get_models():
+                    model_fact = ModelFactoryGenerator(model)
+                    self.stdout.write(str(model_fact))
