@@ -136,7 +136,7 @@ class TestGenericTemplateWriter(SimpleTestCase):
     #     factory['attributes'].append(attribute)
     #     factory_data['factories'].append(factory)
     #
-    #     template_name = 'factories.py.jinja2'
+    #     template_name = 'factories.py.j2'
     #     writer = GenericTemplateWriter(template_name)
     #     writer.write(factory_data, self.test_write.filename)
 
@@ -144,6 +144,6 @@ class TestGenericTemplateWriter(SimpleTestCase):
     def test_write_2(self):
         generator = FactoryBoyGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP)
-        template_name = 'factories.py.jinja2'
+        template_name = 'factories.py.j2'
         writer = GenericTemplateWriter(template_name)
         writer.write(factory_data, self.test_write_2.filename)
