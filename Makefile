@@ -70,7 +70,10 @@ upload: sdist
 	git push --tags
 	twine upload ./dist/*
 
-travis-push:sdist
+travis-push: clean
+	python setup.py sdist
+	python setup.py sdist bdist_wheel
+	ls -l dist
 	git push --tags
 	git push origin master
 	git push origin develop
