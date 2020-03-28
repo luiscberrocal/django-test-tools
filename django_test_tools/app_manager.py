@@ -49,6 +49,8 @@ class DjangoAppManager(object):
                 field_dict['type'] = type(field).__name__
                 field_dict['unique'] = field.unique
                 field_dict['editable'] = field.editable
+                if hasattr(field, 'choices') and field.choices is not None:
+                    field_dict['choices'] = field.choices
                 if hasattr(field, 'max_length') and field.max_length is not None:
                     field_dict['max_length'] = field.max_length
                 if hasattr(field, 'max_digits') and field.max_digits is not None:
