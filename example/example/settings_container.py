@@ -1,6 +1,6 @@
 from .settings import *
 
-TEST_APP = 'servers'
+TEST_APP_SERVERS = 'servers'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -10,7 +10,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
-    TEST_APP,
+    TEST_APP_SERVERS,
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]

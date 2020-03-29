@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/1.9/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
+import os
+
 import django
 import environ
-import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -32,7 +33,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-TEST_APP = 'example.servers'
+TEST_APP_SERVERS = 'example.servers'
+TEST_APP_PEOPLE = 'example.people'
 # Application definition
 
 INSTALLED_APPS = [
@@ -44,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
-    TEST_APP,
+    TEST_APP_SERVERS,
+    TEST_APP_PEOPLE,
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]

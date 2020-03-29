@@ -18,7 +18,7 @@ class PythonWritingTestMixin:
 class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
     def test_str(self):
-        app_name = settings.TEST_APP
+        app_name = settings.TEST_APP_SERVERS
         model_name = 'Server'
         app_manager = DjangoAppManager()
         model = app_manager.get_model(app_name, model_name)
@@ -30,7 +30,7 @@ class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
 class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
     def test_app_str(self):
-        app_name = settings.TEST_APP
+        app_name = settings.TEST_APP_SERVERS
         app_manager = DjangoAppManager()
         app = app_manager.get_app(app_name)
         app_model_tests = AppModelsTestCaseGenerator(app)

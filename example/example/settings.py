@@ -10,8 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
 import logging
+import os
+
 import environ
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,9 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-TEST_APP = 'servers'
+TEST_APP_SERVERS = 'servers'
+TEST_APP_PEOPLE = 'people'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,28 +48,38 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_test_tools',
-    TEST_APP,
-
+    TEST_APP_SERVERS,
+    TEST_APP_PEOPLE,
     # if your app has other dependencies that need to be added to the site
     # they should be added here
 ]
 
-MIDDLEWARE_CLASSES = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+# MIDDLEWARE_CLASSES = [
+#     'django.middleware.security.SecurityMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+#     'django.contrib.messages.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+# ]
+# https://docs.djangoproject.com/en/dev/ref/settings/#middleware
+MIDDLEWARE = [
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
 ROOT_URLCONF = 'example.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'BACKEND': "django.template.backends.django.DjangoTemplates",
         'DIRS': [str(APPS_DIR.path('templates')),
                  str(ROOT_DIR.path('django_test_tools', 'templates')), ],
         'APP_DIRS': True,
