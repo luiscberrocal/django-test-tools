@@ -15,7 +15,7 @@ from django_test_tools.utils import create_output_filename_with_date
 
 class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
     def test_generate_factories(self):
-        call_command('generate_factories', settings.TEST_APP, stdout=self.content)
+        call_command('generate_factories', settings.TEST_APP_SERVERS, stdout=self.content)
         results = self.get_results()
         self.assertEqual(44, len(results))
         filename = create_output_filename_with_date('example_my_app_factory.py')
@@ -31,7 +31,7 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
         call_command('generate_factories', 'invalid_name', stdout=self.content, stderr=self.error_content)
         results = self.get_results()
         self.assertEqual(len(results), 0)
-        self.assertEqual(len(self.get_errors()), 10)
+        self.assertEqual(len(self.get_errors()), 11)
 
 
 class FileFieldMockType(object):
@@ -63,14 +63,14 @@ class TestModelFactoryGenerator(TestCase):
 
 class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestCase):
     def test_generate(self):
-        call_command('generate_model_test_cases', settings.TEST_APP, stdout=self.content)
+        call_command('generate_model_test_cases', settings.TEST_APP_SERVERS, stdout=self.content)
         results = self.get_results()
         self.assertEqual(106, len(results))
 
 
 class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase):
     def test_generate(self):
-        call_command('generate_serializers', settings.TEST_APP, stdout=self.content)
+        call_command('generate_serializers', settings.TEST_APP_SERVERS, stdout=self.content)
         results = self.get_results()
         self.assertEqual(22, len(results))
 
@@ -194,7 +194,7 @@ class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
         call_command('convert_to_json', input=excel_file, output=output,
                      stdout=self.content)
         hash = hash_file(output)
-        app_name = settings.TEST_APP
+        app_name = settings.TEST_APP_SERVERS
         if app_name == 'example.servers':
             self.assertEqual(hash, '535ffac988e95a1536fe6803ea7d78c99b1c28df')
         else:

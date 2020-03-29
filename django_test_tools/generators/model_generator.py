@@ -93,7 +93,7 @@ class FactoryBoyGenerator(object):
     def get_filefield_factory(self, *args, **kwargs):
         config = {'filename': kwargs.get('filename', args[0]['field_name']),
                   'extension': kwargs.get('extension', 'txt'), }
-        template = 'FileField(filename=\'{}.{}\''
+        template = 'FileField(filename=\'{filename}.{extension}\')'
         return template.format(**config)
 
     def get_genericipaddressfield_factory(self, *args, **kwargs):

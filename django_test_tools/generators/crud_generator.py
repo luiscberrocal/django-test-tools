@@ -48,7 +48,7 @@ class GenericTemplateWriter(object):
     def __init__(self, template_name):
         self.env = Environment(
             loader=PackageLoader('django_test_tools', 'templates'),
-            autoescape=select_autoescape(['html', 'j2',])
+            autoescape=select_autoescape(['html', ])
         )
         self.env.filters['to_snake_case'] = to_snake_case
 

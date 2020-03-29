@@ -10,7 +10,7 @@ from tests.test_model_test_gen import PythonWritingTestMixin
 class TestSerializerGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
     def test_app_str(self):
-        app_name = settings.TEST_APP
+        app_name = settings.TEST_APP_SERVERS
         app_manager = DjangoAppManager()
         model = app_manager.get_model(app_name, 'Server')
         model_serializer = SerializerGenerator(model)
@@ -24,7 +24,7 @@ class TestSerializerGenerator(PythonWritingTestMixin, TestCase):
 class TestAppSerializerGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
     def test_app_str(self):
-        app_name = settings.TEST_APP
+        app_name = settings.TEST_APP_SERVERS
         app_manager = DjangoAppManager()
         app = app_manager.get_app(app_name)
         app_serializers = AppSerializerGenerator(app)
