@@ -140,10 +140,12 @@ class TestGenericTemplateWriter(SimpleTestCase):
     #     writer = GenericTemplateWriter(template_name)
     #     writer.write(factory_data, self.test_write.filename)
 
-    @temporary_file('.py', delete_on_exit=True)
+    @temporary_file('.py', delete_on_exit=False)
     def test_write_2(self):
         generator = FactoryBoyGenerator()
-        factory_data = generator.create_template_data(settings.TEST_APP)
+        factory_data = generator.create_template_data(settings.TEST_APP_SERVERS)
         template_name = 'factories.py.j2'
         writer = GenericTemplateWriter(template_name)
         writer.write(factory_data, self.test_write_2.filename)
+        hash = hash_file(self.test_write_2.filename)
+        self.assertEqual(hash, '5cf89c49762055625bc22ef2a09be220768edb6d')

@@ -8,5 +8,5 @@ class TestFactoryBoyGenerator(TestCase):
 
     def test_(self):
         generator = FactoryBoyGenerator()
-        data = generator.create_template_data(settings.TEST_APP)
+        data = generator.create_template_data(settings.TEST_APP_SERVERS)
 #        self.assertEqual(data, '')
