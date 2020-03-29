@@ -140,12 +140,23 @@ class TestGenericTemplateWriter(SimpleTestCase):
     #     writer = GenericTemplateWriter(template_name)
     #     writer.write(factory_data, self.test_write.filename)
 
-    @temporary_file('.py', delete_on_exit=False)
-    def test_write_2(self):
+    @temporary_file('.py', delete_on_exit=True)
+    def test_write_servers(self):
         generator = FactoryBoyGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP_SERVERS)
         template_name = 'factories.py.j2'
         writer = GenericTemplateWriter(template_name)
-        writer.write(factory_data, self.test_write_2.filename)
-        hash = hash_file(self.test_write_2.filename)
+        writer.write(factory_data, self.test_write_servers.filename)
+        hash = hash_file(self.test_write_servers.filename)
         self.assertEqual(hash, '5cf89c49762055625bc22ef2a09be220768edb6d')
+
+    @temporary_file('.py', delete_on_exit=True)
+    def test_write_people(self):
+        generator = FactoryBoyGenerator()
+        factory_template_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
+
+        template_name = 'factories.py.j2'
+        writer = GenericTemplateWriter(template_name)
+        writer.write(factory_template_data, self.test_write_people.filename)
+        hash = hash_file(self.test_write_people.filename)
+        self.assertEqual(hash, 'b2cf54a76f573b2cec349b3b11fc945487f10d68')
