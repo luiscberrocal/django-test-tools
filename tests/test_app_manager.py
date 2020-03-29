@@ -8,7 +8,7 @@ from django_test_tools.assert_utils import write_assertions
 class TestDjangoAppManager(TestCase):
     def test_installed_apps(self):
         app_manager = DjangoAppManager()
-        self.assertEqual(8, len(app_manager.installed_apps))
+        self.assertEqual(9, len(app_manager.installed_apps))
 
     def test_get_app(self):
         app_manager = DjangoAppManager()
@@ -24,12 +24,12 @@ class TestDjangoAppManager(TestCase):
         app_manager = DjangoAppManager()
         app_module = settings.TEST_APP_SERVERS.split('.')[0]
         apps = app_manager.get_project_apps(app_module)
-        self.assertEqual(1, len(apps))
+        self.assertEqual(2, len(apps))
         apps = app_manager.get_project_apps('django')
         self.assertEqual(6, len(apps))
 
     def test_get_app(self):
         app_manager = DjangoAppManager()
-        app_dict = app_manager.get_app_data(settings.TEST_APP_SERVERS)
-        #write_assertions(app_dict, 'app_dict')
+        app_dict = app_manager.get_app_data(settings.TEST_APP_PEOPLE)
+        write_assertions(app_dict, 'app_dict')
 

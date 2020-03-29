@@ -31,7 +31,7 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
         call_command('generate_factories', 'invalid_name', stdout=self.content, stderr=self.error_content)
         results = self.get_results()
         self.assertEqual(len(results), 0)
-        self.assertEqual(len(self.get_errors()), 10)
+        self.assertEqual(len(self.get_errors()), 11)
 
 
 class FileFieldMockType(object):
