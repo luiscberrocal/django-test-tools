@@ -13,4 +13,4 @@ pytz==2019.3
 #Do not add Django here Travis CI will include it
 django-countries==6.1.2 #https://github.com/SmileyChris/django-countries
 Pillow==7.0.0
-django-money==0.8.0
+django-money==1.0
