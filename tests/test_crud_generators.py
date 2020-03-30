@@ -4,7 +4,7 @@ import os
 from django.conf import settings
 from django.test import TestCase, SimpleTestCase
 
-from django_test_tools.file_utils import hash_file, temporary_file
+from django_test_tools.file_utils import hash_file, temporary_file, compare_file_content
 from django_test_tools.generators.crud_generator import UrlGenerator, SerializerTestGenerator, GenericTemplateWriter
 # try:
 #     from example.servers.api.serializers import ServerSerializer
@@ -107,6 +107,8 @@ class TestGenericTemplateWriter(SimpleTestCase):
 
 
 class TestModelSerializerGenerator(SimpleTestCase):
+    fixtures_folder = settings.ROOT_DIR.path('tests', 'fixtures').root
+
     template_name = 'serializers.py.j22'
 
     @temporary_file('py', delete_on_exit=True)
@@ -116,17 +118,19 @@ class TestModelSerializerGenerator(SimpleTestCase):
         factory_data = generator.create_template_data(settings.TEST_APP_SERVERS)
         writer = GenericTemplateWriter(self.template_name)
         writer.write(factory_data, filename)
-        hash = hash_file(filename)
-        self.assertEqual(hash, 'ca86c2cd944c5ce5438efcd2e0c4533052d82438')
+        fixture_file = os.path.join(self.fixtures_folder, 'servers_serializers.txt')
+        compare_file_content(fixture_file, filename, excluded_lines=[1])
 
     @temporary_file('py', delete_on_exit=False)
     def test_write_people_serializers(self):
+        filename = self.test_write_people_serializers.filename
         generator = ModelSerializerGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
+
         writer = GenericTemplateWriter(self.template_name)
-        writer.write(factory_data, self.test_write_people_serializers.filename)
-        hash = hash_file(self.test_write_people_serializers.filename)
-        self.assertEqual(hash, 'd38dec11acdb3ab73278f2d14bed47f8b1963849')
+        writer.write(factory_data, filename)
+        fixture_file = os.path.join(self.fixtures_folder, 'people_serializers.txt')
+        compare_file_content(fixture_file, filename, excluded_lines=[1])
 
     @temporary_file('py', delete_on_exit=True)
     def test_write_people_serializers_with_exlusion(self):
@@ -135,5 +139,6 @@ class TestModelSerializerGenerator(SimpleTestCase):
         factory_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
         writer = GenericTemplateWriter(self.template_name)
         writer.write(factory_data, filename)
-        hash = hash_file(filename)
-        self.assertEqual(hash, '97f5c247afaef2cd2262698bdb520fc594a764d5')
+
+        fixture_file = os.path.join(self.fixtures_folder, 'people_serializers_with_exlusion.txt')
+        compare_file_content(fixture_file, filename, excluded_lines=[1])

@@ -272,23 +272,23 @@ class TestHashFile(TestOutputMixin, TestCase):
 
 class Testcompare_file_content(SimpleTestCase):
 
-    # @temporary_files('txt', delete_on_exit=True)
-    # def test_compare_file_content(self):
-    #     content = list()
-    #     content.append("""Testo es una prueba
-    #     De comparar dos archivos
-    #     """)
-    #     content.append("""Testo es una prueba
-    #     De comparar dos archivos
-    #     """)
-    #     filenames = self.test_compare_file_content.filenames
-    #     i = 0
-    #     for c in content:
-    #         with open(filenames[i], 'w', encoding='utf-8') as txt_file:
-    #             txt_file.write(c)
-    #         i += 1
-    #     errors = compare_file_content(*filenames)
-    #     self.assertEqual(len(errors), 0)
+    @temporary_files('txt', delete_on_exit=True)
+    def test_compare_file_content(self):
+        content = list()
+        content.append("""Testo es una prueba
+        De comparar dos archivos
+        """)
+        content.append("""Testo es una prueba
+        De comparar dos archivos
+        """)
+        filenames = self.test_compare_file_content.filenames
+        i = 0
+        for c in content:
+            with open(filenames[i], 'w', encoding='utf-8') as txt_file:
+                txt_file.write(c)
+            i += 1
+        errors = compare_file_content(*filenames)
+        self.assertEqual(len(errors), 0)
 
     @temporary_files('txt', delete_on_exit=True)
     def test_compare_file_content_error(self):
