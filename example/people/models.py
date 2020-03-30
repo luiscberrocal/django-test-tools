@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 from django_countries.fields import CountryField
+from djmoney.models.fields import MoneyField
 
 
 class Human(models.Model):
@@ -42,3 +43,5 @@ class Human(models.Model):
 
 class Person(Human):
     document = models.FileField()
+    salary = MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
+    cell_phone = models.CharField(max_length=16, null=True)
