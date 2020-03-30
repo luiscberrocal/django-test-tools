@@ -160,7 +160,7 @@ class ModelSerializerGenerator(object):
 
     def __init__(self, **kwargs):
         self.app_manager = DjangoAppManager()
-        self.fields_to_ignore = kwargs.get('fields_to_ignore', [])
+        self.field_types_to_ignore = kwargs.get('field_types_to_ignore', [])
 
     def create_template_data(self, app_name):
         app_data = self.app_manager.get_app_data(app_name)
@@ -191,7 +191,7 @@ class ModelSerializerGenerator(object):
                 if field.get('remote_field'):
                     field_dict['foreign_key'] = field.get('remote_field')
                     template_data['models'][model_key]['has_foreign_keys'] = True
-                if field['type'] in self.fields_to_ignore:
+                if field['type'] in self.field_types_to_ignore:
                     field_dict['is_included'] = False
                     field_dict['is_ignored'] = True
                     template_data['models'][model_key]['has_ignored_fields'] = True

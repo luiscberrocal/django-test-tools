@@ -106,13 +106,32 @@ class TestGenericTemplateWriter(SimpleTestCase):
         self.assertEqual(hash, '799fd2de59c6ee8e973855b44985bbd12b16fbdd')
 
 class TestModelSerializerGenerator(SimpleTestCase):
+    template_name = 'serializers.py.j22'
 
-    @temporary_file('.py', delete_on_exit=True)
+    @temporary_file('py', delete_on_exit=True)
     def test_write_servers_serializers(self):
         generator = ModelSerializerGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP_SERVERS)
-        template_name = 'serializers.py.j22'
-        writer = GenericTemplateWriter(template_name)
+        writer = GenericTemplateWriter(self.template_name)
         writer.write(factory_data, self.test_write_servers_serializers.filename)
         hash = hash_file(self.test_write_servers_serializers.filename)
-        self.assertEqual(hash, '')
+        self.assertEqual(hash, '259bf4d557f2f83d5cfd33b689017ffbc8187fbd')
+
+    @temporary_file('py', delete_on_exit=True)
+    def test_write_people_serializers(self):
+        generator = ModelSerializerGenerator()
+        factory_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
+        writer = GenericTemplateWriter(self.template_name)
+        writer.write(factory_data, self.test_write_people_serializers.filename)
+        hash = hash_file(self.test_write_people_serializers.filename)
+        self.assertEqual(hash, 'd38dec11acdb3ab73278f2d14bed47f8b1963849')
+
+    @temporary_file('py', delete_on_exit=False)
+    def test_write_people_serializers_with_exlusion(self):
+        filename = self.test_write_people_serializers_with_exlusion.filename
+        generator = ModelSerializerGenerator(field_types_to_ignore=['IntegerField'])
+        factory_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
+        writer = GenericTemplateWriter(self.template_name)
+        writer.write(factory_data, filename)
+        hash = hash_file(filename)
+        self.assertEqual(hash, '97f5c247afaef2cd2262698bdb520fc594a764d5')
