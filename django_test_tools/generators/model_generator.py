@@ -1,3 +1,6 @@
+from django.utils import timezone
+
+from django_test_tools import __version__ as current_version
 from ..app_manager import DjangoAppManager
 
 
@@ -151,3 +154,56 @@ class FactoryBoyGenerator(object):
             if nv in field_name.lower():
                 return True
         return False
+
+
+class ModelSerializerGenerator(object):
+
+    def __init__(self, **kwargs):
+        self.app_manager = DjangoAppManager()
+        self.field_types_to_ignore = kwargs.get('field_types_to_ignore', [])
+
+    def create_template_data(self, app_name):
+        app_data = self.app_manager.get_app_data(app_name)
+        template_data = dict()
+        template_data['template_data'] = dict()
+        template_data['template_data']['version'] = current_version
+        template_data['template_data']['generation_date'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
+        template_data['template_data']['tz'] = str(timezone.now().tzinfo)
+
+        template_data['models'] = dict()
+        template_data['app_name'] = app_data['app_name']
+        for model_key in app_data['models'].keys():
+            template_data['models'][model_key] = dict()
+            template_data['models'][model_key]['model_name'] = app_data['models'][model_key]['model_name']
+            template_data['models'][model_key]['package'] = app_data['app_name']
+            template_data['models'][model_key]['qualified_name'] = '{}.{}'.format(app_data['app_name'],
+                                                                                  app_data['models'][model_key][
+                                                                                      'model_name'])
+            template_data['models'][model_key]['has_ignored_fields'] = False
+            template_data['models'][model_key]['has_foreign_keys'] = False
+            template_data['models'][model_key]['fields'] = list()
+
+            for field in app_data['models'][model_key]['fields']:
+                field_dict = dict()
+                field_dict['field_name'] = field['field_name']
+                field_dict['type'] = field['type']
+                field_dict['is_included'] = True
+                if field.get('remote_field'):
+                    field_dict['foreign_key'] = field.get('remote_field')
+                    template_data['models'][model_key]['has_foreign_keys'] = True
+                if field['type'] in self.field_types_to_ignore:
+                    field_dict['is_included'] = False
+                    field_dict['is_ignored'] = True
+                    template_data['models'][model_key]['has_ignored_fields'] = True
+
+                template_data['models'][model_key]['fields'].append(field_dict)
+
+                # else:
+                #     method_name = 'get_{}_factory'.format(field['type'].lower())
+                #     if hasattr(self, method_name):
+                #         field_dict['factory'] = getattr(self, method_name)(field, template_data['models'][model_key])
+                #         template_data['models'][model_key]['fields'].append(field_dict)
+                #     else:
+                #         field_dict['is_supported'] = False
+                #         template_data['models'][model_key]['fields'].append(field_dict)
+        return template_data
