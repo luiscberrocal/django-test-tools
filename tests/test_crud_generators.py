@@ -10,7 +10,7 @@ from django_test_tools.generators.crud_generator import UrlGenerator, Serializer
 #     from example.servers.api.serializers import ServerSerializer
 # except:
 #     from servers.api.serializers import ServerSerializer
-from django_test_tools.generators.model_generator import FactoryBoyGenerator
+from django_test_tools.generators.model_generator import FactoryBoyGenerator, ModelSerializerGenerator
 
 
 class TestUrlGenerator(TestCase):
@@ -94,7 +94,7 @@ class TestGenericTemplateWriter(SimpleTestCase):
         hash = hash_file(self.test_write_servers.filename)
         self.assertEqual(hash, '5cf89c49762055625bc22ef2a09be220768edb6d')
 
-    @temporary_file('.py', delete_on_exit=False)
+    @temporary_file('.py', delete_on_exit=True)
     def test_write_people(self):
         generator = FactoryBoyGenerator()
         factory_template_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
@@ -104,3 +104,15 @@ class TestGenericTemplateWriter(SimpleTestCase):
         writer.write(factory_template_data, self.test_write_people.filename)
         hash = hash_file(self.test_write_people.filename)
         self.assertEqual(hash, '799fd2de59c6ee8e973855b44985bbd12b16fbdd')
+
+class TestModelSerializerGenerator(SimpleTestCase):
+
+    @temporary_file('.py', delete_on_exit=True)
+    def test_write_servers_serializers(self):
+        generator = ModelSerializerGenerator()
+        factory_data = generator.create_template_data(settings.TEST_APP_SERVERS)
+        template_name = 'serializers.py.j22'
+        writer = GenericTemplateWriter(template_name)
+        writer.write(factory_data, self.test_write_servers_serializers.filename)
+        hash = hash_file(self.test_write_servers_serializers.filename)
+        self.assertEqual(hash, '')

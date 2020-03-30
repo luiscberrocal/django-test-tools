@@ -1,0 +1,14 @@
+from rest_framework import serializers
+
+{% for key, model in models.items() %}
+class {{ model.model_name }}PostSerializer(serializers.ModelSerializer):
+    """
+    Standard Serializer for creating and updating for the {{ model.model_name }} model.
+    {%if model.has_ignored_fields%}The following fields where ignored by the generator: {% for field in model.fields %}{% if not field.is_included %}{{ field.field_name }}, {%endif%}{%endfor%}{%endif%}
+    """
+    class Meta:
+        model = {{model.model_name}}
+        field = ({% for field in model.fields %}{% if field.is_included %}'{{ field.field_name }}', {%endif%}{%endfor%})
+
+{% endfor %}
+
