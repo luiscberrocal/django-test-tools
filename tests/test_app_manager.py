@@ -2,7 +2,6 @@ from django.conf import settings
 from django.test import TestCase
 
 from django_test_tools.app_manager import DjangoAppManager
-from django_test_tools.assert_utils import write_assertions
 
 
 class TestDjangoAppManager(TestCase):
@@ -31,9 +30,10 @@ class TestDjangoAppManager(TestCase):
     def test_get_app(self):
         app_manager = DjangoAppManager()
         app_dict = app_manager.get_app_data(settings.TEST_APP_PEOPLE)
-        #write_assertions(app_dict, 'app_dict')
+        # write_assertions(app_dict, 'app_dict')
+        # self.fail('Writing assertions')
         self.assertEqual(app_dict['app_name'], 'example.people')
-        self.assertEqual(len(app_dict['models']['person']['fields']), 13)
+        self.assertEqual(len(app_dict['models']['person']['fields']), 16)
         self.assertEqual(app_dict['models']['person']['fields'][0]['editable'], True)
         self.assertEqual(app_dict['models']['person']['fields'][0]['field_name'], 'id')
         self.assertEqual(app_dict['models']['person']['fields'][0]['type'], 'AutoField')
@@ -102,6 +102,22 @@ class TestDjangoAppManager(TestCase):
         self.assertEqual(app_dict['models']['person']['fields'][12]['max_length'], 100)
         self.assertEqual(app_dict['models']['person']['fields'][12]['type'], 'FileField')
         self.assertEqual(app_dict['models']['person']['fields'][12]['unique'], False)
+        self.assertEqual(app_dict['models']['person']['fields'][13]['choices_type'], 'list')
+        self.assertEqual(app_dict['models']['person']['fields'][13]['editable'], False)
+        self.assertEqual(app_dict['models']['person']['fields'][13]['field_name'], 'salary_currency')
+        self.assertEqual(app_dict['models']['person']['fields'][13]['max_length'], 3)
+        self.assertEqual(app_dict['models']['person']['fields'][13]['type'], 'CurrencyField')
+        self.assertEqual(app_dict['models']['person']['fields'][13]['unique'], False)
+        self.assertEqual(app_dict['models']['person']['fields'][14]['decimal_places'], 2)
+        self.assertEqual(app_dict['models']['person']['fields'][14]['editable'], True)
+        self.assertEqual(app_dict['models']['person']['fields'][14]['field_name'], 'salary')
+        self.assertEqual(app_dict['models']['person']['fields'][14]['max_digits'], 14)
+        self.assertEqual(app_dict['models']['person']['fields'][14]['type'], 'MoneyField')
+        self.assertEqual(app_dict['models']['person']['fields'][14]['unique'], False)
+        self.assertEqual(app_dict['models']['person']['fields'][15]['editable'], True)
+        self.assertEqual(app_dict['models']['person']['fields'][15]['field_name'], 'cell_phone')
+        self.assertEqual(app_dict['models']['person']['fields'][15]['max_length'], 16)
+        self.assertEqual(app_dict['models']['person']['fields'][15]['type'], 'CharField')
+        self.assertEqual(app_dict['models']['person']['fields'][15]['unique'], False)
         self.assertEqual(app_dict['models']['person']['model_name'], 'Person')
         self.assertEqual(app_dict['models']['person']['original_attrs']['abstract'], False)
-

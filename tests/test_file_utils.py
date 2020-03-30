@@ -9,8 +9,9 @@ from django.conf import settings
 from django.test import TestCase, override_settings, SimpleTestCase
 from django.test import tag
 
+from django_test_tools.exceptions import DjangoTestToolsException
 from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated, \
-    shorten_path
+    shorten_path, temporary_files, compare_file_content
 from django_test_tools.mixins import TestOutputMixin
 from django_test_tools.utils import create_output_filename_with_date
 
@@ -267,5 +268,47 @@ class TestHashFile(TestOutputMixin, TestCase):
         self.assertEqual(data.name, pickled_person.name)
         self.assertEqual(data.attributes['age'], pickled_person.attributes['age'])
         self.assertEqual(data.attributes['sex'], pickled_person.attributes['sex'])
+
+
+class Testcompare_file_content(SimpleTestCase):
+
+    @temporary_files('txt', delete_on_exit=True)
+    def test_compare_file_content(self):
+        content = list()
+        content.append("""Testo es una prueba
+        De comparar dos archivos
+        """)
+        content.append("""Testo es una prueba
+        De comparar dos archivos
+        """)
+        filenames = self.test_compare_file_content.filenames
+        i = 0
+        for c in content:
+            with open(filenames[i], 'w', encoding='utf-8') as txt_file:
+                txt_file.write(c)
+            i += 1
+        errors = compare_file_content(*filenames)
+        self.assertEqual(len(errors), 0)
+
+    @temporary_files('txt', delete_on_exit=True)
+    def test_compare_file_content_error(self):
+        content = list()
+        content.append("""Testo es una prueba
+De comparar dos archivos
+            """)
+        content.append("""Testo es una prueba
+De comparar dos archivos 23
+            """)
+        filenames = self.test_compare_file_content_error.filenames
+        i = 0
+        for c in content:
+            with open(filenames[i], 'w', encoding='utf-8') as txt_file:
+                txt_file.write(c)
+            i += 1
+        try:
+            errors = compare_file_content(*filenames)
+            self.fail('Nothing raised')
+        except DjangoTestToolsException as e:
+            self.assertEqual(str(e), 'On line 1 expected "De comparar dos archivos" got "De comparar dos archivos 23"')
 
 
