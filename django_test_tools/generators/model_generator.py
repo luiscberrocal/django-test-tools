@@ -1,3 +1,6 @@
+from django.utils import timezone
+
+from django_test_tools import __version__ as current_version
 from ..app_manager import DjangoAppManager
 
 
@@ -155,7 +158,6 @@ class FactoryBoyGenerator(object):
 
 class ModelSerializerGenerator(object):
 
-
     def __init__(self, **kwargs):
         self.app_manager = DjangoAppManager()
         self.fields_to_ignore = kwargs.get('fields_to_ignore', [])
@@ -163,6 +165,11 @@ class ModelSerializerGenerator(object):
     def create_template_data(self, app_name):
         app_data = self.app_manager.get_app_data(app_name)
         template_data = dict()
+        template_data['template_data'] = dict()
+        template_data['template_data']['version'] = current_version
+        template_data['template_data']['generation_date'] = timezone.now().strftime('%Y-%m-%d %H:%M:%S')
+        template_data['template_data']['tz'] = str(timezone.now().tzinfo)
+
         template_data['models'] = dict()
         template_data['app_name'] = app_data['app_name']
         for model_key in app_data['models'].keys():
@@ -170,14 +177,11 @@ class ModelSerializerGenerator(object):
             template_data['models'][model_key]['model_name'] = app_data['models'][model_key]['model_name']
             template_data['models'][model_key]['package'] = app_data['app_name']
             template_data['models'][model_key]['qualified_name'] = '{}.{}'.format(app_data['app_name'],
-                                                                                app_data['models'][model_key][
-                                                                                    'model_name'])
+                                                                                  app_data['models'][model_key][
+                                                                                      'model_name'])
             template_data['models'][model_key]['has_ignored_fields'] = False
+            template_data['models'][model_key]['has_foreign_keys'] = False
             template_data['models'][model_key]['fields'] = list()
-            # if app_data['models'][model_key].get('original_attrs'):
-            #     if app_data['models'][model_key].get('original_attrs').get('unique_together'):
-            #         template_data['models'][model_key]['unique_together'] = app_data['models'][model_key].get(
-            #             'original_attrs').get('unique_together')
 
             for field in app_data['models'][model_key]['fields']:
                 field_dict = dict()
@@ -186,6 +190,7 @@ class ModelSerializerGenerator(object):
                 field_dict['is_included'] = True
                 if field.get('remote_field'):
                     field_dict['foreign_key'] = field.get('remote_field')
+                    template_data['models'][model_key]['has_foreign_keys'] = True
                 if field['type'] in self.fields_to_ignore:
                     field_dict['is_included'] = False
                     field_dict['is_ignored'] = True
