@@ -1,4 +1,3 @@
-import jinja2
 from django.template.loader import render_to_string
 from jinja2 import Environment, PackageLoader, select_autoescape
 
@@ -43,12 +42,17 @@ class SerializerTestGenerator(object):
         with open(filename, 'w', encoding='utf-8') as file:
             file.write(rendered)
 
+
 class GenericTemplateWriter(object):
 
-    def __init__(self, template_name):
+    def __init__(self, template_name, **kwargs):
+        trim_blocks = kwargs.get('trim_blocks', False)
+        lstrip_blocks = kwargs.get('lstrip_blocks', False)
         self.env = Environment(
             loader=PackageLoader('django_test_tools', 'templates'),
-            autoescape=select_autoescape(['html', ])
+            autoescape=select_autoescape(['html', ],),
+            trim_blocks=trim_blocks,
+            lstrip_blocks=lstrip_blocks
         )
         self.env.filters['to_snake_case'] = to_snake_case
 

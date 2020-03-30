@@ -1,5 +1,10 @@
+import os
+
+from django.conf import settings
 from django.core.management import BaseCommand
 
+from django_test_tools.generators.crud_generator import GenericTemplateWriter
+from django_test_tools.generators.model_generator import ModelSerializerGenerator
 from ...generators.serializer_gen import AppSerializerGenerator
 from ...app_manager import DjangoAppManager
 
@@ -16,6 +21,11 @@ class Command(BaseCommand):
                             dest="serializer_class",
                             help="Serializer class",
                             default='ModelSerializer'
+                            )
+        parser.add_argument('-f', "--filename",
+                            dest="filename",
+                            help="Output filename. Will write it to the settings.TEST_OUTPUT_PATH folder",
+                            default=None,
                             )
         # parser.add_argument("-a", "--assign",
         #                     action='store_true',
@@ -46,9 +56,17 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         app_name = options.get('app_name', None)
-        serializer_class = options.get('serializer_class')
-        app_manager = DjangoAppManager()
-        app = app_manager.get_app(app_name)
-        if app:
-            app_model_tests = AppSerializerGenerator(app, serializer_class)
-            self.stdout.write(str(app_model_tests))
+        if options.get('filename'):
+            filename = os.path.join(settings.TEST_OUTPUT_PATH, options.get('filename'))
+            generator = ModelSerializerGenerator()
+            factory_data = generator.create_template_data(app_name)
+            template_name = 'serializers.py.j22'
+            writer = GenericTemplateWriter(template_name)
+            writer.write(factory_data, filename)
+        else:
+            serializer_class = options.get('serializer_class')
+            app_manager = DjangoAppManager()
+            app = app_manager.get_app(app_name)
+            if app:
+                app_model_tests = AppSerializerGenerator(app, serializer_class)
+                self.stdout.write(str(app_model_tests))

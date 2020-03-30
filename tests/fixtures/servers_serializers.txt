@@ -1,0 +1,35 @@
+from rest_framework import serializers
+# Generated with django-test-tools version 1.9.7 on 2020-03-30 18:15:18 UTC
+
+
+class OperatingSystemSerializer(serializers.ModelSerializer):
+    """
+    Standard Serializer for the OperatingSystem model.
+    
+    """
+    class Meta:
+        model = OperatingSystem
+        field = ('id', 'name', 'version', 'licenses_available', 'cost', )
+
+
+
+
+class ServerPostSerializer(serializers.ModelSerializer):
+    """
+    Standard Serializer for creating and updating for the Server model.
+    
+    """
+    class Meta:
+        model = Server
+        field = ('id', 'name', 'notes', 'virtual', 'ip_address', 'created', 'online_date', 'operating_system', 'server_id', 'use', 'comments', )
+
+
+class ServerSerializer(ServerPostSerializer):
+    """
+    Standard Serializer for read the Server model.
+    
+    """
+    operating_system = OperatingSystemSerializer()
+    
+
+

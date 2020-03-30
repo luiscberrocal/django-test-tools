@@ -8,6 +8,8 @@ from datetime import date, datetime
 from django.conf import settings
 from django.utils import timezone
 
+from django_test_tools.exceptions import DjangoTestToolsException
+
 BLOCKSIZE = 65536
 
 
@@ -101,7 +103,40 @@ def temporary_file(func, extension, delete_on_exit=True):
     function_t_return.filename = filename
     return function_t_return
 
+@parametrized
+def temporary_files(func, extension, delete_on_exit=True, count=2):
+    """
+    This method decorator creates a filename with date using the provided extension and delete the file after the method
+    has been executed.
 
+    The settings.TEST_OUTPUT_PATH must be configured in your settings file.
+
+    .. code-block:: python
+
+        @temporary_files('json')
+        def test_temporary_file_decorator(self):
+            filename = self.test_temporary_file_decorator.filenames[0]
+            ... write to the file ...
+
+    :param func: function to decorate
+    :param extension: extension of the filename without the dot
+    :param delete_on_exit: If True the filename will be deleted.
+    :return: the function
+    """
+    filenames = list()
+    for i in range(count):
+        filename = create_dated('{}-{}.{}'.format(func.__name__, i, extension))
+        filenames.append(filename)
+
+    def function_t_return(*args):
+        results = func(*args)
+        for filename in filenames:
+            if os.path.exists(filename) and delete_on_exit:
+                os.remove(filename)
+            return results
+
+    function_t_return.filenames = filenames
+    return function_t_return
 def shorten_path(path, level=2, current_level=1):
     """
     This method shortens the path by eliminating the folders on top.
@@ -272,3 +307,32 @@ class TemporaryFolder:
             else:
                 file.writelines(str(content))
         return os.path.join(self.new_path, filename)
+
+
+def compare_file_content(*args, **kwargs):
+    errors = list()
+    file1 = args[0]
+    file2 = args[1]
+    excluded_lines = kwargs.get('excluded_lines', [])
+    encoding = kwargs.get('encoding', 'utf-8')
+    raise_exception = kwargs.get('raise_exception', True)
+    eol = kwargs.get('eol', '\n')
+
+    def get_lines(filename):
+        with open(filename, 'r', encoding=encoding, newline=eol) as file:
+            lines = file.readlines()
+        return lines
+
+    lines1 = get_lines(file1)
+    lines2 = get_lines(file2)
+
+    for i in range(len(lines1)):
+        if i not in excluded_lines:
+            if lines1[i] != lines2[i]:
+                msg = 'On line {} expected "{}" got "{}"'.format(i,
+                                                                 lines1[i].replace(eol, ''),
+                                                                 lines2[i].replace(eol, ''))
+                errors.append(msg)
+                if raise_exception:
+                    raise DjangoTestToolsException(msg)
+    return errors
