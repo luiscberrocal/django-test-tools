@@ -1,7 +1,6 @@
 from django.conf import settings
 from django.test import TestCase
 
-from django_test_tools.assert_utils import write_assertions
 from django_test_tools.generators.model_generator import FactoryBoyGenerator
 
 
@@ -94,9 +93,10 @@ class TestFactoryBoyGenerator(TestCase):
     def test_create_template_data_people(self):
         generator = FactoryBoyGenerator()
         people_template_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
-        #write_assertions(people_template_data, 'people_template_data')
+        # write_assertions(people_template_data, 'people_template_data')
+        # self.fail('Running assertion')
         self.assertEqual(people_template_data['app_name'], 'example.people')
-        self.assertEqual(len(people_template_data['models']['person']['fields']), 12)
+        self.assertEqual(len(people_template_data['models']['person']['fields']), 15)
         self.assertEqual(people_template_data['models']['person']['fields'][0]['factory'],
                          'LazyAttribute(lambda x: faker.text(max_nb_chars=60))')
         self.assertEqual(people_template_data['models']['person']['fields'][0]['field_name'], 'first_name')
@@ -128,7 +128,7 @@ class TestFactoryBoyGenerator(TestCase):
         self.assertEqual(people_template_data['models']['person']['fields'][5]['is_supported'], True)
         self.assertEqual(people_template_data['models']['person']['fields'][5]['type'], 'IntegerField')
         self.assertEqual(people_template_data['models']['person']['fields'][6]['factory'],
-                         'Iterator([\'PA\'\'US\'\'GB\'])')
+                         'Iterator([\'PA\', \'US\', \'GB\',])')
         self.assertEqual(people_template_data['models']['person']['fields'][6]['field_name'], 'country_for_id')
         self.assertEqual(people_template_data['models']['person']['fields'][6]['is_supported'], True)
         self.assertEqual(people_template_data['models']['person']['fields'][6]['type'], 'CountryField')
@@ -155,5 +155,18 @@ class TestFactoryBoyGenerator(TestCase):
         self.assertEqual(people_template_data['models']['person']['fields'][11]['field_name'], 'document')
         self.assertEqual(people_template_data['models']['person']['fields'][11]['is_supported'], True)
         self.assertEqual(people_template_data['models']['person']['fields'][11]['type'], 'FileField')
+        self.assertEqual(people_template_data['models']['person']['fields'][12]['field_name'], 'salary_currency')
+        self.assertEqual(people_template_data['models']['person']['fields'][12]['is_supported'], False)
+        self.assertEqual(people_template_data['models']['person']['fields'][12]['type'], 'CurrencyField')
+        self.assertEqual(people_template_data['models']['person']['fields'][13]['factory'],
+                         'LazyAttribute(lambda x: faker.pydecimal(left_digits=12, right_digits=2, positive=True))')
+        self.assertEqual(people_template_data['models']['person']['fields'][13]['field_name'], 'salary')
+        self.assertEqual(people_template_data['models']['person']['fields'][13]['is_supported'], True)
+        self.assertEqual(people_template_data['models']['person']['fields'][13]['type'], 'MoneyField')
+        self.assertEqual(people_template_data['models']['person']['fields'][14]['factory'],
+                         'LazyAttribute(lambda x: faker.text(max_nb_chars=16))')
+        self.assertEqual(people_template_data['models']['person']['fields'][14]['field_name'], 'cell_phone')
+        self.assertEqual(people_template_data['models']['person']['fields'][14]['is_supported'], True)
+        self.assertEqual(people_template_data['models']['person']['fields'][14]['type'], 'CharField')
         self.assertEqual(people_template_data['models']['person']['model_name'], 'Person')
         self.assertEqual(people_template_data['models']['person']['package_name'], 'example.people.Person')
