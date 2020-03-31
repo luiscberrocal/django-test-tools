@@ -1,5 +1,7 @@
 from rest_framework import serializers
 # Generated with django-test-tools version {{template_data.version}} on {{template_data.generation_date}} {{template_data.tz}}
+
+{% for package, models in imports.items() %}from {{package}} import {% for model in models %}{{ model }}{{ ", " if not loop.last }}{% endfor %}{% endfor %}
 {% for key, model in models.items() %}
 {% if model.has_foreign_keys %}
 class {{ model.model_name }}PostSerializer(serializers.ModelSerializer):
@@ -15,7 +17,7 @@ class {{ model.model_name }}PostSerializer(serializers.ModelSerializer):
 class {{ model.model_name }}Serializer({{ model.model_name }}PostSerializer):
     """
     Standard Serializer for read the {{ model.model_name }} model.
-    {%if model.has_ignored_fields%}The following fields where ignored by the generator: {% for field in model.fields %}{% if not field.is_included %}{{ field.field_name }}, {%endif%}{%endfor%}{%endif%}
+    {%if model.has_ignored_fields%}The following fields where ignored by the generator: {% for field in model.fields %}{% if not field.is_included %}{{ field.field_name }}, {% endif %}{%endfor%}{%endif%}
     """
     {% for field in model.fields %}{% if field.foreign_key %}{{ field.field_name }} = {{field.foreign_key}}Serializer()
     {%endif%}{%endfor%}
