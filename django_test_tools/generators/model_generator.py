@@ -172,6 +172,7 @@ class ModelSerializerGenerator(object):
 
         template_data['models'] = dict()
         template_data['app_name'] = app_data['app_name']
+        template_data['imports'] = dict()
         for model_key in app_data['models'].keys():
             template_data['models'][model_key] = dict()
             template_data['models'][model_key]['model_name'] = app_data['models'][model_key]['model_name']
@@ -179,6 +180,10 @@ class ModelSerializerGenerator(object):
             template_data['models'][model_key]['qualified_name'] = '{}.{}'.format(app_data['app_name'],
                                                                                   app_data['models'][model_key][
                                                                                       'model_name'])
+            if not template_data['imports'].get(app_data['app_name']):
+                template_data['imports'][app_data['app_name']] = list()
+            template_data['imports'][app_data['app_name']].append(template_data['models'][model_key]['model_name'])
+
             template_data['models'][model_key]['has_ignored_fields'] = False
             template_data['models'][model_key]['has_foreign_keys'] = False
             template_data['models'][model_key]['fields'] = list()
@@ -198,12 +203,4 @@ class ModelSerializerGenerator(object):
 
                 template_data['models'][model_key]['fields'].append(field_dict)
 
-                # else:
-                #     method_name = 'get_{}_factory'.format(field['type'].lower())
-                #     if hasattr(self, method_name):
-                #         field_dict['factory'] = getattr(self, method_name)(field, template_data['models'][model_key])
-                #         template_data['models'][model_key]['fields'].append(field_dict)
-                #     else:
-                #         field_dict['is_supported'] = False
-                #         template_data['models'][model_key]['fields'].append(field_dict)
         return template_data

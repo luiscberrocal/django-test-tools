@@ -109,14 +109,15 @@ class TestGenericTemplateWriter(SimpleTestCase):
 class TestModelSerializerGenerator(SimpleTestCase):
     fixtures_folder = settings.ROOT_DIR.path('tests', 'fixtures').root
 
-    template_name = 'serializers.py.j22'
+    template_name = 'serializers.py.j2'
 
-    @temporary_file('py', delete_on_exit=True)
+    @temporary_file('py', delete_on_exit=False)
     def test_write_servers_serializers(self):
         filename = self.test_write_servers_serializers.filename
         generator = ModelSerializerGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP_SERVERS)
-        writer = GenericTemplateWriter(self.template_name)
+        
+        writer = GenericTemplateWriter(self.template_name, trim_blocks=True, lstrip_blocks=True)
         writer.write(factory_data, filename)
         fixture_file = os.path.join(self.fixtures_folder, 'servers_serializers.txt')
         compare_file_content(fixture_file, filename, excluded_lines=[1])
@@ -127,7 +128,7 @@ class TestModelSerializerGenerator(SimpleTestCase):
         generator = ModelSerializerGenerator()
         factory_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
 
-        writer = GenericTemplateWriter(self.template_name)
+        writer = GenericTemplateWriter(self.template_name, trim_blocks=True, lstrip_blocks=True)
         writer.write(factory_data, filename)
         fixture_file = os.path.join(self.fixtures_folder, 'people_serializers.txt')
         compare_file_content(fixture_file, filename, excluded_lines=[1])

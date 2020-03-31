@@ -60,7 +60,7 @@ class Command(BaseCommand):
             filename = os.path.join(settings.TEST_OUTPUT_PATH, options.get('filename'))
             generator = ModelSerializerGenerator()
             factory_data = generator.create_template_data(app_name)
-            template_name = 'serializers.py.j22'
+            template_name = 'serializers.py.j2'
             writer = GenericTemplateWriter(template_name)
             writer.write(factory_data, filename)
         else:
