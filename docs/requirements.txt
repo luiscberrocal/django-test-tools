@@ -10,3 +10,4 @@ django-environ==0.4.5
 radon==4.1.0
 djangorestframework==3.11.0
 pytz==2019.3
+django-countries==6.1.2
