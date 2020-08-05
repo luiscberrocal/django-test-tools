@@ -8,7 +8,7 @@ codecov>=2.0.0
 Faker==4.0.1
 django-environ==0.4.5
 # Additional test requirements go here
-djangorestframework==3.11.0
+djangorestframework==3.11.1
 pytz==2019.3
 #Do not add Django here Travis CI will include it
 django-countries==6.1.2 #https://github.com/SmileyChris/django-countries
