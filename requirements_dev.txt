@@ -2,7 +2,7 @@
 bumpversion==0.6.0
 wheel==0.34.2
 django-environ==0.4.5
-radon==4.1.0
+radon==4.2.0
 djangorestframework==3.11.0
 pytz==2019.3
 Sphinx==3.0.0
