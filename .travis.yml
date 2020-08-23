@@ -9,9 +9,10 @@ branches:
 #  - /^hotfix\/.+/
 
 env:
-  - DJANGO_VERSION=3.0.4
+  - DJANGO_VERSION=3.1
+  - DJANGO_VERSION=3.0.9
   - DJANGO_VERSION=1.11.29
-  - DJANGO_VERSION=2.2.11
+  - DJANGO_VERSION=2.2.15
 python:
   - '3.7'
   - '3.6'
