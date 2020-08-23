@@ -221,7 +221,7 @@ Pushing code to Pypi
 
   .. code-block:: bash
 
-    source ~/python_envs/django_test_tools_env/bin/activate
+    source./venv/bin/activate
 
 
 2. Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
