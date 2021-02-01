@@ -2,4 +2,4 @@ Django
 Jinja2==2.11.1
 openpyxl==3.0.5
 
-requests==2.23.0
+requests==2.25.1
