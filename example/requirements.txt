@@ -2,7 +2,6 @@
 -r ../requirements_test.txt
 
 
-
 django==3.2.3
 
 
