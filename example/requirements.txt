@@ -6,6 +6,5 @@
 django==3.2
 
 
-
 # Your app in editable mode.
 -e ../
