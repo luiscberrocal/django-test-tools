@@ -2,8 +2,8 @@
 -r ../requirements_test.txt
 
 
-django==3.2.5
 
+django==3.2.6
 
 
 
