@@ -1,8 +1,8 @@
 # Your app requirements.
 -r ../requirements_test.txt
 
-django==3.2.2
 
+django==3.2.3
 
 
 
