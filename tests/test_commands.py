@@ -61,6 +61,16 @@ class TestModelFactoryGenerator(TestCase):
             self.assertEqual(['hola', 'hola', 'xlsx'], results[1]['args'])
 
 
+
+
+class TestAppToJSON(TestOutputMixin, TestCommandMixin, TestCase):
+    def test_app_to_json(self):
+        filename = f'{settings.TEST_OUTPUT_PATH}/servers.json'
+        call_command('app_to_json', settings.TEST_APP_SERVERS, filename=filename,  stdout=self.content)
+        results = self.get_results()
+        print(results)
+
+
 class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestCase):
     def test_generate(self):
         call_command('generate_model_test_cases', settings.TEST_APP_SERVERS, stdout=self.content)
