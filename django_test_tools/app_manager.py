@@ -53,7 +53,7 @@ class DjangoAppManager(object):
         field_dict['field_name'] = field.name
         field_dict['type'] = type(field).__name__
         field_dict['unique'] = field.unique
-        field_dict['primary_keys'] = field.primary_keys
+        field_dict['primary_key'] = field.primary_key
         field_dict['editable'] = field.editable
         if hasattr(field, 'choices') and field.choices is not None:
             field_dict['choices_type'] = type(field.choices).__name__
