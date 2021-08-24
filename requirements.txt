@@ -1,5 +1,5 @@
 Django
-Jinja2==2.11.3
-openpyxl==3.0.5
+Jinja2==3.0.1
+openpyxl==3.0.7
 
-requests==2.23.0
+requests==2.26.0

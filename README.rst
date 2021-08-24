@@ -132,6 +132,7 @@ For the following models
         comments = models.TextField(null=True, blank=True)
 
 
+
 running `python manage.py generate_factories example.servers > ./output/factories.py` will create the following factories
 
 .. code-block:: python

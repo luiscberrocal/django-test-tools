@@ -27,19 +27,19 @@ class TestCase{0}(TestCase):
 PRINT_TEST_ATTRIBUTE_COUNT = """
     def test_attribute_count(self):
         \"\"\"
-        Test that all attributes of {0} server are counted. It will count the primary key and all editable attributes.
-        This test should break if a new attribute is added.
+        Test that all attributes of {0} server are counted. It will count the primary key and 
+        all editable attributes. This test should break if a new attribute is added.
         \"\"\"
         {1} = {0}Factory.create()
         {1}_dict = model_to_dict({1})
         self.assertEqual(len({1}_dict.keys()), {2})
-
 """
 
 PRINT_TEST_ATTRIBUTE_CONTENT = """
     def test_attribute_content(self):
         \"\"\"
-        Test that all attributes of {0} server have content. This test will break if an attributes name is changed.
+        Test that all attributes of {0} server have content. This test will break if an attributes name 
+        is changed.
         \"\"\"
         {1} = {0}Factory.create()
 """
