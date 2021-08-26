@@ -11,10 +11,6 @@ Django Test Tools
 .. image:: https://codecov.io/gh/luiscberrocal/django-test-tools/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/luiscberrocal/django-test-tools
 
-.. image:: https://landscape.io/github/luiscberrocal/django-test-tools/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/luiscberrocal/django-test-tools/master
-   :alt: Code Health
-
 .. image:: https://pyup.io/repos/github/luiscberrocal/django-test-tools/shield.svg
      :target: https://pyup.io/repos/github/luiscberrocal/django-test-tools/
      :alt: Updates
@@ -72,7 +68,7 @@ In your settings.py file add it to your `INSTALLED_APPS`
 
 
 Create an output folder in the root folder of you project, name it what ever you want, and add the settings
-variable **TEST_OUTPUT_PATH** pointing to it.
+variable **TEST_OUTPUT_PATH** pointing to it. Make sure to add this folder to your **.gitignore** file.
 
 .. code-block:: python
 
@@ -204,6 +200,46 @@ Serializer Generator
 
     $ python manage.py generate_serializers project.app -s ModelSerializer
 
+Writing assertions
++++++++++++++++++++
+
+One of the most boring steps of writing tests is checking the content of static dictionaries.
+You now the content of the dictionary and you need to compare it with a result.
+
+In the following code the assertions for the **data** dictionary will be generated in the
+**fn** file. IMPORTANT the name of the dictionary in this case **data** must be the same as
+the second argument of the method in order to generate the correct assertions.
+
+.. code-block:: python
+
+    fn = './output/_my_assertions.py'
+    data = [
+            {'name': 'kilo', 'password': 9999,
+             'groups': ['admin', 'users'],
+             'config': {'server': 'all', 'bulding': 116}},
+            {'name': 'pasto', 'password': 'nogo',
+             'groups': ['users'],
+             'config': {'server': 'database', 'bulding': None},
+             'created_date': date(2016, 1, 3),
+             'modified': '2016-10-01'}
+        ]
+        filename = write_assertions(data, 'data', filename=fn, type_only=True,excluded_keys=['config']))
+
+The result of this script:
+
+.. code-block:: python
+
+    self.assertEqual(len(data), 2)
+    self.assertEqual(len(data[0]['groups']), 2)
+    self.assertEqual(data[0]['groups'][0], 'admin')
+    self.assertEqual(data[0]['groups'][1], 'users')
+    self.assertEqual(data[0]['name'], 'kilo')
+    self.assertEqual(data[0]['password'], 9999)
+    self.assertEqual(len(data[1]['groups']), 1)
+    self.assertEqual(data[1]['groups'][0], 'users')
+    self.assertEqual(data[1]['name'], 'pasto')
+    self.assertEqual(data[1]['password'], 'nogo')
+
 Running Tests
 -------------
 
@@ -212,8 +248,7 @@ Does the code actually work?
 ::
 
     source <YOURVIRTUALENV>/bin/activate
-    (myenv) $ pip install tox
-    (myenv) $ tox
+    (myenv) $ python runtests.py tests
 
 
 Pushing code to Pypi
@@ -222,7 +257,7 @@ Pushing code to Pypi
 
   .. code-block:: bash
 
-    source./venv/bin/activate
+    source ./venv/bin/activate
 
 
 2. Updated version. Instead of patch you could also use **major** o **minor** depending on the level of the release.
@@ -232,7 +267,7 @@ Pushing code to Pypi
     $ make patch
 
 
-3. Check the .travis.yml to make sure the versions of Djago are the latests. Check in https://www.djangoproject.com/download/
+3. Check the .travis.yml to make sure the versions of Django are the latests. Check in https://www.djangoproject.com/download/
    for the latest versions.
 
 4. Check setup.py for Django and Python versions.
