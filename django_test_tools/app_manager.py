@@ -27,14 +27,15 @@ class DjangoAppManager(object):
                 project_apps[app_name] = app_config
         return project_apps
 
-    def get_app_data(self, app_name):
+
+class AppDataParser(object):
+    def get_app_data(self, app):
         """
         Read application data converts into a dictionary
 
-        :param app_name: Application name
+        :param app: Django Application
         :return: Dictionary with application data
         """
-        app = self.get_app(app_name)
         app_dict = dict()
         app_dict['app_name'] = app.name
         app_dict['models'] = dict()
