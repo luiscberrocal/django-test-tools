@@ -1,5 +1,5 @@
 Django
 Jinja2==3.0.1
-openpyxl==3.0.7
+openpyxl>=3.0.7
 
 requests==2.26.0
