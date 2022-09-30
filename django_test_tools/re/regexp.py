@@ -1,5 +1,17 @@
 import re
 
+# Credit to https://gist.github.com/codehack/6350492822e52b7fa7fe
+# Modified in https://regex101.com/r/p1lKGt/1
+ISO8601_REGEXP = re.compile(
+    r'^(?P<full>((?P<year>\d{4})([/-]?(?P<mon>(0[1-9])|(1[012]))([/-]?'
+    r'(?P<mday>(0[1-9])|([12]\d)|(3[01])))?)?(?:T(?P<hour>([01][0-9])|(?:2[0123]))(\:?'
+    r'(?P<min>[0-5][0-9])(\:?(?P<sec>[0-5][0-9]([\,\.]\d{1,10})?))?)'
+    r'(Z|([\-+](?:([01][0-9])|(?:2[0123]))(\:?(?:[0-5][0-9]))?)))))$')
+EMAIL_REGEXP = re.compile(
+    r'^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$'
+)
+SHA256_REGEXP = re.compile(r'^[a-fA-F0-9]{64}')
+
 
 class CommonRegExp(object):
     """
@@ -17,7 +29,7 @@ class CommonRegExp(object):
 
     """
 
-    def __init__(self,**kwargs):
+    def __init__(self, **kwargs):
         self.strict = kwargs.get('strict', False)
         self.regular_expressions = dict()
         self.regular_expressions['time_military'] = {
@@ -37,7 +49,7 @@ class CommonRegExp(object):
 
         self.regular_expressions_compiled = dict()
         for key, reg_exp in self.regular_expressions.items():
-            #self.regular_expressions_compiled[key] = re.compile(reg_exp['pattern'])
+            # self.regular_expressions_compiled[key] = re.compile(reg_exp['pattern'])
             self.regular_expressions_compiled[key] = self._compile_regular_expression(self.regular_expressions[key])
 
     def match_regexp(self, value):
@@ -62,4 +74,3 @@ class CommonRegExp(object):
         if (self.strict or regexp_dict.get('strict')) and not regexp_dict['pattern'].endswith('$'):
             regexp_dict['pattern'] = '{}$'.format(regexp_dict['pattern'])
         return re.compile(regexp_dict['pattern'])
-
