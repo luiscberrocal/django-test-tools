@@ -53,7 +53,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
 
-sdist: clean test
+sdist: clean # test
 	python setup.py sdist
 	python setup.py sdist bdist_wheel
 	ls -l dist
