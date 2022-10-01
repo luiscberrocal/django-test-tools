@@ -2,14 +2,16 @@ from enum import Enum
 
 
 class SupportedFields(str, Enum):
-    BooleanField
-    CharFiele
-    CountryField
-    DateField
-    DateTimeField
-    DecimalField
-    ForeignKey
-    GenericIPAddressField
-    IntegerField
-    MoneyField
-    TextField
+    BOOLEAN = 'BooleanField'
+    CHAR = 'CharField'
+    COUNTRY = 'CountryField'
+    DATE = 'DateField'
+    DATETIME = 'DateTimeField'
+    DECIMAL = 'DecimalField'
+    FOREIGNKEY = 'ForeignKey'
+    GENERIC_IP_ADDRESS = 'GenericIPAddressField'
+    INTEGER = 'IntegerField'
+    MONEY = 'MoneyField'
+    TEXT = 'TextField'
+
+
