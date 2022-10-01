@@ -5,6 +5,8 @@ import re
 import time
 import warnings
 from datetime import datetime, date, timedelta
+from decimal import Decimal
+from typing import Dict, Any
 
 import pytz
 from django.conf import settings
@@ -18,6 +20,7 @@ __author__ = 'lberrocal'
 
 def versiontuple(v):
     return tuple(map(int, (v.split("."))))
+
 
 def dict_compare(d1, d2):
     d1_keys = set(d1.keys())
@@ -359,3 +362,38 @@ spanish_date_util = SpanishDate()
 
 def parse_spanish_date(str_date):
     return spanish_date_util.parse(str_date)
+
+
+def clean_dict(dictionary: Dict[str, Any], split_dates: bool = False, **kwargs) -> Dict[str, Any]:
+    """Function to clean a model dictionary. It will change:
+	1. elements that are None to blank string so it will be valid for POST data.
+	2. elements that are date to string value in format %Y-%m-%d or the value supplied in kwargs['date_format']
+	3. elements that are datetime to string value in format %Y-%m-%d %H:%M:%S or the value supplied
+	in kwargs['datetime_format']
+	4. elements that are Decimal to float
+    Since the Django admin splits the dates int 2 inputs if split_dates is True and the name of the field is start_date
+	the function will create a start_date_0 with the date and a start_date_1 with the time.
+	:param dictionary:
+	:param split_dates:
+	:return: dictionary """
+
+    keys = list(dictionary.keys())
+
+    for key in keys:
+        if dictionary[key] is None:
+            dictionary[key] = ''
+        if type(dictionary[key]) == datetime:
+            date_format = kwargs.get('datetime_format', '%Y-%m-%d %H:%M:%S')
+            if split_dates:
+                date_value, time_value = dictionary[key].strftime(date_format).split(' ')
+                dictionary[f'{key}_0'] = date_value
+                dictionary[f'{key}_1'] = time_value
+            else:
+                dictionary[key] = dictionary[key].strftime(date_format)
+        if type(dictionary[key]) == date:
+            date_format = kwargs.get('date_format', '%Y-%m-%d')
+            dictionary[key] = dictionary[key].strftime(date_format)
+        if isinstance(dictionary[key], Decimal):
+            dictionary[key] = float(str(dictionary[key]))
+
+    return dictionary
