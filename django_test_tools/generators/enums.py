@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class SupportedFields(str, Enum):
+class FieldTypes(str, Enum):
     BOOLEAN = 'BooleanField'
     CHAR = 'CharField'
     COUNTRY = 'CountryField'

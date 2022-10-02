@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Union
 
+from django_test_tools.generators.enums import FieldTypes
+
 
 class FieldHandler(ABC):
     @abstractmethod
@@ -14,6 +16,7 @@ class FieldHandler(ABC):
 
 class AbstractFieldHandler(FieldHandler):
     _next_handler: FieldHandler = None
+    field_types: List[FieldTypes] = None
 
     def set_next(self, handler: 'FieldHandler') -> 'FieldHandler':
         self._next_handler = handler
