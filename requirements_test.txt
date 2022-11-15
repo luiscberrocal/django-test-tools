@@ -11,5 +11,5 @@ djangorestframework==3.14.0
 pytz==2022.2.1
 #Do not add Django here Travis CI will include it
 django-countries==7.3.2 #https://github.com/SmileyChris/django-countries
-Pillow==9.2.0
+Pillow==9.3.0
 django-money==3.0.0
