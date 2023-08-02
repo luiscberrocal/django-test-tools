@@ -1,4 +1,4 @@
-Django
+Django==4.2.4
 Jinja2>=3.0.1
 openpyxl>=3.0.7
 
