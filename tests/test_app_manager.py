@@ -32,8 +32,12 @@ class TestDjangoAppManager(TestCase):
     def test_get_app(self):
         app_manager = DjangoAppManager()
         app_dict = app_manager.get_app_data(settings.TEST_APP_PEOPLE)
-        # write_assertions(app_dict, 'app_dict')
-        # self.fail('Writing assertions')
+
+        # from pathlib import Path
+        # filename = Path(settings.TEST_OUTPUT_PATH) / 'people_models.json'
+        # with open(filename, 'w') as f:
+        #     json.dump(app_dict, f, indent=4, default=str)
+
         self.assertEqual(app_dict['app_name'], 'example.people')
         self.assertEqual(len(app_dict['models']['person']['fields']), 16)
         self.assertEqual(app_dict['models']['person']['fields'][0]['editable'], True)
@@ -123,3 +127,12 @@ class TestDjangoAppManager(TestCase):
         self.assertEqual(app_dict['models']['person']['fields'][15]['unique'], False)
         self.assertEqual(app_dict['models']['person']['model_name'], 'Person')
         self.assertEqual(app_dict['models']['person']['original_attrs']['abstract'], False)
+
+    def test_servers(self):
+        app_manager = DjangoAppManager()
+        app_dict = app_manager.get_app_data(settings.TEST_APP_SERVERS)
+
+        from pathlib import Path
+        filename = Path(settings.TEST_OUTPUT_PATH) / 'servers_models.json'
+        with open(filename, 'w') as f:
+            json.dump(app_dict, f, indent=4, default=str)

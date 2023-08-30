@@ -14,13 +14,18 @@ class FieldAttributes(BaseModel):
 
 
 class FieldInfo(BaseModel):
-    name: str
-    field_type: FieldType
+    field_name: str
+    type: FieldType
+    primary_key: bool
+    editable: bool
     factory_entry = Optional[str]
     attributes: Optional[FieldAttributes]
     required_imports: Optional[List[str]]
+    max_length: Optional[int] = Field(description='Maximum length of field. Used by CharField.')
+    choice_type: Optional[str]
+    choices: Optional[List[List]]
 
 
 class ModelInfo(BaseModel):
-    name: str
+    model_name: str
     fields: List[FieldInfo]
