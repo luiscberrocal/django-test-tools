@@ -41,7 +41,7 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type == self.field and field_data.name not in self.excluded:
+        if field_data.type == self.field and field_data.field_name not in self.excluded:
             field_data.required_imports = ['from django.conf import settings', 'from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
@@ -65,7 +65,7 @@ class DateFieldHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type == self.field and field_data.name not in self.excluded:
+        if field_data.type == self.field and field_data.field_name not in self.excluded:
             field_data.required_imports = ['from django.conf import settings', 'from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
@@ -91,8 +91,8 @@ class CharFieldIdHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if (field_data.field_type != self.field or field_data.name in self.excluded or
-            field_data.attributes.max_length > self.length_threshold):
+        if (field_data.type != self.field or field_data.field_name in self.excluded or
+            field_data.max_length > self.length_threshold):
             return super().handle(field_data)
         else:
             # Imports
@@ -101,10 +101,10 @@ class CharFieldIdHandler(AbstractModelFieldHandler):
             # Factory entry
             characters = 'ascii_letters'
             for din in self.digit_id_names:
-                if din in field_data.name:
+                if din in field_data.field_name:
                     characters = 'digits'
                     break
-            field_data.factory_entry = (f'LazyAttribute(lambda x: FuzzyText(length={field_data.attributes.max_length}, '
+            field_data.factory_entry = (f'LazyAttribute(lambda x: FuzzyText(length={field_data.max_length}, '
                                         f'chars=string.{characters}).fuzz())')
             return field_data
 
@@ -121,15 +121,15 @@ class CharFieldGenericHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type != self.field or field_data.name in self.excluded:
+        if field_data.type != self.field or field_data.field_name in self.excluded:
             return super().handle(field_data)
         else:
-            if field_data.attributes.max_length > self.length_threshold:
+            if field_data.max_length > self.length_threshold:
                 field_data.required_imports = ['from factory import LazyAttribute',
                                                'from faker import Factory as FakerFactory',
                                                'faker = FakerFactory.create()']
                 field_data.factory_entry = (f'LazyAttribute(lambda x: faker.text(max_nb_chars='
-                                            f'{field_data.attributes.max_length}))')
+                                            f'{field_data.max_length}))')
 
             else:
                 # Imports
@@ -137,7 +137,7 @@ class CharFieldGenericHandler(AbstractModelFieldHandler):
                                                'from factory.fuzzy import FuzzyText']
                 # Factory entry
                 field_data.factory_entry = (f'LazyAttribute(lambda x: '
-                                            f'FuzzyText(length={field_data.attributes.max_length}, '
+                                            f'FuzzyText(length={field_data.max_length}, '
                                             f'chars=string.ascii_letters).fuzz())')
             return field_data
 
@@ -152,16 +152,15 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type != self.field or field_data.name in self.excluded:
+        if field_data.type != self.field or field_data.field_name in self.excluded:
             return super().handle(field_data)
         else:
             field_data.required_imports = ['from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
-            atts = field_data.attributes
-            left_digits = atts.max_digits - atts.decimal_places
+            left_digits = field_data.max_digits - field_data.decimal_places
             template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={left_digits}, ' \
-                       f'right_digits={atts.decimal_places}, positive={atts.positive}))'
+                       f'right_digits={field_data.decimal_places}, positive={field_data.positive}))'
             field_data.factory_entry = template
             return field_data
 
@@ -176,12 +175,11 @@ class ForeignKeyFieldHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type != self.field or field_data.name in self.excluded:
+        if field_data.type != self.field or field_data.field_name in self.excluded:
             return super().handle(field_data)
         else:
             field_data.required_imports = ['from factory import SubFactory']
-            atts = field_data.attributes
-            template = f'SubFactory({atts.model_name}Factory)'
+            template = f'SubFactory({field_data.remote_field}Factory)'
             field_data.factory_entry = template
             return field_data
 
@@ -198,7 +196,7 @@ class IntegerFieldHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type != self.field or field_data.name in self.excluded:
+        if field_data.type != self.field or field_data.field_name in self.excluded:
             return super().handle(field_data)
         else:
             field_data.required_imports = ['from faker import Factory as FakerFactory',
@@ -219,7 +217,7 @@ class TextFieldHandler(AbstractModelFieldHandler):
             self.excluded = exclude
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
-        if field_data.field_type != self.field or field_data.name in self.excluded:
+        if field_data.type != self.field or field_data.field_name in self.excluded:
             return super().handle(field_data)
         else:
             field_data.required_imports = ['from faker import Factory as FakerFactory',

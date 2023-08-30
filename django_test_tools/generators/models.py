@@ -19,11 +19,14 @@ class FieldInfo(BaseModel):
     primary_key: bool
     editable: bool
     factory_entry = Optional[str]
-    attributes: Optional[FieldAttributes]
+    # attributes: Optional[FieldAttributes]
     required_imports: Optional[List[str]]
     max_length: Optional[int] = Field(description='Maximum length of field. Used by CharField.')
     choice_type: Optional[str]
     choices: Optional[List[List]]
+    max_digits: Optional[int] = Field(description='Maximum number of digits. Used by DecimalField')
+    decimal_places: Optional[int] = Field(description='Decimal places. Used by DecimalField')
+    remote_field: Optional[str] = Field(description='Name of the foreign model. Used by ForeignKey')
 
 
 class ModelInfo(BaseModel):
