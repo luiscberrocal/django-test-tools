@@ -160,7 +160,29 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
                                            'faker = FakerFactory.create()']
             atts = field_data.attributes
             left_digits = atts.max_digits - atts.decimal_places
-            template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={atts.max_digits}, ' \
+            template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={left_digits}, ' \
+                       f'right_digits={atts.decimal_places}, positive={atts.positive}))'
+            field_data.factory_entry = template
+            return field_data
+class ForeignKeyFieldHandler(AbstractModelFieldHandler):
+    field = FieldType.FOREIGNKEY
+
+    def __init__(self, exclude: List[str] = None):
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type != self.field or field_data.name in self.excluded:
+            return super().handle(field_data)
+        else:
+            field_data.required_imports = ['from factory import LazyAttribute',
+                                           'from faker import Factory as FakerFactory',
+                                           'faker = FakerFactory.create()']
+            atts = field_data.attributes
+            left_digits = atts.max_digits - atts.decimal_places
+            template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={left_digits}, ' \
                        f'right_digits={atts.decimal_places}, positive={atts.positive}))'
             field_data.factory_entry = template
             return field_data

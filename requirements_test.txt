@@ -2,10 +2,10 @@
 factory-boy==3.3.0
 coverage==7.3.0
 flake8==6.1.0
-tox==4.10.0
+tox==4.11.0
 codecov>=2.0.0
 # Faker==18.3.1
-django-environ==0.10.0
+django-environ==0.11.0
 # Additional test requirements go here
 djangorestframework==3.14.0
 pytz==2023.3
