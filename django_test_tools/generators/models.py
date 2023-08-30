@@ -28,6 +28,9 @@ class FieldInfo(BaseModel):
     decimal_places: Optional[int] = Field(description='Decimal places. Used by DecimalField')
     remote_field: Optional[str] = Field(description='Name of the foreign model. Used by ForeignKey')
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 class ModelInfo(BaseModel):
     model_name: str

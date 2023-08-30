@@ -3,6 +3,7 @@ from enum import Enum
 
 class FieldType(str, Enum):
     """Supported fields."""
+    AUTO = 'AutoField'
     BOOLEAN = 'BooleanField'
     CHAR = 'CharField'
     COUNTRY = 'CountryField'
