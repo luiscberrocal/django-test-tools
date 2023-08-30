@@ -164,6 +164,8 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
                        f'right_digits={atts.decimal_places}, positive={atts.positive}))'
             field_data.factory_entry = template
             return field_data
+
+
 class ForeignKeyFieldHandler(AbstractModelFieldHandler):
     field = FieldType.FOREIGNKEY
 
@@ -177,12 +179,52 @@ class ForeignKeyFieldHandler(AbstractModelFieldHandler):
         if field_data.field_type != self.field or field_data.name in self.excluded:
             return super().handle(field_data)
         else:
-            field_data.required_imports = ['from factory import LazyAttribute',
-                                           'from faker import Factory as FakerFactory',
-                                           'faker = FakerFactory.create()']
+            field_data.required_imports = ['from factory import SubFactory']
             atts = field_data.attributes
-            left_digits = atts.max_digits - atts.decimal_places
-            template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={left_digits}, ' \
-                       f'right_digits={atts.decimal_places}, positive={atts.positive}))'
+            template = f'SubFactory({atts.model_name}Factory)'
+            field_data.factory_entry = template
+            return field_data
+
+
+class IntegerFieldHandler(AbstractModelFieldHandler):
+    field = FieldType.INTEGER
+
+    def __init__(self, min_value: int = 0, max_value: int = 100_000, exclude: List[str] = None):
+        self.min_value = min_value
+        self.max_value = max_value
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type != self.field or field_data.name in self.excluded:
+            return super().handle(field_data)
+        else:
+            field_data.required_imports = ['from faker import Factory as FakerFactory',
+                                           'faker = FakerFactory.create()']
+            template = f'LazyAttribute(lambda x: faker.random_int(min={self.min_value}, max={self.max_value})'
+            field_data.factory_entry = template
+            return field_data
+
+
+class TextFieldHandler(AbstractModelFieldHandler):
+    field = FieldType.TEXT
+
+    def __init__(self, sentences: int = 3, exclude: List[str] = None):
+        self.sentences = sentences
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type != self.field or field_data.name in self.excluded:
+            return super().handle(field_data)
+        else:
+            field_data.required_imports = ['from faker import Factory as FakerFactory',
+                                           'faker = FakerFactory.create()']
+            template = (f'LazyAttribute(lambda x: faker.paragraph(nb_sentences={self.sentences}, '
+                        f'variable_nb_sentences=True))')
             field_data.factory_entry = template
             return field_data
