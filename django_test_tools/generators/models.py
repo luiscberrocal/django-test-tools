@@ -7,6 +7,9 @@ from django_test_tools.generators.enums import FieldType
 
 class FieldAttributes(BaseModel):
     max_length: Optional[int]
+    max_digits: Optional[int]
+    decimal_places: Optional[int]
+    positive: Optional[bool]
 
 
 class FieldInfo(BaseModel):

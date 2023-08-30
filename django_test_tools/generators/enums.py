@@ -1,7 +1,8 @@
 from enum import Enum
 
 
-class FieldTypes(str, Enum):
+class FieldType(str, Enum):
+    """Supported fields."""
     BOOLEAN = 'BooleanField'
     CHAR = 'CharField'
     COUNTRY = 'CountryField'
@@ -13,5 +14,3 @@ class FieldTypes(str, Enum):
     INTEGER = 'IntegerField'
     MONEY = 'MoneyField'
     TEXT = 'TextField'
-
-

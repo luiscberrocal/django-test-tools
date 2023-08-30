@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from decimal import Decimal
-from typing import Dict, Any, List
+from typing import List
 
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.models import FieldInfo
@@ -31,7 +30,7 @@ class AbstractModelFieldHandler(ModelFieldHandler):
 
 
 class DateTimeFieldHandler(AbstractModelFieldHandler):
-    field = FieldType.DATETIME_FIELD
+    field = FieldType.DATETIME
 
     def __init__(self, start_date: str = '-1y', end_date: str = 'now', exclude: List[str] = None):
         self.start_date = start_date
@@ -54,10 +53,34 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
             return super().handle(field_data)
 
 
+class DateFieldHandler(AbstractModelFieldHandler):
+    field = FieldType.DATE
+
+    def __init__(self, start_date: str = '-1y', end_date: str = 'now', exclude: List[str] = None):
+        self.start_date = start_date
+        self.end_date = end_date
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type == self.field and field_data.name not in self.excluded:
+            field_data.required_imports = ['from django.conf import settings', 'from factory import LazyAttribute',
+                                           'from faker import Factory as FakerFactory',
+                                           'faker = FakerFactory.create()']
+            field_data.factory_entry = (f'LazyAttribute(lambda x: faker.date_between('
+                                        f'start_date="{self.start_date}", '
+                                        f'end_date="{self.end_date}", tzinfo=timezone(settings.TIME_ZONE)))')
+            return field_data
+        else:
+            return super().handle(field_data)
+
+
 class CharFieldIdHandler(AbstractModelFieldHandler):
     """Handle id char fields for example device_id or client_number will return numbers.
     This handler will handle the field if the max_length is less than or equal to length_threshold"""
-    field = FieldType.CHAR_FIELD
+    field = FieldType.CHAR
 
     def __init__(self, length_threshold: int = 32, exclude: List[str] = None):
         self.length_threshold = length_threshold
@@ -87,7 +110,7 @@ class CharFieldIdHandler(AbstractModelFieldHandler):
 
 
 class CharFieldGenericHandler(AbstractModelFieldHandler):
-    field = FieldType.CHAR_FIELD
+    field = FieldType.CHAR
 
     def __init__(self, length_threshold: int = 32, exclude: List[str] = None):
         self.length_threshold = length_threshold
@@ -116,4 +139,28 @@ class CharFieldGenericHandler(AbstractModelFieldHandler):
                 field_data.factory_entry = (f'LazyAttribute(lambda x: '
                                             f'FuzzyText(length={field_data.attributes.max_length}, '
                                             f'chars=string.ascii_letters).fuzz())')
+            return field_data
+
+
+class DecimalFieldHandler(AbstractModelFieldHandler):
+    field = FieldType.DECIMAL
+
+    def __init__(self, exclude: List[str] = None):
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type != self.field or field_data.name in self.excluded:
+            return super().handle(field_data)
+        else:
+            field_data.required_imports = ['from factory import LazyAttribute',
+                                           'from faker import Factory as FakerFactory',
+                                           'faker = FakerFactory.create()']
+            atts = field_data.attributes
+            left_digits = atts.max_digits - atts.decimal_places
+            template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={atts.max_digits}, ' \
+                       f'right_digits={atts.decimal_places}, positive={atts.positive}))'
+            field_data.factory_entry = template
             return field_data
