@@ -133,6 +133,9 @@ class TestCharFieldIdHandler(SimpleTestCase):
                     f'chars=string.ascii_letters).fuzz())')
         self.assertEqual(result.factory_entry, expected)
 
+    def test_handle_greater_than_threshold(self):
+        self.fail('Not implemented')
+
     def test_handle_non_char_id_field(self):
         field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
         result = self.handler.handle(field_info)
