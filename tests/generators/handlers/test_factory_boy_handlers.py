@@ -3,25 +3,9 @@ from unittest import mock
 from django.test import SimpleTestCase
 
 from django_test_tools.generators.enums import FieldType
-from django_test_tools.generators.handlers.factory_boy_handlers import DateTimeFieldHandler
+from django_test_tools.generators.handlers.factory_boy_handlers import DateTimeFieldHandler, TextFieldHandler, \
+    IntegerFieldHandler
 from django_test_tools.generators.models import FieldInfo
-
-
-# Mocking FieldInfo class as it seems to be an external dependency not provided.
-class MockFieldInfo:
-    def __init__(self, type, field_name):
-        self.type = type
-        self.field_name = field_name
-        self.required_imports = []
-        self.factory_entry = None
-
-
-# Mocking FieldType enum as it seems to be an external dependency not provided.
-class MockFieldType:
-    DATETIME = "DATETIME"
-    FOREIGN_KEY = "FOREIGN_KEY"
-    INTEGER = "INTEGER"
-    TEXT = "TEXT"
 
 
 # Mocked settings.TIME_ZONE for the DateTimeFieldHandler
@@ -50,6 +34,50 @@ class TestDateTimeFieldHandler(SimpleTestCase):
         self.assertIn("faker.date_time_between", result.factory_entry)
 
     def test_handle_non_datetime_field(self):
-        field_info = MockFieldInfo(MockFieldType.TEXT, "description")
+        field_info = FieldInfo(type=FieldType.TEXT, field_name="description")
+        result = self.handler.handle(field_info)
+        self.assertIsNone(result)
+
+
+# Test for IntegerFieldHandler
+class TestIntegerFieldHandler(SimpleTestCase):
+
+    def setUp(self):
+        self.handler = IntegerFieldHandler()
+
+    def test_handle_integer_field(self):
+        field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
+        result = self.handler.handle(field_info)
+
+        self.assertEqual(result.required_imports, [
+            'from faker import Factory as FakerFactory',
+            'faker = FakerFactory.create()'
+        ])
+        self.assertIn("faker.random_int", result.factory_entry)
+
+    def test_handle_non_integer_field(self):
+        field_info = FieldInfo(type=FieldType.TEXT, field_name="description")
+        result = self.handler.handle(field_info)
+        self.assertIsNone(result)
+
+
+# Test for TextFieldHandler
+class TestTextFieldHandler(SimpleTestCase):
+
+    def setUp(self):
+        self.handler = TextFieldHandler()
+
+    def test_handle_text_field(self):
+        field_info = FieldInfo(type=FieldType.TEXT, field_name="description")
+        result = self.handler.handle(field_info)
+
+        self.assertEqual(result.required_imports, [
+            'from faker import Factory as FakerFactory',
+            'faker = FakerFactory.create()'
+        ])
+        self.assertIn("faker.paragraph", result.factory_entry)
+
+    def test_handle_non_text_field(self):
+        field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
         result = self.handler.handle(field_info)
         self.assertIsNone(result)
