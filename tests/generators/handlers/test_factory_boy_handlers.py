@@ -4,7 +4,7 @@ from django.test import SimpleTestCase
 
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.handlers.factory_boy_handlers import DateTimeFieldHandler, TextFieldHandler, \
-    IntegerFieldHandler, DateFieldHandler, CharFieldIdHandler
+    IntegerFieldHandler, DateFieldHandler, CharFieldIdHandler, CharFieldGenericHandler
 from django_test_tools.generators.models import FieldInfo
 
 
@@ -134,7 +134,46 @@ class TestCharFieldIdHandler(SimpleTestCase):
         self.assertEqual(result.factory_entry, expected)
 
     def test_handle_greater_than_threshold(self):
-        self.fail('Not implemented')
+        handler = CharFieldIdHandler(length_threshold=16)
+        field_info = FieldInfo(type=FieldType.CHAR, field_name="device_id", max_length=32)
+        result = handler.handle(field_info)
+        self.assertIsNone(result)
+
+    def test_handle_non_char_id_field(self):
+        field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
+        result = self.handler.handle(field_info)
+        self.assertIsNone(result)
+
+
+class TestCharFieldGenericHandler(SimpleTestCase):
+
+    def setUp(self):
+        self.handler = CharFieldGenericHandler()
+
+    def test_handle_char_generic_field(self):
+        max_len = self.handler.length_threshold
+        field_info = FieldInfo(type=FieldType.CHAR, field_name="device", max_length=max_len)
+        result = self.handler.handle(field_info)
+
+        self.assertEqual(result.required_imports, ['import string', 'from factory import LazyAttribute',
+                                                   'from factory.fuzzy import FuzzyText'])
+        expected = (f'LazyAttribute(lambda x: '
+                    f'FuzzyText(length={max_len}, '
+                    f'chars=string.ascii_letters).fuzz())')
+        self.assertEqual(result.factory_entry, expected)
+
+    def test_handle_char_generic_field_past_threshold(self):
+        max_len = self.handler.length_threshold + 1
+        field_info = FieldInfo(type=FieldType.CHAR, field_name="device", max_length=max_len)
+        result = self.handler.handle(field_info)
+
+        self.assertEqual(result.required_imports, ['from factory import LazyAttribute',
+                                                   'from faker import Factory as FakerFactory',
+                                                   'faker = FakerFactory.create()'])
+        expected = (f'LazyAttribute(lambda x: '
+                    f'FuzzyText(length={max_len}, '
+                    f'chars=string.ascii_letters).fuzz())')
+        self.assertEqual(result.factory_entry, expected)
 
     def test_handle_non_char_id_field(self):
         field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
