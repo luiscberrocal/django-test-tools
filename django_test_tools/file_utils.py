@@ -4,6 +4,8 @@ import os
 import pickle
 import shutil
 from datetime import date, datetime
+from pathlib import Path
+from typing import List
 
 from django.conf import settings
 from django.utils import timezone
@@ -310,6 +312,37 @@ class TemporaryFolder:
             else:
                 file.writelines(str(content))
         return os.path.join(self.new_path, filename)
+
+
+def compare_content(*, source_file: Path, test_file: Path, excluded_lines: List[int] = None,
+                    encoding: str = 'utf-8', eol: str = '\n', raise_exception: bool = True,
+                    strip: bool = True) -> List[str]:
+    errors = []
+
+    def get_lines(filename):
+        with open(filename, 'r', encoding=encoding, newline=eol) as file:
+            lines = file.readlines()
+        return lines
+
+    source_lines = get_lines(source_file)
+    test_lines = get_lines(test_file)
+
+    for i in range(len(source_lines)):
+        if i not in excluded_lines:
+            if strip:
+                source_line = source_lines[i].strip()
+                test_line = test_lines[i].strip()
+            else:
+                source_line = source_lines[i]
+                test_line = test_lines[i]
+            if source_line != test_line:
+                msg = 'On line {} expected "{}" got "{}"'.format(i,
+                                                                 source_lines[i].replace(eol, ''),
+                                                                 test_lines[i].replace(eol, ''))
+                errors.append(msg)
+                if raise_exception:
+                    raise DjangoTestToolsException(msg)
+    return errors
 
 
 def compare_file_content(*args, **kwargs):

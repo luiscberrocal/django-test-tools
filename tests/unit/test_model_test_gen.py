@@ -3,11 +3,13 @@ from unittest import TestCase
 from django.conf import settings
 
 from django_test_tools.app_manager import DjangoAppManager
-from django_test_tools.file_utils import temporary_file, hash_file
+from django_test_tools.file_utils import temporary_file, hash_file, compare_content
 from django_test_tools.generators.model_test_gen import ModelTestCaseGenerator, AppModelsTestCaseGenerator
+from tests.common_vars import FIXTURES_FOLDER
 
 
 class PythonWritingTestMixin:
+
     def write_generator_to_file(self, filename, generator):
         with open(filename, 'w', encoding='utf-8') as py_file:
             py_file.write(str(generator))
@@ -23,8 +25,16 @@ class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
         app_manager = DjangoAppManager()
         model = app_manager.get_model(app_name, model_name)
         mtg = ModelTestCaseGenerator(model)
-        hash = self.write_generator_to_file(self.test_str.filename, mtg)
-        self.assertEqual(hash, '66ed114f8f2427ea4bdb17141fffb0741b9cd680')
+
+        test_file = self.test_str.filename
+        hash = self.write_generator_to_file(test_file, mtg)
+
+        source_file = FIXTURES_FOLDER / 'test_app_str_20230903_0820.py'
+
+        errors = compare_content(source_file=source_file, test_file=test_file, raise_exception=False)
+        self.assertEqual(len(errors), 0)
+
+        # self.assertEqual(hash, '66ed114f8f2427ea4bdb17141fffb0741b9cd680')
 
 
 class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
