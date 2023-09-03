@@ -6,6 +6,7 @@ from openpyxl import Workbook
 
 from django_test_tools.excel import ExcelAdapter
 from django_test_tools.file_utils import temporary_file, hash_file
+from tests.common_vars import FIXTURES_FOLDER
 
 faker = FakerFactory.create()
 
@@ -37,8 +38,7 @@ class TestExcelAdapter(TestCase):
 
     @temporary_file('.json', delete_on_exit=True)
     def test_convert_to_dict(self):
-        import environ
-        full_path = (environ.Path(__file__) - 1).path('fixtures', 'excel_to_json.xlsx').root
+        full_path = FIXTURES_FOLDER / 'excel_to_json.xlsx'
         dict_data = ExcelAdapter.convert_to_dict(full_path)
         output = self.test_convert_to_dict.filename
         with open(output, 'w') as json_file:

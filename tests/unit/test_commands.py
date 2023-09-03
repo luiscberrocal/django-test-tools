@@ -8,6 +8,7 @@ from django.test import TestCase, SimpleTestCase
 from django_test_tools.file_utils import hash_file, temporary_file, create_dated
 from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
 from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
+from tests.common_vars import FIXTURES_FOLDER
 
 
 class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
@@ -102,9 +103,10 @@ class TestConvertToJSONCommand(TestCommandMixin, SimpleTestCase):
 
     @temporary_file('json', delete_on_exit=True)
     def test_excel_to_json(self):
-        import environ
+        #        import environ
         output = self.test_excel_to_json.filename
-        excel_file = (environ.Path(__file__) - 1).path('fixtures', 'excel_to_json.xlsx').root
+        # excel_file = (environ.Path(__file__) - 1).path('fixtures', 'excel_to_json.xlsx').root
+        excel_file = FIXTURES_FOLDER / 'excel_to_json.xlsx'
         call_command('convert_to_json', input=excel_file, output=output,
                      stdout=self.content)
         hash_digest = hash_file(output)
