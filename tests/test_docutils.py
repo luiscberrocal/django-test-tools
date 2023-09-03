@@ -5,7 +5,7 @@ import shutil
 from django.conf import settings
 from django.test import TestCase
 
-from django_test_tools.doc_utils.folder_structure import create_folder_structure, get_module_files
+from django_test_tools._legacy.doc_utils import create_folder_structure, get_module_files
 from django_test_tools.file_utils import serialize_data, temporary_file
 from django_test_tools.utils import create_output_filename_with_date
 

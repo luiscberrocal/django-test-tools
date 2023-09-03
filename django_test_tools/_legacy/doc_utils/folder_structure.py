@@ -2,7 +2,7 @@ import os
 
 from django.template.loader import render_to_string
 
-from ..app_manager import DjangoAppManager
+from django_test_tools.app_manager import DjangoAppManager
 
 
 def create_folder_structure(doc_base_folder, project_name):
