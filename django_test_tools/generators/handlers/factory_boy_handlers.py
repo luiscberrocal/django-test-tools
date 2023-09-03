@@ -41,6 +41,8 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.field_type == self.field and field_data.name not in self.excluded:
+            field_data.required_imports = ['from django.conf import settings', 'from factory import LazyAttribute',
+                                           'from faker import Factory as FakerFactory', 'faker = FakerFactory.create()']
             field_data.factory_entry = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", ' \
                                        'end_date="now", tzinfo=timezone(settings.TIME_ZONE)))'
             return field_data
@@ -60,6 +62,9 @@ class CharFieldIdHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.field_type == self.field and field_data.name not in self.excluded:
+            # Imports
+            field_data.required_imports = ['import string', 'from factory import LazyAttribute',
+                                           'from factory.fuzzy import FuzzyText']
             characters = 'ascii_letters'
             for din in self.digit_id_names:
                 if din in field_data.name:
