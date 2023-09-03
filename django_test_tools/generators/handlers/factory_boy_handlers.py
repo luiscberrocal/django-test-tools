@@ -59,8 +59,8 @@ class CharFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.field_type == self.field and field_data.name not in self.excluded:
-            field_data.factory_entry = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", ' \
-                                       'end_date="now", tzinfo=timezone(settings.TIME_ZONE)))'
+            field_data.factory_entry = ('LazyAttribute(lambda x: FuzzyText(length={max_length}, '
+                                        'chars=string.ascii_letters).fuzz())')
             return field_data
         else:
             return super().handle(field_data)
