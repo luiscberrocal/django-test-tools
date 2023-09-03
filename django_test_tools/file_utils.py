@@ -103,6 +103,7 @@ def temporary_file(func, extension, delete_on_exit=True):
     function_t_return.filename = filename
     return function_t_return
 
+
 @parametrized
 def temporary_files(func, extension, delete_on_exit=True, count=2):
     """
@@ -137,6 +138,8 @@ def temporary_files(func, extension, delete_on_exit=True, count=2):
 
     function_t_return.filenames = filenames
     return function_t_return
+
+
 def shorten_path(path, level=2, current_level=1):
     """
     This method shortens the path by eliminating the folders on top.

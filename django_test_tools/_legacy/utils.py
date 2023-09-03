@@ -4,7 +4,6 @@ import warnings
 
 from django.conf import settings
 from django.utils import timezone
-from openpyxl.compat import deprecated
 
 from django_test_tools.file_utils import add_date
 from django_test_tools.utils import weekdays

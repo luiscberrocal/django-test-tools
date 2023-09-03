@@ -5,10 +5,9 @@ from django.core.management import call_command
 from django.db.models import FileField
 from django.test import TestCase, SimpleTestCase
 
-from django_test_tools.file_utils import hash_file, temporary_file
+from django_test_tools.file_utils import hash_file, temporary_file, create_dated
 from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
 from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
-from django_test_tools._legacy.utils import create_output_filename_with_date
 
 
 class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
@@ -16,7 +15,7 @@ class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):
         call_command('generate_factories', settings.TEST_APP_SERVERS, stdout=self.content)
         results = self.get_results()
         self.assertEqual(44, len(results))
-        filename = create_output_filename_with_date('example_my_app_factory.py')
+        filename = create_dated('example_my_app_factory.py')
         with open(filename, 'w', encoding='utf-8') as factory_file:
             for line in results:
                 factory_file.write(line)

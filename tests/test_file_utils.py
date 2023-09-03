@@ -13,7 +13,6 @@ from django_test_tools.exceptions import DjangoTestToolsException
 from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated, \
     shorten_path, temporary_files, compare_file_content
 from django_test_tools.mixins import TestOutputMixin
-from django_test_tools._legacy.utils import create_output_filename_with_date
 
 
 class PersonObject(object):
@@ -142,7 +141,7 @@ class TestShortenPath(SimpleTestCase):
 @tag('UNIT')
 class TestHashFile(TestOutputMixin, TestCase):
     def test_hash(self):
-        filename = create_output_filename_with_date('test_hash.txt')
+        filename = create_dated('test_hash.txt')
         my_list = ['1', 'hola', 'poli', 'kilo']
         with open(filename, 'w', encoding='utf-8') as mfile:
             mfile.writelines(my_list)
@@ -151,7 +150,7 @@ class TestHashFile(TestOutputMixin, TestCase):
         self.clean_output_folder(filename)
 
     def test_hash_invalid_algorithm(self):
-        filename = create_output_filename_with_date('test_hash.txt')
+        filename = create_dated('test_hash.txt')
         try:
             hash = hash_file(filename, algorithm='kkkk')
             self.fail('Should have sent exception')
