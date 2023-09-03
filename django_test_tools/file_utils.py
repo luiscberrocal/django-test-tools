@@ -318,6 +318,8 @@ def compare_content(*, source_file: Path, test_file: Path, excluded_lines: List[
                     encoding: str = 'utf-8', eol: str = '\n', raise_exception: bool = True,
                     strip: bool = True) -> List[str]:
     errors = []
+    if excluded_lines is None:
+        excluded_lines = []
 
     def get_lines(filename):
         with open(filename, 'r', encoding=encoding, newline=eol) as file:

@@ -2,8 +2,8 @@ import collections
 from datetime import datetime, date
 from decimal import Decimal
 
+from .file_utils import create_dated
 from .re.regexp import CommonRegExp
-from ._legacy.utils import create_output_filename_with_date
 
 
 def write_assertions(dictionary_list, variable_name, **kwargs):
@@ -52,7 +52,7 @@ class AssertionWriter(object):
         :return:
         """
         if kwargs.get('filename') is None:
-            filename = create_output_filename_with_date('{}.py'.format(variable_name))
+            filename = create_dated('{}.py'.format(variable_name))
         else:
             filename = kwargs.get('filename')
         if self.check_for_type_only:
