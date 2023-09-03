@@ -24,6 +24,7 @@ class PersonObject(object):
         self.name = name
         self.attributes = kwargs
 
+
 class AddDateTest(TestCase):
     def setUp(self):
         self.mock_datetime = pytz.timezone('America/Panama').localize(
@@ -310,5 +311,3 @@ De comparar dos archivos 23
             self.fail('Nothing raised')
         except DjangoTestToolsException as e:
             self.assertEqual(str(e), 'On line 1 expected "De comparar dos archivos" got "De comparar dos archivos 23"')
-
-
