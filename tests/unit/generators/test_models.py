@@ -9,7 +9,7 @@ from django_test_tools.generators.models import FieldInfo
 class TestModels(SimpleTestCase):
 
     def test_deserializing_file(self):
-        file = Path(__file__).parent.parent / 'fixtures' / 'servers_models.json'
+        file = Path(__file__).parent.parent.parent / 'fixtures' / 'servers_models.json'
         self.assertTrue(file.exists())
         with open(file, 'r') as f:
             server_dict = json.load(f)
@@ -25,7 +25,7 @@ class TestModels(SimpleTestCase):
                     raise e
 
     def test_deserializing_people(self):
-        file = Path(__file__).parent.parent / 'fixtures' / 'people_models.json'
+        file = Path(__file__).parent.parent.parent / 'fixtures' / 'people_models.json'
         self.assertTrue(file.exists())
         with open(file, 'r') as f:
             server_dict = json.load(f)
@@ -36,8 +36,8 @@ class TestModels(SimpleTestCase):
                     self.assertEqual(field_info.field_name, field_dict['field_name'])
                     self.assertEqual(field_info.type, field_dict['type'])
                 except Exception as e:
-                    print('>'*80)
+                    print('>' * 80)
                     print(e)
                     print(field_dict['field_name'], field_dict['type'])
-                    print('>'*80)
+                    print('>' * 80)
                     raise e
