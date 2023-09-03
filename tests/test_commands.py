@@ -8,7 +8,7 @@ from django.test import TestCase, SimpleTestCase
 from django_test_tools.file_utils import hash_file, temporary_file
 from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
 from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
-from django_test_tools.utils import create_output_filename_with_date
+from django_test_tools._legacy.utils import create_output_filename_with_date
 
 
 class TestGenerateFactories(TestOutputMixin, TestCommandMixin, TestCase):

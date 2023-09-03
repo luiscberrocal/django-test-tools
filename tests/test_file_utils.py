@@ -13,7 +13,7 @@ from django_test_tools.exceptions import DjangoTestToolsException
 from django_test_tools.file_utils import hash_file, temporary_file, serialize_data, add_date, create_dated, \
     shorten_path, temporary_files, compare_file_content
 from django_test_tools.mixins import TestOutputMixin
-from django_test_tools.utils import create_output_filename_with_date
+from django_test_tools._legacy.utils import create_output_filename_with_date
 
 
 class PersonObject(object):

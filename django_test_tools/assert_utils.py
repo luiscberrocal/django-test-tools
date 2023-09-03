@@ -2,10 +2,8 @@ import collections
 from datetime import datetime, date
 from decimal import Decimal
 
-from openpyxl.compat import deprecated
-
 from .re.regexp import CommonRegExp
-from .utils import create_output_filename_with_date
+from ._legacy.utils import create_output_filename_with_date
 
 
 def write_assertions(dictionary_list, variable_name, **kwargs):
@@ -24,19 +22,6 @@ def write_assertions(dictionary_list, variable_name, **kwargs):
     """
     writer = AssertionWriter(**kwargs)
     return writer.write_assert_list(dictionary_list, variable_name, filename=kwargs.get('filename'))
-
-
-@deprecated('Use assert_utils.write_assertions instead')
-def write_assert_list(filename, dictionary_list, variable_name):
-    """
-    Function to generate assertions for a dictionary or list content.
-    :param filename:
-    :param dictionary_list:
-    :param variable_name:
-    :return:
-    """
-    writer = AssertionWriter()
-    return writer.write_assert_list(dictionary_list, variable_name, filename=filename)
 
 
 class AssertionWriter(object):

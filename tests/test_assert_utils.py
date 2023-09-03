@@ -5,7 +5,8 @@ from decimal import Decimal
 import pytz
 from django.test import SimpleTestCase
 
-from django_test_tools.assert_utils import write_assert_list, AssertionWriter, write_assertions
+from django_test_tools.assert_utils import AssertionWriter, write_assertions
+from django_test_tools._legacy.assert_utils import write_assert_list
 from django_test_tools.file_utils import temporary_file, hash_file
 from django_test_tools.mixins import TestOutputMixin
 

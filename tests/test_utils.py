@@ -8,9 +8,9 @@ from django.test import TestCase, SimpleTestCase
 from django.test import override_settings
 
 from django_test_tools.file_utils import TemporaryFolder, hash_file
-from django_test_tools.utils import Timer, add_date_to_filename, parse_spanish_date, spanish_date_util, \
-    create_output_filename_with_date, dict_compare, convert_to_snake_case, datetime_to_local_time
-from django_test_tools._legacy.utils import daterange
+from django_test_tools.utils import Timer, parse_spanish_date, spanish_date_util, \
+    dict_compare, convert_to_snake_case, datetime_to_local_time
+from django_test_tools._legacy.utils import daterange, create_output_filename_with_date, add_date_to_filename
 
 logger = logging.getLogger(__name__)
 __author__ = 'lberrocal'
