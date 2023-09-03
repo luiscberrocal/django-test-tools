@@ -4,6 +4,8 @@ import os
 import pickle
 import shutil
 from datetime import date, datetime
+from pathlib import Path
+from typing import List
 
 from django.conf import settings
 from django.utils import timezone
@@ -103,6 +105,7 @@ def temporary_file(func, extension, delete_on_exit=True):
     function_t_return.filename = filename
     return function_t_return
 
+
 @parametrized
 def temporary_files(func, extension, delete_on_exit=True, count=2):
     """
@@ -137,6 +140,8 @@ def temporary_files(func, extension, delete_on_exit=True, count=2):
 
     function_t_return.filenames = filenames
     return function_t_return
+
+
 def shorten_path(path, level=2, current_level=1):
     """
     This method shortens the path by eliminating the folders on top.
@@ -309,28 +314,76 @@ class TemporaryFolder:
         return os.path.join(self.new_path, filename)
 
 
-def compare_file_content(*args, **kwargs):
-    errors = list()
-    file1 = args[0]
-    file2 = args[1]
-    excluded_lines = kwargs.get('excluded_lines', [])
-    encoding = kwargs.get('encoding', 'utf-8')
-    raise_exception = kwargs.get('raise_exception', True)
-    eol = kwargs.get('eol', '\n')
+def compare_content(*, source_file: Path, test_file: Path, excluded_lines: List[int] = None,
+                    encoding: str = 'utf-8', eol: str = '\n', raise_exception: bool = True,
+                    strip: bool = True) -> List[str]:
+    source_file = Path(source_file)
+    test_file = Path(test_file)
+    errors = []
+    if excluded_lines is None:
+        excluded_lines = []
 
     def get_lines(filename):
         with open(filename, 'r', encoding=encoding, newline=eol) as file:
             lines = file.readlines()
         return lines
 
-    lines1 = get_lines(file1)
+    source_lines = get_lines(source_file)
+    test_lines = get_lines(test_file)
+
+    for i in range(len(source_lines)):
+        if i not in excluded_lines:
+            try:
+                if strip:
+                    source_line = source_lines[i].strip()
+                    test_line = test_lines[i].strip()
+                else:
+                    source_line = source_lines[i]
+                    test_line = test_lines[i]
+                if source_line != test_line:
+                    msg = 'On line {} expected "{}" got "{}"'.format(i,
+                                                                     source_lines[i].replace(eol, ''),
+                                                                     test_lines[i].replace(eol, ''))
+                    errors.append(msg)
+                    if raise_exception:
+                        raise DjangoTestToolsException(msg)
+            except IndexError:
+                msg = f'Line {i} is found in source file {source_file.name} but is missing in {test_file.name}'
+                errors.append(msg)
+                if raise_exception:
+                    raise DjangoTestToolsException(msg)
+    return errors
+
+
+def compare_file_content(*args, **kwargs):
+    errors = list()
+    source_file = args[0]
+    file2 = args[1]
+    excluded_lines = kwargs.get('excluded_lines', [])
+    encoding = kwargs.get('encoding', 'utf-8')
+    raise_exception = kwargs.get('raise_exception', True)
+    eol = kwargs.get('eol', '\n')
+    strip = True
+
+    def get_lines(filename):
+        with open(filename, 'r', encoding=encoding, newline=eol) as file:
+            lines = file.readlines()
+        return lines
+
+    source_lines = get_lines(source_file)
     lines2 = get_lines(file2)
 
-    for i in range(len(lines1)):
+    for i in range(len(source_lines)):
         if i not in excluded_lines:
-            if lines1[i] != lines2[i]:
+            if strip:
+                source_line = source_lines[i].strip()
+                test_line = lines2[i].strip()
+            else:
+                source_line = source_lines[i]
+                test_line = lines2[i]
+            if source_line != test_line:
                 msg = 'On line {} expected "{}" got "{}"'.format(i,
-                                                                 lines1[i].replace(eol, ''),
+                                                                 source_lines[i].replace(eol, ''),
                                                                  lines2[i].replace(eol, ''))
                 errors.append(msg)
                 if raise_exception:

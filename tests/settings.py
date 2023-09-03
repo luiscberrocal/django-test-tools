@@ -26,7 +26,7 @@ TEST_DATA_PATH = ROOT_DIR.path('test_data').root
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "pppppppppppppppppppppppppppppppppppppppppppppppppp"
+SECRET_KEY = "tttttttttttttttttttttttttttttttttttttttttttttttttt"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

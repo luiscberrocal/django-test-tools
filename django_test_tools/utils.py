@@ -1,23 +1,18 @@
-import functools
 import json
 import os
 import re
 import time
-import warnings
 from datetime import datetime, date, timedelta
+from decimal import Decimal
+from typing import Dict, Any
 
 import pytz
 from django.conf import settings
-from django.utils import timezone
-from openpyxl.compat import deprecated
-
-from .file_utils import add_date
-
-__author__ = 'lberrocal'
 
 
 def versiontuple(v):
     return tuple(map(int, (v.split("."))))
+
 
 def dict_compare(d1, d2):
     d1_keys = set(d1.keys())
@@ -50,111 +45,6 @@ def convert_to_snake_case(camel_case):
     return all_cap_re.sub(r'\1_\2', s1).lower()
 
 
-@deprecated('Should use django_test_tools.file_utils.create_dated() function')
-def create_output_filename_with_date(filename):
-    """
-    Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
-    The path to the filename will be set in the TEST_OUTPUT_PATH settings variable.
-
-    :param filename: base filename. my_excel_data.xlsx for example
-    :return: string, full path to file with date and time in the TEST_OUTPUT_PATH folder
-    """
-    if getattr(settings, 'TEST_OUTPUT_PATH', None) is None:
-        msg = 'You need a the variable TEST_OUTPUT_PATH in settings. It should point to a folder' \
-              'for temporary data to be written and reviewed.'
-        raise ValueError(msg)
-    if not os.path.exists(settings.TEST_OUTPUT_PATH):
-        os.makedirs(settings.TEST_OUTPUT_PATH)
-    return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
-
-
-@deprecated('Should use django_test_tools.file_utils.add_date() function')
-def add_date_to_filename(filename, **kwargs):
-    """
-    Adds to a filename the current date and time in '%Y%m%d_%H%M' format.
-    For a filename /my/path/myexcel.xlsx the function would return /my/path/myexcel_20170101_1305.xlsx.
-    If the file already exists the function will add seconds to the date to attempt to get a unique name.
-
-    :param filename: string with fullpath to file or just the filename
-    :param kwargs: dictionary. date_position: suffix or preffix, extension: string to replace extension
-    :return: string with full path string incluiding the date and time
-    """
-    current_datetime = timezone.localtime(timezone.now()).strftime('%Y%m%d_%H%M%S')
-    new_filename_data = dict()
-    suffix_template = '{path}{separator}{filename_with_out_extension}_{datetime}.{extension}'
-    prefix_template = '{path}{separator}{datetime}_{filename_with_out_extension}.{extension}'
-    if '/' in filename and '\\' in filename:
-        raise ValueError('Filename %s contains both / and \\ separators' % filename)
-    if '\\' in filename:
-        path_parts = filename.split('\\')
-        file = path_parts[-1]
-        path = '\\'.join(path_parts[:-1])
-        separator = '\\'
-    elif '/' in filename:
-        path_parts = filename.split('/')
-        file = path_parts[-1]
-        path = '/'.join(path_parts[:-1])
-        separator = '/'
-    else:
-        file = filename
-        path = ''
-        separator = ''
-
-    new_filename_data['path'] = path
-    parts = file.split('.')
-    if kwargs.get('extension', None) is not None:
-        new_filename_data['extension'] = kwargs['extension']
-    else:
-        new_filename_data['extension'] = parts[-1]
-
-    new_filename_data['separator'] = separator
-    new_filename_data['filename_with_out_extension'] = '.'.join(parts[:-1])
-    new_filename_data['datetime'] = current_datetime[:-2]
-    date_position = kwargs.get('date_position', 'suffix')
-    if date_position == 'suffix':
-        new_filename = suffix_template.format(**new_filename_data)
-        if os.path.exists(new_filename):
-            new_filename_data['datetime'] = current_datetime
-            new_filename = suffix_template.format(**new_filename_data)
-    else:
-        new_filename = prefix_template.format(**new_filename_data)
-        if os.path.exists(new_filename):
-            new_filename_data['datetime'] = current_datetime
-            new_filename = prefix_template.format(**new_filename_data)
-
-    return new_filename
-
-
-def deprecated(func):
-    '''This is a decorator which can be used to mark functions
-        as deprecated. It will result in a warning being emitted
-        when the function is used.
-       from: https://wiki.python.org/moin/PythonDecoratorLibrary#CA-92953dfd597a5cffc650d5a379452bb3b022cdd0_7
-    '''
-
-    @functools.wraps(func)
-    def new_func(*args, **kwargs):
-        warnings.warn_explicit("Call to deprecated function {}.".format(func.__name__),
-                               category=DeprecationWarning,
-                               filename=func.__code__.co_filename,
-                               lineno=func.__code__.co_firstlineno + 1
-                               )
-        return func(*args, **kwargs)
-
-    return new_func
-
-
-@deprecated
-def daterange(start_date, end_date):
-    """
-    DEPRECATED use utils.weekdays() function instead
-    :param start_date:
-    :param end_date:
-    :return:
-    """
-    return weekdays(start_date, end_date)
-
-
 def weekdays(start_date, end_date):
     """
     Returns a generator with the dates of the week days between the start and end date
@@ -169,7 +59,7 @@ def weekdays(start_date, end_date):
     :param start_date: date. Start date
     :param end_date: date. End date
     """
-    weekend = set([5, 6])
+    weekend = {5, 6}
     for n in range(int((end_date - start_date).days) + 1):
         dt = start_date + timedelta(n)
         if dt.weekday() not in weekend:
@@ -196,9 +86,6 @@ def force_date_to_datetime(unconverted_date, tzinfo=pytz.UTC):
     converted_datetime = date(year=unconverted_date.year,
                               month=unconverted_date.month,
                               day=unconverted_date.day,
-                              hour=0,
-                              minute=0,
-                              second=0,
                               tzinfo=tzinfo)
     return converted_datetime
 
@@ -359,3 +246,38 @@ spanish_date_util = SpanishDate()
 
 def parse_spanish_date(str_date):
     return spanish_date_util.parse(str_date)
+
+
+def clean_dict(dictionary: Dict[str, Any], split_dates: bool = False, **kwargs) -> Dict[str, Any]:
+    """Function to clean a model dictionary. It will change:
+    1. elements that are None to blank string so it will be valid for POST data.
+    2. elements that are date to string value in format %Y-%m-%d or the value supplied in kwargs['date_format']
+    3. elements that are datetime to string value in format %Y-%m-%d %H:%M:%S or the value supplied
+    in kwargs['datetime_format']
+    4. elements that are Decimal to float
+    Since the Django admin splits the dates int 2 inputs if split_dates is True and the name of the field is start_date
+    the function will create a start_date_0 with the date and a start_date_1 with the time.
+    :param dictionary:
+    :param split_dates:
+    :return: dictionary """
+
+    keys = list(dictionary.keys())
+
+    for key in keys:
+        if dictionary[key] is None:
+            dictionary[key] = ''
+        if type(dictionary[key]) == datetime:
+            date_format = kwargs.get('datetime_format', '%Y-%m-%d %H:%M:%S')
+            if split_dates:
+                date_value, time_value = dictionary[key].strftime(date_format).split(' ')
+                dictionary[f'{key}_0'] = date_value
+                dictionary[f'{key}_1'] = time_value
+            else:
+                dictionary[key] = dictionary[key].strftime(date_format)
+        if type(dictionary[key]) == date:
+            date_format = kwargs.get('date_format', '%Y-%m-%d')
+            dictionary[key] = dictionary[key].strftime(date_format)
+        if isinstance(dictionary[key], Decimal):
+            dictionary[key] = float(str(dictionary[key]))
+
+    return dictionary

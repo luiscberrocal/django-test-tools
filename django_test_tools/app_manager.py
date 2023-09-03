@@ -55,6 +55,7 @@ class DjangoAppManager(object):
         field_dict['unique'] = field.unique
         field_dict['primary_key'] = field.primary_key
         field_dict['editable'] = field.editable
+        field_dict['help_text'] = field.help_text
         if hasattr(field, 'choices') and field.choices is not None:
             field_dict['choices_type'] = type(field.choices).__name__
             if field_dict['choices_type'] == 'tuple':
@@ -67,5 +68,7 @@ class DjangoAppManager(object):
             field_dict['decimal_places'] = field.decimal_places
         if hasattr(field, 'remote_field') and field.remote_field is not None:
             field_dict['remote_field'] = field.remote_field.model.__name__
+
+
         field_list.append(field_dict)
         return field_dict

@@ -1,15 +1,15 @@
 from rest_framework import serializers
-# Generated with django-test-tools version 1.9.7 on 2020-03-30 18:15:18 UTC
+# Generated with django-test-tools version 2.1.0 on 2023-09-03 12:14:48 UTC
 
 
 class PersonSerializer(serializers.ModelSerializer):
     """
     Standard Serializer for the Person model.
-    
+
     """
     class Meta:
         model = Person
-        field = ('id', 'first_name', 'middle_name', 'last_name', 'sex', 'national_id', 'national_id_type', 'country_for_id', 'picture', 'date_of_birth', 'blood_type', 'religion', 'document', 'salary_currency', 'salary', 'cell_phone', )
+        field = ('id', 'first_name', 'middle_name', 'last_name', 'sex', 'national_id', 'national_id_type', 'country_for_id', 'picture', 'date_of_birth', 'blood_type', 'religion', 'document', 'salary_currency', 'salary', 'cell_phone', 'email', 'metadata', )
 
 
 
