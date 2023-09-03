@@ -170,9 +170,8 @@ class TestCharFieldGenericHandler(SimpleTestCase):
         self.assertEqual(result.required_imports, ['from factory import LazyAttribute',
                                                    'from faker import Factory as FakerFactory',
                                                    'faker = FakerFactory.create()'])
-        expected = (f'LazyAttribute(lambda x: '
-                    f'FuzzyText(length={max_len}, '
-                    f'chars=string.ascii_letters).fuzz())')
+        expected = (f'LazyAttribute(lambda x: faker.text(max_nb_chars='
+                    f'{max_len}))')
         self.assertEqual(result.factory_entry, expected)
 
     def test_handle_non_char_id_field(self):
