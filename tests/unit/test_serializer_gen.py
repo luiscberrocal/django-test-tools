@@ -4,7 +4,7 @@ from django.test import TestCase
 from django_test_tools.app_manager import DjangoAppManager
 from django_test_tools.file_utils import temporary_file
 from django_test_tools.generators.serializer_gen import SerializerGenerator, AppSerializerGenerator
-from tests.test_model_test_gen import PythonWritingTestMixin
+from tests.unit.test_model_test_gen import PythonWritingTestMixin
 
 
 class TestSerializerGenerator(PythonWritingTestMixin, TestCase):
