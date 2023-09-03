@@ -28,8 +28,8 @@ class TestAppSerializerGenerator(PythonWritingTestMixin, TestCase):
         app_manager = DjangoAppManager()
         app = app_manager.get_app(app_name)
         app_serializers = AppSerializerGenerator(app)
-        hash = self.write_generator_to_file(self.test_app_str.filename, app_serializers)
+        hash_digest = self.write_generator_to_file(self.test_app_str.filename, app_serializers)
         if app_name == 'example.servers':
-            self.assertEqual('408e2da1f563da009af5da9c4c9e7ee11cc3beae', hash)
+            self.assertEqual('408e2da1f563da009af5da9c4c9e7ee11cc3beae', hash_digest)
         else:
-            self.assertEqual(hash, 'fa5509b309d47913af26c20e1800f0921a2783a8') #FIXME Why do this?
+            self.assertEqual(hash_digest, 'fa5509b309d47913af26c20e1800f0921a2783a8')  # FIXME Why do this?
