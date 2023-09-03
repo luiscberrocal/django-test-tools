@@ -11,6 +11,7 @@ from tests.common_vars import FIXTURES_FOLDER
 class PythonWritingTestMixin:
 
     def write_generator_to_file(self, filename, generator):
+        # FIXME Deprecate
         with open(filename, 'w', encoding='utf-8') as py_file:
             py_file.write(str(generator))
         hash = hash_file(filename)
@@ -19,15 +20,15 @@ class PythonWritingTestMixin:
 
 class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
-    def test_str(self):
+    def test_str_servers(self):
         app_name = settings.TEST_APP_SERVERS
         model_name = 'Server'
         app_manager = DjangoAppManager()
         model = app_manager.get_model(app_name, model_name)
         mtg = ModelTestCaseGenerator(model)
 
-        test_file = self.test_str.filename
-        hash = self.write_generator_to_file(test_file, mtg)
+        test_file = self.test_str_servers.filename
+        self.write_generator_to_file(test_file, mtg)
 
         source_file = FIXTURES_FOLDER / 'test_app_str_20230903_0820.py'
 
@@ -39,12 +40,12 @@ class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
 
 class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
-    def test_app_str(self):
+    def test_app_str_servers(self):
         app_name = settings.TEST_APP_SERVERS
         app_manager = DjangoAppManager()
         app = app_manager.get_app(app_name)
         app_model_tests = AppModelsTestCaseGenerator(app)
-        hash = self.write_generator_to_file(self.test_app_str.filename, app_model_tests)
+        hash = self.write_generator_to_file(self.test_app_str_servers.filename, app_model_tests)
         if app_name == 'example.servers':
             self.assertEqual(hash, 'aa938222425fd4a5c704ed45c89f8053249cffe3')
         else:

@@ -317,6 +317,8 @@ class TemporaryFolder:
 def compare_content(*, source_file: Path, test_file: Path, excluded_lines: List[int] = None,
                     encoding: str = 'utf-8', eol: str = '\n', raise_exception: bool = True,
                     strip: bool = True) -> List[str]:
+    source_file = Path(source_file)
+    test_file = Path(test_file)
     errors = []
     if excluded_lines is None:
         excluded_lines = []
@@ -331,16 +333,22 @@ def compare_content(*, source_file: Path, test_file: Path, excluded_lines: List[
 
     for i in range(len(source_lines)):
         if i not in excluded_lines:
-            if strip:
-                source_line = source_lines[i].strip()
-                test_line = test_lines[i].strip()
-            else:
-                source_line = source_lines[i]
-                test_line = test_lines[i]
-            if source_line != test_line:
-                msg = 'On line {} expected "{}" got "{}"'.format(i,
-                                                                 source_lines[i].replace(eol, ''),
-                                                                 test_lines[i].replace(eol, ''))
+            try:
+                if strip:
+                    source_line = source_lines[i].strip()
+                    test_line = test_lines[i].strip()
+                else:
+                    source_line = source_lines[i]
+                    test_line = test_lines[i]
+                if source_line != test_line:
+                    msg = 'On line {} expected "{}" got "{}"'.format(i,
+                                                                     source_lines[i].replace(eol, ''),
+                                                                     test_lines[i].replace(eol, ''))
+                    errors.append(msg)
+                    if raise_exception:
+                        raise DjangoTestToolsException(msg)
+            except IndexError:
+                msg = f'Line {i} is found in source file {source_file.name} but is missing in {test_file.name}'
                 errors.append(msg)
                 if raise_exception:
                     raise DjangoTestToolsException(msg)
