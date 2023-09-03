@@ -2,7 +2,7 @@ import os
 
 from django.core.management import BaseCommand
 
-from ...file_utils import add_date
+from django_test_tools.file_utils import add_date
 from ...flake8.parsers import Flake8Parser, RadonParser
 
 
