@@ -12,7 +12,7 @@ class ModelFieldHandler(ABC):
         pass
 
     @abstractmethod
-    def handle(self, field_data: FieldInfo) -> Dict[str, Any] | None:
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         pass
 
 
@@ -24,7 +24,7 @@ class AbstractModelFieldHandler(ModelFieldHandler):
         self._next_handler = handler
         return handler
 
-    def handle(self, field_data: FieldInfo) -> Dict[str, Any] | None:
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if self._next_handler:
             return self._next_handler.handle(field_data)
         return None
@@ -33,10 +33,16 @@ class AbstractModelFieldHandler(ModelFieldHandler):
 class DateTimeFieldHandler(AbstractModelFieldHandler):
     field = FieldType.DATETIME_FIELD
 
-    def handle(self, field_data: FieldInfo ) -> Dict[str, Any] | None:
-        if field_data.field_type == self.field:
-            field_data['factory_field'] = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", ' \
-                                          'end_date="now", tzinfo=timezone(settings.TIME_ZONE)))'
+    def __init__(self, exclude: List[str] = None):
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type == self.field and field_data.name not in self.excluded:
+            field_data.factory_entry = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", ' \
+                                       'end_date="now", tzinfo=timezone(settings.TIME_ZONE)))'
             return field_data
         else:
             return super().handle(field_data)
