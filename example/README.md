@@ -11,6 +11,9 @@ To run this example, follow these instructions:
 2. Install the requirements for the package:
 		
 		pip install -r requirements.txt
+
+3. Change name in  example.people.apps.PeopleConfig from `examples.people` to `people`
+3. Change name in  example.servers.apps.ExampleConfig from `examples.servers` to `servers`
 		
 3. Make and apply migrations
 
@@ -23,3 +26,5 @@ To run this example, follow these instructions:
 		python manage.py runserver
 		
 5. Access from the browser at `http://127.0.0.1:8000`
+
+6. Change the name in the apps to their original value, otherwise tests will break.

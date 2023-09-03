@@ -1,4 +1,5 @@
 from django.db import models
+
 try:
     from django.utils.translation import ugettext_lazy as _
 except:
@@ -46,6 +47,9 @@ class Human(models.Model):
 
 
 class Person(Human):
+    """Person model. It's based in the Human model."""
     document = models.FileField()
     salary = MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
     cell_phone = models.CharField(max_length=16, null=True)
+    email = models.EmailField(help_text=_('Primary email'), null=True, blank=True)
+    metadata = models.JSONField(help_text=_('Metadata'), null=True, blank=True)

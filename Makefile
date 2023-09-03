@@ -34,7 +34,7 @@ lint: ## check style with flake8
 	flake8 django_test_tools tests
 
 test: clean-output ## run tests quickly with the default Python
-	python runtests.py tests
+	python manage.py test --settings tests.settings
 
 test-all: ## run tests on every Python version with tox
 	tox

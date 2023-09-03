@@ -9,8 +9,8 @@ from django.core.management import BaseCommand
 import logging
 from openpyxl import Workbook
 
-from ...file_utils import add_date
-from ...utils import datetime_to_local_time
+from django_test_tools.file_utils import add_date
+from django_test_tools.utils import datetime_to_local_time
 
 logger = logging.getLogger(__name__)
 

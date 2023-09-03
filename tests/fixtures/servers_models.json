@@ -1,0 +1,170 @@
+{
+    "app_name": "example.servers",
+    "models": {
+        "operatingsystem": {
+            "model_name": "OperatingSystem",
+            "original_attrs": {
+                "unique_together": [
+                    "name",
+                    "version"
+                ]
+            },
+            "fields": [
+                {
+                    "field_name": "id",
+                    "type": "AutoField",
+                    "unique": true,
+                    "primary_key": true,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "name",
+                    "type": "CharField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "max_length": 20
+                },
+                {
+                    "field_name": "version",
+                    "type": "CharField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "max_length": 5
+                },
+                {
+                    "field_name": "licenses_available",
+                    "type": "IntegerField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "cost",
+                    "type": "DecimalField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "max_digits": 7,
+                    "decimal_places": 2
+                }
+            ]
+        },
+        "server": {
+            "model_name": "Server",
+            "original_attrs": {},
+            "fields": [
+                {
+                    "field_name": "id",
+                    "type": "AutoField",
+                    "unique": true,
+                    "primary_key": true,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "name",
+                    "type": "CharField",
+                    "unique": true,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "max_length": 20
+                },
+                {
+                    "field_name": "notes",
+                    "type": "TextField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "virtual",
+                    "type": "BooleanField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "ip_address",
+                    "type": "GenericIPAddressField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "max_length": 39
+                },
+                {
+                    "field_name": "created",
+                    "type": "DateTimeField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "online_date",
+                    "type": "DateField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": ""
+                },
+                {
+                    "field_name": "operating_system",
+                    "type": "ForeignKey",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "remote_field": "OperatingSystem"
+                },
+                {
+                    "field_name": "server_id",
+                    "type": "CharField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "max_length": 6
+                },
+                {
+                    "field_name": "use",
+                    "type": "CharField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": "",
+                    "choices_type": "tuple",
+                    "choices": [
+                        [
+                            "PROD",
+                            "Prod"
+                        ],
+                        [
+                            "DEV",
+                            "Dev"
+                        ]
+                    ],
+                    "max_length": 4
+                },
+                {
+                    "field_name": "comments",
+                    "type": "TextField",
+                    "unique": false,
+                    "primary_key": false,
+                    "editable": true,
+                    "help_text": ""
+                }
+            ]
+        }
+    }
+}

@@ -9,7 +9,7 @@ class TestFactoryBoyGenerator(TestCase):
     def test_create_template_data_servers(self):
         generator = FactoryBoyGenerator()
         server_template_data = generator.create_template_data(settings.TEST_APP_SERVERS)
-        #write_assertions(server_template_data, 'server_template_data')
+        # write_assertions(server_template_data, 'server_template_data')
         self.assertEqual(server_template_data['app_name'], 'example.servers')
         self.assertEqual(len(server_template_data['models']['operatingsystem']['fields']), 4)
         self.assertEqual(server_template_data['models']['operatingsystem']['fields'][0]['factory'],
@@ -58,12 +58,14 @@ class TestFactoryBoyGenerator(TestCase):
         self.assertEqual(server_template_data['models']['server']['fields'][3]['is_supported'], True)
         self.assertEqual(server_template_data['models']['server']['fields'][3]['type'], 'GenericIPAddressField')
         self.assertEqual(server_template_data['models']['server']['fields'][4]['factory'],
-                         'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now", tzinfo=timezone(settings.TIME_ZONE)))')
+                         'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", end_date="now", '
+                         'tzinfo=timezone(settings.TIME_ZONE)))')
         self.assertEqual(server_template_data['models']['server']['fields'][4]['field_name'], 'created')
         self.assertEqual(server_template_data['models']['server']['fields'][4]['is_supported'], True)
         self.assertEqual(server_template_data['models']['server']['fields'][4]['type'], 'DateTimeField')
         self.assertEqual(server_template_data['models']['server']['fields'][5]['factory'],
-                         'LazyAttribute(lambda x: faker.date_between(start_date="-1y", end_date="today", tzinfo=timezone(settings.TIME_ZONE)))')
+                         'LazyAttribute(lambda x: faker.date_between(start_date="-1y", end_date="today", '
+                         'tzinfo=timezone(settings.TIME_ZONE)))')
         self.assertEqual(server_template_data['models']['server']['fields'][5]['field_name'], 'online_date')
         self.assertEqual(server_template_data['models']['server']['fields'][5]['is_supported'], True)
         self.assertEqual(server_template_data['models']['server']['fields'][5]['type'], 'DateField')
@@ -136,7 +138,8 @@ class TestFactoryBoyGenerator(TestCase):
         self.assertEqual(people_template_data['models']['person']['fields'][7]['is_supported'], False)
         self.assertEqual(people_template_data['models']['person']['fields'][7]['type'], 'ImageField')
         self.assertEqual(people_template_data['models']['person']['fields'][8]['factory'],
-                         'LazyAttribute(lambda x: faker.date_between(start_date="-1y", end_date="today", tzinfo=timezone(settings.TIME_ZONE)))')
+                         'LazyAttribute(lambda x: faker.date_between(start_date="-1y", end_date="today"'
+                         ', tzinfo=timezone(settings.TIME_ZONE)))')
         self.assertEqual(people_template_data['models']['person']['fields'][8]['field_name'], 'date_of_birth')
         self.assertEqual(people_template_data['models']['person']['fields'][8]['is_supported'], True)
         self.assertEqual(people_template_data['models']['person']['fields'][8]['type'], 'DateField')

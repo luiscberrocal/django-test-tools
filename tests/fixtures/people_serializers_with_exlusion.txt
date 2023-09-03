@@ -5,11 +5,11 @@ from rest_framework import serializers
 class PersonSerializer(serializers.ModelSerializer):
     """
     Standard Serializer for the Person model.
-    The following fields where ignored by the generator: national_id_type, 
+    The following fields where ignored by the generator: national_id_type,
     """
     class Meta:
         model = Person
-        field = ('id', 'first_name', 'middle_name', 'last_name', 'sex', 'national_id', 'country_for_id', 'picture', 'date_of_birth', 'blood_type', 'religion', 'document', 'salary_currency', 'salary', 'cell_phone', )
+        field = ('id', 'first_name', 'middle_name', 'last_name', 'sex', 'national_id', 'country_for_id', 'picture', 'date_of_birth', 'blood_type', 'religion', 'document', 'salary_currency', 'salary', 'cell_phone', 'email', 'metadata', )
 
 
 
