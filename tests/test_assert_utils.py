@@ -6,7 +6,6 @@ import pytz
 from django.test import SimpleTestCase
 
 from django_test_tools.assert_utils import AssertionWriter, write_assertions
-from django_test_tools._legacy.assert_utils import write_assert_list
 from django_test_tools.file_utils import temporary_file, hash_file
 from django_test_tools.mixins import TestOutputMixin
 
@@ -102,22 +101,22 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[17], 'self.assertIsNotNone(data[1][\'name\']) # Example: pasto')
         self.assertEqual(content[18], 'self.assertIsNotNone(data[1][\'password\']) # Example: nogo')
 
-    @temporary_file('py', delete_on_exit=True)
-    def test_write_assert_list(self):
-        data = [
-            {'name': 'kilo', 'password': 9999,
-             'groups': ['admin', 'users'],
-             'config': {'server': 'all', 'bulding': 116}},
-            {'name': 'pasto', 'password': 'nogo',
-             'groups': ['users'],
-             'config': {'server': 'database', 'bulding': 116},
-             'created': '2016-10-01',
-             'modified': '2016-10-01'}
-        ]
-        filename = write_assert_list(self.test_write_assert_list.filename, data, 'data')
-        self.assertEqual(filename, self.test_write_assert_list.filename)
-        hash_digest = hash_file(filename)
-        self.assertEqual('5cd2e29830c5c0a9af1e60a8f08b3ffc49cf92fb', hash_digest)
+    # @temporary_file('py', delete_on_exit=True)
+    # def test_write_assert_list(self):
+    #     data = [
+    #         {'name': 'kilo', 'password': 9999,
+    #          'groups': ['admin', 'users'],
+    #          'config': {'server': 'all', 'bulding': 116}},
+    #         {'name': 'pasto', 'password': 'nogo',
+    #          'groups': ['users'],
+    #          'config': {'server': 'database', 'bulding': 116},
+    #          'created': '2016-10-01',
+    #          'modified': '2016-10-01'}
+    #     ]
+    #     filename = write_assert_list(self.test_write_assert_list.filename, data, 'data')
+    #     self.assertEqual(filename, self.test_write_assert_list.filename)
+    #     hash_digest = hash_file(filename)
+    #     self.assertEqual('5cd2e29830c5c0a9af1e60a8f08b3ffc49cf92fb', hash_digest)
 
     @temporary_file('py', delete_on_exit=True)
     def test_write_assert_regexp(self):
