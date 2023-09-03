@@ -364,16 +364,16 @@ def parse_spanish_date(str_date):
 
 def clean_dict(dictionary: Dict[str, Any], split_dates: bool = False, **kwargs) -> Dict[str, Any]:
     """Function to clean a model dictionary. It will change:
-	1. elements that are None to blank string so it will be valid for POST data.
-	2. elements that are date to string value in format %Y-%m-%d or the value supplied in kwargs['date_format']
-	3. elements that are datetime to string value in format %Y-%m-%d %H:%M:%S or the value supplied
-	in kwargs['datetime_format']
-	4. elements that are Decimal to float
+    1. elements that are None to blank string so it will be valid for POST data.
+    2. elements that are date to string value in format %Y-%m-%d or the value supplied in kwargs['date_format']
+    3. elements that are datetime to string value in format %Y-%m-%d %H:%M:%S or the value supplied
+    in kwargs['datetime_format']
+    4. elements that are Decimal to float
     Since the Django admin splits the dates int 2 inputs if split_dates is True and the name of the field is start_date
-	the function will create a start_date_0 with the date and a start_date_1 with the time.
-	:param dictionary:
-	:param split_dates:
-	:return: dictionary """
+    the function will create a start_date_0 with the date and a start_date_1 with the time.
+    :param dictionary:
+    :param split_dates:
+    :return: dictionary """
 
     keys = list(dictionary.keys())
 

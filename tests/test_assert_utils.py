@@ -3,7 +3,7 @@ from datetime import datetime, date
 from decimal import Decimal
 
 import pytz
-from django.test import TestCase, SimpleTestCase
+from django.test import SimpleTestCase
 
 from django_test_tools.assert_utils import write_assert_list, AssertionWriter, write_assertions
 from django_test_tools.file_utils import temporary_file, hash_file
@@ -93,8 +93,9 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[11], 'self.assertEqual(len(data[1][\'config\'].keys()), 2)')
         self.assertEqual(content[12], 'self.assertIsNone(data[1][\'config\'][\'bulding\']) # Example: None')
         self.assertEqual(content[13], 'self.assertIsNotNone(data[1][\'config\'][\'server\']) # Example: database')
-        self.assertEqual(content[14],
-                         'self.assertRegex(data[1][\'created_date\'].strftime(\'%Y-%m-%d\'), r\'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\') # Example: 2016-01-03')
+        expected = ('self.assertRegex(data[1][\'created_date\'].strftime(\'%Y-%m-%d\'),'
+                    ' r\'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\') # Example: 2016-01-03')  # noqa
+        self.assertEqual(content[14], expected)
         self.assertEqual(content[15], 'self.assertEqual(len(data[1][\'groups\']), 1)')
         self.assertEqual(content[16], 'self.assertIsNotNone(data[1][\'groups\'][0]) # Example: users')
         self.assertEqual(content[17], 'self.assertIsNotNone(data[1][\'name\']) # Example: pasto')
@@ -135,7 +136,7 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         assertion_writer = AssertionWriter(use_regexp_assertion=True)
         assertion_writer.add_regular_expression('constant', '^[A-Z]+$')
         assertion_writer.write_assert_list(data, 'data', filename=filename)
-        hash_digest = hash_file(filename)
+        # hash_digest = hash_file(filename)
 
         content = self.get_txt_content(filename)
 
@@ -150,20 +151,13 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         self.assertEqual(content[7], 'self.assertEqual(data[0][\'password\'], 9999)')
         self.assertEqual(content[8], 'self.assertEqual(data[1][\'config\'][\'bulding\'], 116)')
         self.assertEqual(content[9], 'self.assertEqual(data[1][\'config\'][\'server\'], \'database\')')
-        self.assertEqual(content[10], 'self.assertRegex(data[1][\'cost\'], r\'^(\d+\.\d+)$\')')
+        self.assertEqual(content[10], 'self.assertRegex(data[1][\'cost\'], r\'^(\d+\.\d+)$\')')  # noqa97G
         self.assertEqual(content[11], 'self.assertEqual(len(data[1][\'groups\']), 1)')
         self.assertEqual(content[12], 'self.assertEqual(data[1][\'groups\'][0], \'users\')')
         self.assertEqual(content[13], 'self.assertEqual(data[1][\'name\'], \'pasto\')')
         self.assertEqual(content[14], 'self.assertEqual(data[1][\'password\'], \'nogo\')')
-        self.assertEqual(content[15], 'self.assertRegex(data[1][\'time\'], r\'^([0-1][0-9]|2[0-4]):([0-5][0-9])$\')')
-
-    def test__build_assertion_datetime(self):
-        date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
-        assertion_list = list()
-        self.writer._build_equals_assertion('date_time', date_time, assertion_list)
-        expected_result = "self.assertEqual(date_time.strftime('%Y-%m-%d %H:%M:%S%z'), '2017-02-21 14:45:04+0000')"
-        self.assertEqual(expected_result, assertion_list[0])
-        eval(assertion_list[0])
+        expexted = 'self.assertRegex(data[1][\'time\'], r\'^([0-1][0-9]|2[0-4]):([0-5][0-9])$\')'
+        self.assertEqual(content[15], expexted)
 
     def test__build_assertion_datetime(self):
         date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
@@ -209,8 +203,9 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         date_time = datetime(2017, 2, 21, 14, 45, 4, tzinfo=pytz.UTC)
         assertion_list = list()
         self.writer._build_type_assertion('date_time', date_time, assertion_list)
+        expected_regexp = "r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\s\d{2}:\d{2}:\d{2}\+\d{4}')"  # noqa
         expected_result = "self.assertRegex(date_time.strftime('%Y-%m-%d %H:%M:%S%z')," \
-                          " r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\s\d{2}:\d{2}:\d{2}\+\d{4}') " \
+                          f" {expected_regexp} " \
                           "# Example: 2017-02-21 14:45:04+0000"
         self.assertEqual(assertion_list[0], expected_result, )
         eval(assertion_list[0])
@@ -220,7 +215,7 @@ class TestAssertionWriter(TestOutputMixin, SimpleTestCase):
         assertion_list = list()
         self.writer._build_type_assertion('date_value', date_value, assertion_list)
         expected_result = "self.assertRegex(date_value.strftime('%Y-%m-%d')," \
-                          " r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))') # Example: 2017-02-21"
+                          " r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))') # Example: 2017-02-21"  # noqa
         self.assertEqual(expected_result, assertion_list[0])
         eval(assertion_list[0])
 
