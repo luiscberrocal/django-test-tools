@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.test import TestCase
 
@@ -9,7 +11,7 @@ class TestDjangoAppManager(TestCase):
         app_manager = DjangoAppManager()
         self.assertEqual(9, len(app_manager.installed_apps))
 
-    def test_get_app(self):
+    def test_get_app_1(self):
         app_manager = DjangoAppManager()
         app = app_manager.get_app(settings.TEST_APP_SERVERS)
         self.assertEqual(settings.TEST_APP_SERVERS, app.name)
