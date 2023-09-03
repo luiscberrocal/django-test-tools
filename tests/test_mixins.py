@@ -30,7 +30,7 @@ class TestTestCommandMixin(SimpleTestCase):
         mixin.content.write('Kilo\n')
         mixin.content.write('VIctor\n')
         results = mixin.get_results()
-        self.assertEqual(len(results),2)
+        self.assertEqual(len(results), 2)
 
 
 class TestTestFixtureMixin(SimpleTestCase):

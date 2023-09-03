@@ -1,13 +1,11 @@
 import json
-import os
+
 from django.test import TestCase
 from faker import Factory as FakerFactory
 from openpyxl import Workbook
 
-from django_test_tools.assert_utils import write_assertions
 from django_test_tools.excel import ExcelAdapter
 from django_test_tools.file_utils import temporary_file, hash_file
-from django_test_tools.utils import create_output_filename_with_date
 
 faker = FakerFactory.create()
 
@@ -16,7 +14,7 @@ class TestExcelAdapter(TestCase):
     clean_output = True
 
     def _create_file(self, filename, sheet_name=None):
-        #self.filename = create_output_filename_with_date('excel_test3_.xlsx')
+        # self.filename = create_output_filename_with_date('excel_test3_.xlsx')
         wb = Workbook()
         sheet = wb.active
         if sheet_name is None:
