@@ -145,7 +145,8 @@ class CharFieldGenericHandler(AbstractModelFieldHandler):
 class DecimalFieldHandler(AbstractModelFieldHandler):
     field = FieldType.DECIMAL
 
-    def __init__(self, exclude: List[str] = None):
+    def __init__(self, is_positive: bool = True, exclude: List[str] = None):
+        self.is_positive = is_positive
         if exclude is None:
             self.excluded = []
         else:
@@ -160,7 +161,7 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
                                            'faker = FakerFactory.create()']
             left_digits = field_data.max_digits - field_data.decimal_places
             template = f'LazyAttribute(lambda x: faker.pydecimal(left_digits={left_digits}, ' \
-                       f'right_digits={field_data.decimal_places}, positive={field_data.positive}))'
+                       f'right_digits={field_data.decimal_places}, positive={self.is_positive}))'
             field_data.factory_entry = template
             return field_data
 
