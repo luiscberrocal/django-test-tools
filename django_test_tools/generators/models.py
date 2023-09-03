@@ -4,13 +4,15 @@ from pydantic import BaseModel
 
 from django_test_tools.generators.enums import FieldType
 
+class FieldAttributes(BaseModel):
+    max_length: Optional[int]
+
 
 class FieldInfo(BaseModel):
     name: str
     field_type: FieldType
     factory_entry = Optional[str]
-    max_length: Optional[int]
-
+    attributes: FieldAttributes
 
 class ModelInfo(BaseModel):
     name: str

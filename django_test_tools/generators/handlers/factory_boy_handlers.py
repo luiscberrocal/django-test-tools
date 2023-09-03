@@ -48,10 +48,11 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
             return super().handle(field_data)
 
 
-class CharFieldHandler(AbstractModelFieldHandler):
+class CharFieldIdHandler(AbstractModelFieldHandler):
     field = FieldType.CHAR_FIELD
 
     def __init__(self, exclude: List[str] = None):
+        self.digit_id_names = ['id', 'num', 'number']
         if exclude is None:
             self.excluded = []
         else:
@@ -59,8 +60,13 @@ class CharFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.field_type == self.field and field_data.name not in self.excluded:
-            field_data.factory_entry = ('LazyAttribute(lambda x: FuzzyText(length={max_length}, '
-                                        'chars=string.ascii_letters).fuzz())')
+            characters = 'ascii_letters'
+            for din in self.digit_id_names:
+                if din in field_data.name:
+                    characters = 'digits'
+                    break
+            field_data.factory_entry = (f'LazyAttribute(lambda x: FuzzyText(length={field_data.attributes.max_length}, '
+                                        f'chars=string.{characters}).fuzz())')
             return field_data
         else:
             return super().handle(field_data)
