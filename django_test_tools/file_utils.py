@@ -314,26 +314,33 @@ class TemporaryFolder:
 
 def compare_file_content(*args, **kwargs):
     errors = list()
-    file1 = args[0]
+    source_file = args[0]
     file2 = args[1]
     excluded_lines = kwargs.get('excluded_lines', [])
     encoding = kwargs.get('encoding', 'utf-8')
     raise_exception = kwargs.get('raise_exception', True)
     eol = kwargs.get('eol', '\n')
+    strip = True
 
     def get_lines(filename):
         with open(filename, 'r', encoding=encoding, newline=eol) as file:
             lines = file.readlines()
         return lines
 
-    lines1 = get_lines(file1)
+    source_lines = get_lines(source_file)
     lines2 = get_lines(file2)
 
-    for i in range(len(lines1)):
+    for i in range(len(source_lines)):
         if i not in excluded_lines:
-            if lines1[i] != lines2[i]:
+            if strip:
+                source_line = source_lines[i].strip()
+                test_line = lines2[i].strip()
+            else:
+                source_line = source_lines[i]
+                test_line = lines2[i]
+            if source_line != test_line:
                 msg = 'On line {} expected "{}" got "{}"'.format(i,
-                                                                 lines1[i].replace(eol, ''),
+                                                                 source_lines[i].replace(eol, ''),
                                                                  lines2[i].replace(eol, ''))
                 errors.append(msg)
                 if raise_exception:
