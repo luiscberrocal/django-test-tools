@@ -18,3 +18,5 @@ class FieldType(str, Enum):
     INTEGER = 'IntegerField'
     MONEY = 'MoneyField'
     TEXT = 'TextField'
+    JSON = 'JSONField'
+    EMAIL = 'EmailField'

@@ -33,13 +33,13 @@ class TestDjangoAppManager(TestCase):
         app_manager = DjangoAppManager()
         app_dict = app_manager.get_app_data(settings.TEST_APP_PEOPLE)
 
-        # from pathlib import Path
-        # filename = Path(settings.TEST_OUTPUT_PATH) / 'people_models.json'
-        # with open(filename, 'w') as f:
-        #     json.dump(app_dict, f, indent=4, default=str)
+        from pathlib import Path
+        filename = Path(settings.TEST_OUTPUT_PATH) / 'people_models.json'
+        with open(filename, 'w') as f:
+            json.dump(app_dict, f, indent=4, default=str)
 
         self.assertEqual(app_dict['app_name'], 'example.people')
-        self.assertEqual(len(app_dict['models']['person']['fields']), 16)
+        self.assertEqual(len(app_dict['models']['person']['fields']), 18)
         self.assertEqual(app_dict['models']['person']['fields'][0]['editable'], True)
         self.assertEqual(app_dict['models']['person']['fields'][0]['field_name'], 'id')
         self.assertEqual(app_dict['models']['person']['fields'][0]['type'], 'AutoField')
