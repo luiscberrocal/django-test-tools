@@ -46,3 +46,21 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
             return field_data
         else:
             return super().handle(field_data)
+
+
+class CharFieldHandler(AbstractModelFieldHandler):
+    field = FieldType.CHAR_FIELD
+
+    def __init__(self, exclude: List[str] = None):
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.field_type == self.field and field_data.name not in self.excluded:
+            field_data.factory_entry = 'LazyAttribute(lambda x: faker.date_time_between(start_date="-1y", ' \
+                                       'end_date="now", tzinfo=timezone(settings.TIME_ZONE)))'
+            return field_data
+        else:
+            return super().handle(field_data)

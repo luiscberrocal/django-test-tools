@@ -9,6 +9,7 @@ class FieldInfo(BaseModel):
     name: str
     field_type: FieldType
     factory_entry = Optional[str]
+    max_length: Optional[int]
 
 
 class ModelInfo(BaseModel):
