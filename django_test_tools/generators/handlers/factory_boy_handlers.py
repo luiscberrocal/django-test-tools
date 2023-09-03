@@ -101,15 +101,19 @@ class CharFieldGenericHandler(AbstractModelFieldHandler):
         if field_data.field_type != self.field or field_data.name in self.excluded:
             return super().handle(field_data)
         else:
-            # Imports
-            field_data.required_imports = ['import string', 'from factory import LazyAttribute',
-                                           'from factory.fuzzy import FuzzyText']
-            # Factory entry
-            characters = 'ascii_letters'
-            for din in self.digit_id_names:
-                if din in field_data.name:
-                    characters = 'digits'
-                    break
-            field_data.factory_entry = (f'LazyAttribute(lambda x: FuzzyText(length={field_data.attributes.max_length}, '
-                                        f'chars=string.{characters}).fuzz())')
+            if field_data.attributes.max_length > self.length_threshold:
+                field_data.required_imports = ['from factory import LazyAttribute',
+                                               'from faker import Factory as FakerFactory',
+                                               'faker = FakerFactory.create()']
+                field_data.factory_entry = (f'LazyAttribute(lambda x: faker.text(max_nb_chars='
+                                            f'{field_data.attributes.max_length}))')
+
+            else:
+                # Imports
+                field_data.required_imports = ['import string', 'from factory import LazyAttribute',
+                                               'from factory.fuzzy import FuzzyText']
+                # Factory entry
+                field_data.factory_entry = (f'LazyAttribute(lambda x: '
+                                            f'FuzzyText(length={field_data.attributes.max_length}, '
+                                            f'chars=string.ascii_letters).fuzz())')
             return field_data
