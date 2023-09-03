@@ -15,8 +15,6 @@ from openpyxl.compat import deprecated
 
 from .file_utils import add_date
 
-__author__ = 'lberrocal'
-
 
 def versiontuple(v):
     return tuple(map(int, (v.split("."))))
