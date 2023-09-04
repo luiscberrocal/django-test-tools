@@ -16,10 +16,10 @@ class TestDjangoAppManager(TestCase):
         app = app_manager.get_app(settings.TEST_APP_SERVERS)
         self.assertEqual(settings.TEST_APP_SERVERS, app.name)
         self.assertEqual('example.servers', app.name)
-        self.assertEqual(app.models['server'].__name__, 'server')
+        self.assertEqual(app.models['server'].__name__, 'Server')
         self.assertEqual(len(app.models['server']._meta.fields), 11)
         self.assertEqual(app.models['server']._meta.fields[0].name, 'id')
-        self.assertEqual(type(app.models['server']._meta.fields[0].name).__name__, 'id')
+        self.assertEqual(type(app.models['server']._meta.fields[0].name).__name__, 'str')
 
     def test_get_project_apps(self):
         app_manager = DjangoAppManager()

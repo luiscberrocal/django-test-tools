@@ -95,7 +95,7 @@ class TestFactoryBoyGenerator(TestCase):
     def test_create_template_data_people(self):
         generator = FactoryBoyGenerator()
         people_template_data = generator.create_template_data(settings.TEST_APP_PEOPLE)
-        
+
         # from django_test_tools.assert_utils import write_assertions
         # write_assertions(people_template_data, 'people_template_data')
         # self.fail('Running assertion')
