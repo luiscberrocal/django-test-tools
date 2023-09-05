@@ -4,13 +4,14 @@ import os
 from django.conf import settings
 from django.test import TestCase, SimpleTestCase
 
-from django_test_tools.file_utils import hash_file, temporary_file, compare_file_content
+from django_test_tools.file_utils import hash_file, temporary_file, compare_file_content, compare_content
 from django_test_tools.generators.crud_generator import UrlGenerator, SerializerTestGenerator, GenericTemplateWriter
 # try:
 #     from example.servers.api.serializers import ServerSerializer
 # except:
 #     from servers.api.serializers import ServerSerializer
 from django_test_tools.generators.model_generator import FactoryBoyGenerator, ModelSerializerGenerator
+from tests.common_vars import FIXTURES_FOLDER
 
 
 class TestUrlGenerator(TestCase):
@@ -102,8 +103,10 @@ class TestGenericTemplateWriter(SimpleTestCase):
         template_name = 'factories.py.j2'
         writer = GenericTemplateWriter(template_name)
         writer.write(factory_template_data, self.test_write_people.filename)
-        hash = hash_file(self.test_write_people.filename)
-        self.assertEqual(hash, '799fd2de59c6ee8e973855b44985bbd12b16fbdd')
+        # hash = hash_file(self.test_write_people.filename)
+        source_file = FIXTURES_FOLDER / 'test_write_people._20230904_0746.py'
+        compare_content(source_file=source_file, test_file=self.test_write_people.filename)
+        #  self.assertEqual(hash, '799fd2de59c6ee8e973855b44985bbd12b16fbdd')
 
 
 class TestModelSerializerGenerator(SimpleTestCase):
