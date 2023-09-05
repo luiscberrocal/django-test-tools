@@ -207,6 +207,7 @@ class TestGenerateModelTestCasesCommand(TestOutputMixin, TestCommandMixin, TestC
         call_command('generate_model_test_cases', settings.TEST_APP_SERVERS, stdout=self.content)
         results = self.get_results()
         self.assertEqual(106, len(results))
+        # FIXME Very poor test
 
 
 class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase):
@@ -214,6 +215,7 @@ class TestGenerateSerializersCommand(TestOutputMixin, TestCommandMixin, TestCase
         call_command('generate_serializers', settings.TEST_APP_SERVERS, stdout=self.content)
         results = self.get_results()
         self.assertEqual(22, len(results))
+        # FIXME Very poor test
 
 
 class TestSerializerTestGeneratorCommand(TestCommandMixin, SimpleTestCase):

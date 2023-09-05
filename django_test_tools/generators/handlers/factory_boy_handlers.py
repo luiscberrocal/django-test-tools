@@ -227,3 +227,24 @@ class TextFieldHandler(AbstractModelFieldHandler):
                         f'variable_nb_sentences=True))')
             field_data.factory_entry = template
             return field_data
+
+
+class EmailFieldGenericHandler(AbstractModelFieldHandler):
+    field = FieldType.EMAIL
+
+    def __init__(self, exclude: List[str] = None):
+        if exclude is None:
+            self.excluded = []
+        else:
+            self.excluded = exclude
+
+    def handle(self, field_data: FieldInfo) -> FieldInfo | None:
+        if field_data.type != self.field or field_data.field_name in self.excluded:
+            return super().handle(field_data)
+        else:
+            field_data.required_imports = ['from factory import LazyAttribute',
+                                           'from faker import Factory as FakerFactory',
+                                           'faker = FakerFactory.create()']
+            field_data.factory_entry = 'LazyAttribute(lambda x: faker.free_email())'
+
+            return field_data
