@@ -2,6 +2,7 @@ import os
 import pickle
 import shutil
 from datetime import date, datetime
+from pathlib import Path
 from unittest import mock
 
 import pytz
@@ -274,6 +275,7 @@ class Testcompare_file_content(SimpleTestCase):
 
     @temporary_files('txt', delete_on_exit=True)
     def test_compare_file_content(self):
+        # FIXME Delete on exit not working.
         content = list()
         content.append("""Testo es una prueba
         De comparar dos archivos
@@ -285,10 +287,15 @@ class Testcompare_file_content(SimpleTestCase):
         i = 0
         for c in content:
             with open(filenames[i], 'w', encoding='utf-8') as txt_file:
+                # print(f'{filenames[i]}=')
                 txt_file.write(c)
             i += 1
         errors = compare_file_content(*filenames)
         self.assertEqual(len(errors), 0)
+        for f in filenames:
+            f = Path(f)
+            f.unlink()
+
 
     @temporary_files('txt', delete_on_exit=True)
     def test_compare_file_content_error(self):
@@ -306,7 +313,10 @@ De comparar dos archivos 23
                 txt_file.write(c)
             i += 1
         try:
-            errors = compare_file_content(*filenames)
+            compare_file_content(*filenames)
             self.fail('Nothing raised')
         except DjangoTestToolsException as e:
+            for f in filenames:
+                f = Path(f)
+                f.unlink()
             self.assertEqual(str(e), 'On line 1 expected "De comparar dos archivos" got "De comparar dos archivos 23"')

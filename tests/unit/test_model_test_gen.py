@@ -35,8 +35,6 @@ class TestModelTestCaseGenerator(PythonWritingTestMixin, TestCase):
         errors = compare_content(source_file=source_file, test_file=test_file, raise_exception=False)
         self.assertEqual(len(errors), 0)
 
-        # self.assertEqual(hash, '66ed114f8f2427ea4bdb17141fffb0741b9cd680')
-
 
 class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
     @temporary_file('py', delete_on_exit=True)
@@ -45,8 +43,9 @@ class TestAppModelsTestCaseGenerator(PythonWritingTestMixin, TestCase):
         app_manager = DjangoAppManager()
         app = app_manager.get_app(app_name)
         app_model_tests = AppModelsTestCaseGenerator(app)
-        hash = self.write_generator_to_file(self.test_app_str_servers.filename, app_model_tests)
-        if app_name == 'example.servers':
-            self.assertEqual(hash, 'aa938222425fd4a5c704ed45c89f8053249cffe3')
-        else:
-            self.assertEqual(hash, '832f86ea4b560f2168d0620e0dc24e90aa0bb666')
+        self.write_generator_to_file(self.test_app_str_servers.filename, app_model_tests)
+        source_file = FIXTURES_FOLDER / 'test_app_str_servers_20230904_0746.py'
+
+        errors = compare_content(source_file=source_file, test_file=self.test_app_str_servers.filename,
+                                 raise_exception=False)
+        self.assertEqual(len(errors), 0)
