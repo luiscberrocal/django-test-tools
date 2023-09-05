@@ -5,9 +5,6 @@ Django Test Tools
 .. image:: https://badge.fury.io/py/django-test-tools.svg
     :target: https://badge.fury.io/py/django-test-tools
 
-.. image:: https://travis-ci.org/luiscberrocal/django-test-tools.svg?branch=master
-    :target: https://travis-ci.org/luiscberrocal/django-test-tools
-
 .. image:: https://codecov.io/gh/luiscberrocal/django-test-tools/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/luiscberrocal/django-test-tools
 

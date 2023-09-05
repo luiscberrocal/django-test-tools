@@ -25,9 +25,11 @@ class FieldInfo(BaseModel):
 
 class ModelInfo(BaseModel):
     model_name: str
+    # package_name: str
     fields: List[FieldInfo]
 
 
 class AppInfo(BaseModel):
     app_name: str
+    package_name: str
     models: Dict[str, Any]

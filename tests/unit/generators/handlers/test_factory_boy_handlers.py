@@ -4,7 +4,8 @@ from django.test import SimpleTestCase
 
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.handlers.factory_boy_handlers import DateTimeFieldHandler, TextFieldHandler, \
-    IntegerFieldHandler, DateFieldHandler, CharFieldIdHandler, CharFieldGenericHandler, DecimalFieldHandler
+    IntegerFieldHandler, DateFieldHandler, CharFieldIdHandler, CharFieldGenericHandler, DecimalFieldHandler, \
+    EmailFieldGenericHandler
 from django_test_tools.generators.models import FieldInfo
 
 
@@ -203,6 +204,29 @@ class TestDecimaFieldlHandler(SimpleTestCase):
         self.assertEqual(result.factory_entry, expected)
 
     def test_handle_non_decimal_field(self):
+        field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
+        result = self.handler.handle(field_info)
+        self.assertIsNone(result)
+
+
+class TestEmailFieldGenericHandler(SimpleTestCase):
+
+    def setUp(self):
+        self.handler = EmailFieldGenericHandler()
+
+    def test_handle_char_id_field(self):
+        field_info = FieldInfo(type=FieldType.EMAIL, field_name="email")
+        result = self.handler.handle(field_info)
+
+        expected_required_imports = ['from factory import LazyAttribute',
+                                     'from faker import Factory as FakerFactory',
+                                     'faker = FakerFactory.create()']
+        expected_factory_entry = 'LazyAttribute(lambda x: faker.free_email())'
+
+        self.assertEqual(result.required_imports, expected_required_imports)
+        self.assertEqual(result.factory_entry, expected_factory_entry)
+
+    def test_handle_non_char_id_field(self):
         field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
         result = self.handler.handle(field_info)
         self.assertIsNone(result)
