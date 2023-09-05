@@ -152,7 +152,6 @@ class ModelFactoryGenerator(object):
 
 class Command(BaseCommand):
     """
-
         $ python manage.py generate_factories project.app --filename=_factories.py
     """
 
