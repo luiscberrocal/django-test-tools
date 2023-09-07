@@ -272,7 +272,7 @@ class EmailFieldGenericHandler(AbstractModelFieldHandler):
 
 
 # Date
-datetime_handler = DateTimeFieldHandler()
+CHAINED_HANDLERS = DateTimeFieldHandler()
 date_handler = DateFieldHandler()
 # Char
 char_id_handler = CharFieldIdHandler()
@@ -286,4 +286,6 @@ integer_handler = IntegerFieldHandler()
 # FK
 fk_handler = ForeignKeyFieldHandler()
 
-CHAINED_HANDLERS = fk_handler.set_next(decimal_handler)
+CHAINED_HANDLERS.set_next(date_handler).set_next(char_id_handler).set_next(char_generic_handler) \
+    .set_next(text_handler).set_next(text_handler).set_next(email_handler) \
+    .set_next(decimal_handler).set_next(integer_handler).set_next(fk_handler)

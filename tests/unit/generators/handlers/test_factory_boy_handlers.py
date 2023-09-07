@@ -5,7 +5,7 @@ from django.test import SimpleTestCase
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.handlers.factory_boy_handlers import DateTimeFieldHandler, TextFieldHandler, \
     IntegerFieldHandler, DateFieldHandler, CharFieldIdHandler, CharFieldGenericHandler, DecimalFieldHandler, \
-    EmailFieldGenericHandler, ForeignKeyFieldHandler
+    EmailFieldGenericHandler, ForeignKeyFieldHandler, CHAINED_HANDLERS
 from django_test_tools.generators.models import FieldInfo
 
 
@@ -237,13 +237,7 @@ class TestChainedHandlers(SimpleTestCase):
     def test_handle_char_generic_field(self):
         max_len = 26
         field_info = FieldInfo(type=FieldType.CHAR, field_name="device", max_length=max_len)
-        # result = CHAINED_FIELD_HANDLERS.handle(field_info)
-        chained = DateFieldHandler().set_next(DateTimeFieldHandler())  # .set_next(CharFieldGenericHandler())
-        chained = chained.set_next(CharFieldIdHandler()).set_next(CharFieldGenericHandler())
-        # chained = chained.set_next(TextFieldHandler())
-        # chained = chained.set_next(EmailFieldGenericHandler())
-
-        result = chained.handle(field_info)
+        result = CHAINED_HANDLERS.handle(field_info)
 
         self.assertEqual(result.required_imports, ['import string', 'from factory import LazyAttribute',
                                                    'from factory.fuzzy import FuzzyText'])
@@ -252,30 +246,3 @@ class TestChainedHandlers(SimpleTestCase):
                     f'chars=string.ascii_letters).fuzz())')
         self.assertEqual(result.factory_entry, expected)
 
-    def test_chaining(self):
-        # Date
-        datetime_handler = DateTimeFieldHandler()
-        date_handler = DateFieldHandler()
-        # Char
-        char_id_handler = CharFieldIdHandler()
-        char_generic_handler = CharFieldGenericHandler()
-        text_handler = TextFieldHandler()
-        email_handler = EmailFieldGenericHandler()
-
-        # Numbers
-        decimal_handler = DecimalFieldHandler()
-        integer_handler = IntegerFieldHandler()
-        # FK
-        fk_handler = ForeignKeyFieldHandler()
-
-        fk_handler.set_next(decimal_handler).set_next(integer_handler).set_next(email_handler)
-
-        found = True
-        h = fk_handler._next_handler
-        print(h)
-        while found:
-            if h is not None:
-                h = h._next_handler
-                print(h)
-            else:
-                found = False
