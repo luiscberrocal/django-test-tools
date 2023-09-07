@@ -69,6 +69,5 @@ class DjangoAppManager(object):
         if hasattr(field, 'remote_field') and field.remote_field is not None:
             field_dict['remote_field'] = field.remote_field.model.__name__
 
-
         field_list.append(field_dict)
         return field_dict
