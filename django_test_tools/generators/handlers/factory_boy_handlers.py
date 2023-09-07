@@ -180,7 +180,7 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
 
 
 class ForeignKeyFieldHandler(AbstractModelFieldHandler):
-    field = FieldType.FOREIGNKEY
+    field = FieldType.FOREIGN_KEY
 
     def __init__(self, exclude: List[str] = None):
         if exclude is None:
