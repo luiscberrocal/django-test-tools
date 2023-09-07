@@ -1,8 +1,11 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import List
 
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.models import FieldInfo
+
+logger = logging.getLogger(__name__)
 
 
 class ModelFieldHandler(ABC):
@@ -253,10 +256,10 @@ class EmailFieldGenericHandler(AbstractModelFieldHandler):
 # Date
 CHAINED_FIELD_HANDLERS = DateFieldHandler().set_next(DateTimeFieldHandler())
 # Char
-CHAINED_FIELD_HANDLERS.set_next(CharFieldIdHandler()).set_next(CharFieldGenericHandler()) \
+CHAINED_FIELD_HANDLERS = CHAINED_FIELD_HANDLERS.set_next(CharFieldIdHandler()).set_next(CharFieldGenericHandler()) \
     .set_next(TextFieldHandler()) \
     .set_next(EmailFieldGenericHandler())
 # Numbers
-CHAINED_FIELD_HANDLERS.set_next(DecimalFieldHandler()).set_next(IntegerFieldHandler())
+CHAINED_FIELD_HANDLERS = CHAINED_FIELD_HANDLERS.set_next(DecimalFieldHandler()).set_next(IntegerFieldHandler())
 # FK
-CHAINED_FIELD_HANDLERS.set_next(ForeignKeyFieldHandler())
+CHAINED_FIELD_HANDLERS = CHAINED_FIELD_HANDLERS.set_next(ForeignKeyFieldHandler())

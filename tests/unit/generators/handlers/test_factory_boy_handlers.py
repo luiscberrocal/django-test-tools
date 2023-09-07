@@ -235,9 +235,12 @@ class TestEmailFieldGenericHandler(SimpleTestCase):
 class TestChainedHandlers(SimpleTestCase):
 
     def test_handle_char_generic_field(self):
-        max_len = 64
+        max_len = 26
         field_info = FieldInfo(type=FieldType.CHAR, field_name="device", max_length=max_len)
         result = CHAINED_FIELD_HANDLERS.handle(field_info)
+        chained = DateFieldHandler().set_next(DateTimeFieldHandler())  # .set_next(CharFieldGenericHandler())
+        chained = chained.set_next(CharFieldIdHandler()).set_next(CharFieldGenericHandler())
+        result = chained.handle(field_info)
 
         self.assertEqual(result.required_imports, ['import string', 'from factory import LazyAttribute',
                                                    'from factory.fuzzy import FuzzyText'])
