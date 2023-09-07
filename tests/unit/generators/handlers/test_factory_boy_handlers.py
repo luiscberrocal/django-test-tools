@@ -5,7 +5,7 @@ from django.test import SimpleTestCase
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.handlers.factory_boy_handlers import DateTimeFieldHandler, TextFieldHandler, \
     IntegerFieldHandler, DateFieldHandler, CharFieldIdHandler, CharFieldGenericHandler, DecimalFieldHandler, \
-    EmailFieldGenericHandler
+    EmailFieldGenericHandler, CHAINED_FIELD_HANDLERS
 from django_test_tools.generators.models import FieldInfo
 
 
@@ -214,7 +214,7 @@ class TestEmailFieldGenericHandler(SimpleTestCase):
     def setUp(self):
         self.handler = EmailFieldGenericHandler()
 
-    def test_handle_char_id_field(self):
+    def test_handle_email_field(self):
         field_info = FieldInfo(type=FieldType.EMAIL, field_name="email")
         result = self.handler.handle(field_info)
 
@@ -226,7 +226,22 @@ class TestEmailFieldGenericHandler(SimpleTestCase):
         self.assertEqual(result.required_imports, expected_required_imports)
         self.assertEqual(result.factory_entry, expected_factory_entry)
 
-    def test_handle_non_char_id_field(self):
+    def test_handle_non_email_field(self):
         field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
         result = self.handler.handle(field_info)
         self.assertIsNone(result)
+
+
+class TestChainedHandlers(SimpleTestCase):
+
+    def test_handle_char_generic_field(self):
+        max_len = 64
+        field_info = FieldInfo(type=FieldType.CHAR, field_name="device", max_length=max_len)
+        result = CHAINED_FIELD_HANDLERS.handle(field_info)
+
+        self.assertEqual(result.required_imports, ['import string', 'from factory import LazyAttribute',
+                                                   'from factory.fuzzy import FuzzyText'])
+        expected = (f'LazyAttribute(lambda x: '
+                    f'FuzzyText(length={max_len}, '
+                    f'chars=string.ascii_letters).fuzz())')
+        self.assertEqual(result.factory_entry, expected)

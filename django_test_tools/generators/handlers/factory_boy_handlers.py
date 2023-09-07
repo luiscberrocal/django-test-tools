@@ -248,3 +248,15 @@ class EmailFieldGenericHandler(AbstractModelFieldHandler):
             field_data.factory_entry = 'LazyAttribute(lambda x: faker.free_email())'
 
             return field_data
+
+
+# Date
+CHAINED_FIELD_HANDLERS = DateFieldHandler().set_next(DateTimeFieldHandler())
+# Char
+CHAINED_FIELD_HANDLERS.set_next(CharFieldIdHandler()).set_next(CharFieldGenericHandler()) \
+    .set_next(TextFieldHandler()) \
+    .set_next(EmailFieldGenericHandler())
+# Numbers
+CHAINED_FIELD_HANDLERS.set_next(DecimalFieldHandler()).set_next(IntegerFieldHandler())
+# FK
+CHAINED_FIELD_HANDLERS.set_next(ForeignKeyFieldHandler())
