@@ -132,7 +132,7 @@ class AssertionWriter(object):
     def _build_type_assertion(self, variable_name, data, assert_list):
         if variable_name not in self.excluded_variable_names:
             if isinstance(data, str):
-               assert_list.append('self.assertIsNotNone({}) # Example: {}'.format(variable_name, data))
+                assert_list.append('self.assertIsNotNone({}) # Example: {}'.format(variable_name, data))
             elif isinstance(data, datetime):
                 date_time_format = '%Y-%m-%d %H:%M:%S%z'
                 datetime_regexp = r'([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))\s\d{2}:\d{2}:\d{2}\+\d{4}'

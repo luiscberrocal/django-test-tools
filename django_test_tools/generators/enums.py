@@ -13,7 +13,7 @@ class FieldType(str, Enum):
     DATE = 'DateField'
     DATETIME = 'DateTimeField'
     DECIMAL = 'DecimalField'
-    FOREIGNKEY = 'ForeignKey'
+    FOREIGN_KEY = 'ForeignKey'
     GENERIC_IP_ADDRESS = 'GenericIPAddressField'
     INTEGER = 'IntegerField'
     MONEY = 'MoneyField'
