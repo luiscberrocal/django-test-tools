@@ -1,11 +1,9 @@
-import os
-
 import json
-from django.conf import settings
+
 from django.core.management import BaseCommand
 
 from django_test_tools.excel import ExcelAdapter
-from django_test_tools.file_utils import add_date, create_dated
+from django_test_tools.file_utils import create_dated
 
 
 class Command(BaseCommand):
