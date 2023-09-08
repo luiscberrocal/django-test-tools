@@ -9,7 +9,14 @@ from django_test_tools.app_manager import DjangoAppManager
 class TestDjangoAppManager(TestCase):
     def test_installed_apps(self):
         app_manager = DjangoAppManager()
-        self.assertEqual(9, len(app_manager.installed_apps))
+        installed_apps = app_manager.installed_apps
+        self.assertEqual(9, len(installed_apps))
+
+        expected_keys = ['django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
+                         'django.contrib.sessions', 'django.contrib.messages', 'django.contrib.staticfiles',
+                         'django_test_tools', 'example.servers', 'example.people']
+        for key in expected_keys:
+            self.assertIsNotNone(installed_apps[key])
 
     def test_get_app_1(self):
         app_manager = DjangoAppManager()

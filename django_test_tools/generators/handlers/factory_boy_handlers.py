@@ -1,8 +1,11 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import List
 
 from django_test_tools.generators.enums import FieldType
 from django_test_tools.generators.models import FieldInfo
+
+logger = logging.getLogger(__name__)
 
 
 class ModelFieldHandler(ABC):
@@ -42,6 +45,7 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type == self.field and field_data.field_name not in self.excluded:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from django.conf import settings', 'from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
@@ -50,6 +54,7 @@ class DateTimeFieldHandler(AbstractModelFieldHandler):
                                         f'end_date="{self.end_date}", tzinfo=timezone(settings.TIME_ZONE)))')
             return field_data
         else:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
 
 
@@ -66,6 +71,7 @@ class DateFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type == self.field and field_data.field_name not in self.excluded:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from django.conf import settings', 'from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
@@ -74,6 +80,7 @@ class DateFieldHandler(AbstractModelFieldHandler):
                                         f'end_date="{self.end_date}", tzinfo=timezone(settings.TIME_ZONE)))')
             return field_data
         else:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
 
 
@@ -93,8 +100,10 @@ class CharFieldIdHandler(AbstractModelFieldHandler):
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if (field_data.type != self.field or field_data.field_name in self.excluded or
             field_data.max_length > self.length_threshold):
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             # Imports
             field_data.required_imports = ['import string', 'from factory import LazyAttribute',
                                            'from factory.fuzzy import FuzzyText']
@@ -122,8 +131,10 @@ class CharFieldGenericHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type != self.field or field_data.field_name in self.excluded:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             if field_data.max_length > self.length_threshold:
                 field_data.required_imports = ['from factory import LazyAttribute',
                                                'from faker import Factory as FakerFactory',
@@ -154,8 +165,10 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type != self.field or field_data.field_name in self.excluded:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
@@ -167,7 +180,7 @@ class DecimalFieldHandler(AbstractModelFieldHandler):
 
 
 class ForeignKeyFieldHandler(AbstractModelFieldHandler):
-    field = FieldType.FOREIGNKEY
+    field = FieldType.FOREIGN_KEY
 
     def __init__(self, exclude: List[str] = None):
         if exclude is None:
@@ -177,8 +190,10 @@ class ForeignKeyFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type != self.field or field_data.field_name in self.excluded:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from factory import SubFactory']
             template = f'SubFactory({field_data.remote_field}Factory)'
             field_data.factory_entry = template
@@ -198,8 +213,10 @@ class IntegerFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type != self.field or field_data.field_name in self.excluded:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
             template = f'LazyAttribute(lambda x: faker.random_int(min={self.min_value}, max={self.max_value})'
@@ -219,8 +236,10 @@ class TextFieldHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type != self.field or field_data.field_name in self.excluded:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
             template = (f'LazyAttribute(lambda x: faker.paragraph(nb_sentences={self.sentences}, '
@@ -240,11 +259,33 @@ class EmailFieldGenericHandler(AbstractModelFieldHandler):
 
     def handle(self, field_data: FieldInfo) -> FieldInfo | None:
         if field_data.type != self.field or field_data.field_name in self.excluded:
+            logger.debug(f'Passing it to next Handler from {self.__class__.__name__}')
             return super().handle(field_data)
         else:
+            logger.debug(f'Handled by {self.__class__.__name__}')
             field_data.required_imports = ['from factory import LazyAttribute',
                                            'from faker import Factory as FakerFactory',
                                            'faker = FakerFactory.create()']
             field_data.factory_entry = 'LazyAttribute(lambda x: faker.free_email())'
 
             return field_data
+
+
+# Date
+CHAINED_HANDLERS = DateTimeFieldHandler()
+date_handler = DateFieldHandler()
+# Char
+char_id_handler = CharFieldIdHandler()
+char_generic_handler = CharFieldGenericHandler()
+text_handler = TextFieldHandler()
+email_handler = EmailFieldGenericHandler()
+
+# Numbers
+decimal_handler = DecimalFieldHandler()
+integer_handler = IntegerFieldHandler()
+# FK
+fk_handler = ForeignKeyFieldHandler()
+
+CHAINED_HANDLERS.set_next(date_handler).set_next(char_id_handler).set_next(char_generic_handler) \
+    .set_next(text_handler).set_next(text_handler).set_next(email_handler) \
+    .set_next(decimal_handler).set_next(integer_handler).set_next(fk_handler)

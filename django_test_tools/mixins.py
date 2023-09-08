@@ -104,5 +104,3 @@ class JWTTestMixin(object):
         client.credentials(HTTP_AUTHORIZATION='Bearer {}'.format(access_token))
         response = client.put(url, data=data)
         return response
-
-
