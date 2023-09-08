@@ -237,20 +237,19 @@ class TestForeignKeyFieldGenericHandler(SimpleTestCase):
     def setUp(self):
         self.handler = ForeignKeyFieldHandler()
 
-    def test_handle_email_field(self):
+    def test_handle_foreign_key_field(self):
         field = "customer"
         remote_field = 'Customer'
         field_info = FieldInfo(type=FieldType.FOREIGN_KEY, field_name=field, remote_field=remote_field)
         result = self.handler.handle(field_info)
+
         expected_required_imports = ['from factory import SubFactory']
         expected_factory_entry = f'SubFactory({remote_field}Factory)'
-
-        # expected_factory_entry = 'LazyAttribute(lambda x: faker.free_email())'
 
         self.assertEqual(result.required_imports, expected_required_imports)
         self.assertEqual(result.factory_entry, expected_factory_entry)
 
-    def test_handle_non_email_field(self):
+    def test_handle_non_foreign_key_field(self):
         field_info = FieldInfo(type=FieldType.INTEGER, field_name="age")
         result = self.handler.handle(field_info)
         self.assertIsNone(result)
@@ -269,3 +268,15 @@ class TestChainedHandlers(SimpleTestCase):
                     f'FuzzyText(length={max_len}, '
                     f'chars=string.ascii_letters).fuzz())')
         self.assertEqual(result.factory_entry, expected)
+
+    def test_handle_foreign_key_field(self):
+        field = "client"
+        remote_field = 'Client'
+        field_info = FieldInfo(type=FieldType.FOREIGN_KEY, field_name=field, remote_field=remote_field)
+        result = CHAINED_HANDLERS.handle(field_info)
+
+        expected_required_imports = ['from factory import SubFactory']
+        expected_factory_entry = f'SubFactory({remote_field}Factory)'
+
+        self.assertEqual(result.required_imports, expected_required_imports)
+        self.assertEqual(result.factory_entry, expected_factory_entry)
