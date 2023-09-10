@@ -7,6 +7,7 @@ from example.servers.models import OperatingSystem
 from ..factories import OperatingSystemFactory
 from django.db import IntegrityError
 
+
 class TestCaseOperatingSystem(TestCase):
 
     def test_create(self):
@@ -61,10 +62,6 @@ class TestCaseOperatingSystem(TestCase):
     #         reset_queries()
 
 
-
-
-
-
 class TestCaseServer(TestCase):
 
     def test_create(self):
@@ -82,7 +79,6 @@ class TestCaseServer(TestCase):
         self.assertEqual(5, Server.objects.count())
         self.assertEqual(5, len(servers))
 
-
     def test_attribute_count(self):
         """
         Test that all attributes of Server server are counted. It will count the primary key and all editable attributes.
@@ -91,7 +87,6 @@ class TestCaseServer(TestCase):
         server = ServerFactory.create()
         server_dict = model_to_dict(server)
         self.assertEqual(11, len(server_dict.keys()))
-
 
     def test_attribute_content(self):
         """
@@ -118,8 +113,7 @@ class TestCaseServer(TestCase):
         server = ServerFactory.create()
         server_02 = ServerFactory.create()
         server_02.name = server.name
-        try:
+        with self.assertRaises(IntegrityError) as ctx:
             server_02.save()
-            self.fail('Test should have raised and integrity error')
-        except IntegrityError as e:
-            self.assertEqual('UNIQUE constraint failed: my_app_server.name', str(e))
+        expected = 'UNIQUE constraint failed: servers_server.name'
+        self.assertEqual(str(ctx.exception), expected)

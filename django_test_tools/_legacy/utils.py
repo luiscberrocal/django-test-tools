@@ -39,7 +39,6 @@ def daterange(start_date, end_date):
     return weekdays(start_date, end_date)
 
 
-@deprecated('Should use django_test_tools.file_utils.create_dated() function')
 def create_output_filename_with_date(filename):
     """
     Based on the filename will create a full path filename incluidn the date and time in '%Y%m%d_%H%M' format.
@@ -57,7 +56,6 @@ def create_output_filename_with_date(filename):
     return add_date(os.path.join(settings.TEST_OUTPUT_PATH, filename))
 
 
-@deprecated('Should use django_test_tools.file_utils.add_date() function')
 def add_date_to_filename(filename, **kwargs):
     """
     Adds to a filename the current date and time in '%Y%m%d_%H%M' format.
