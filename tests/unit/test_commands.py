@@ -9,7 +9,7 @@ from django.test import TestCase, SimpleTestCase
 
 from django_test_tools.assert_utils import write_assertions
 from django_test_tools.file_utils import hash_file, temporary_file, create_dated
-from django_test_tools.management.commands.generate_factories import ModelFactoryGenerator
+from django_test_tools._legacy.management.commands.generate_factories import ModelFactoryGenerator
 from django_test_tools.mixins import TestCommandMixin, TestOutputMixin
 from tests.common_vars import FIXTURES_FOLDER
 
