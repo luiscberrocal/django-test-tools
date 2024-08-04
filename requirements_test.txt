@@ -1,6 +1,6 @@
 -r requirements.txt
 factory-boy==3.3.0
-coverage==7.3.0
+coverage==7.6.1
 flake8==6.1.0
 tox==4.11.0
 codecov>=2.0.0
